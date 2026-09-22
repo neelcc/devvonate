@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { v4 as uuidv4 } from "uuid";
 import { HttpError } from "http-errors";
+import { ZodError } from "zod";
 
 export const globalErrorHandler = (
     err: HttpError,
@@ -15,6 +16,21 @@ export const globalErrorHandler = (
     let message = isProduction
         ? `An unexpected error occurred.`
         : err.message;
+
+    if(err instanceof ZodError) {
+       res.status(statusCode).json({
+        errors: [
+            {
+                ref: errorId,
+                type: err.name,
+                msg: message,
+                path: req.path,
+                location: "server",
+                stack: isProduction ? null : err.stack,
+            },
+        ],
+    });
+    }
     
     // console.log(err.message, {
     //     id: errorId,

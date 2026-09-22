@@ -17,6 +17,7 @@ const logger = winston.createLogger({
             level: "info",
             silent: Config.NODE_ENV === "test",
         }),
+        
         new winston.transports.File({
             dirname: "logs",
             filename: "error.log",
