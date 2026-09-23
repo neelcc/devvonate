@@ -50,3 +50,29 @@ export const FileCategory = {
 } as const
 
 export type FileCategory = (typeof FileCategory)[keyof typeof FileCategory]
+
+
+export const OUTBOX_EVENT_STATUS = {
+  PENDING: 'PENDING',
+  PROCESSED: 'PROCESSED',
+  FAILED: 'FAILED'
+} as const
+
+export type OUTBOX_EVENT_STATUS = (typeof OUTBOX_EVENT_STATUS)[keyof typeof OUTBOX_EVENT_STATUS]
+
+
+export const OUTBOX_EVENT_TYPE = {
+  FILE_DELETION: 'FILE_DELETION',
+  FILE_BATCH_DELETION: 'FILE_BATCH_DELETION'
+} as const
+
+export type OUTBOX_EVENT_TYPE = (typeof OUTBOX_EVENT_TYPE)[keyof typeof OUTBOX_EVENT_TYPE]
+
+
+export const AGGREGATE_TYPE = {
+  FILE: 'FILE',
+  FOLDER: 'FOLDER',
+  USER: 'USER'
+} as const
+
+export type AGGREGATE_TYPE = (typeof AGGREGATE_TYPE)[keyof typeof AGGREGATE_TYPE]

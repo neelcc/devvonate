@@ -402,7 +402,8 @@ export const ModelName = {
   Folder: 'Folder',
   UserStorage: 'UserStorage',
   File: 'File',
-  FileUpload: 'FileUpload'
+  FileUpload: 'FileUpload',
+  OutboxEvents: 'OutboxEvents'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -418,7 +419,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "refreshToken" | "folder" | "userStorage" | "file" | "fileUpload"
+    modelProps: "user" | "refreshToken" | "folder" | "userStorage" | "file" | "fileUpload" | "outboxEvents"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -866,6 +867,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    OutboxEvents: {
+      payload: Prisma.$OutboxEventsPayload<ExtArgs>
+      fields: Prisma.OutboxEventsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.OutboxEventsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OutboxEventsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.OutboxEventsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OutboxEventsPayload>
+        }
+        findFirst: {
+          args: Prisma.OutboxEventsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OutboxEventsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.OutboxEventsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OutboxEventsPayload>
+        }
+        findMany: {
+          args: Prisma.OutboxEventsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OutboxEventsPayload>[]
+        }
+        create: {
+          args: Prisma.OutboxEventsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OutboxEventsPayload>
+        }
+        createMany: {
+          args: Prisma.OutboxEventsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.OutboxEventsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OutboxEventsPayload>[]
+        }
+        delete: {
+          args: Prisma.OutboxEventsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OutboxEventsPayload>
+        }
+        update: {
+          args: Prisma.OutboxEventsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OutboxEventsPayload>
+        }
+        deleteMany: {
+          args: Prisma.OutboxEventsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.OutboxEventsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.OutboxEventsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OutboxEventsPayload>[]
+        }
+        upsert: {
+          args: Prisma.OutboxEventsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OutboxEventsPayload>
+        }
+        aggregate: {
+          args: Prisma.OutboxEventsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateOutboxEvents>
+        }
+        groupBy: {
+          args: Prisma.OutboxEventsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OutboxEventsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.OutboxEventsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OutboxEventsCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -995,12 +1070,33 @@ export const FileUploadScalarFieldEnum = {
 export type FileUploadScalarFieldEnum = (typeof FileUploadScalarFieldEnum)[keyof typeof FileUploadScalarFieldEnum]
 
 
+export const OutboxEventsScalarFieldEnum = {
+  id: 'id',
+  eventType: 'eventType',
+  payload: 'payload',
+  aggregateType: 'aggregateType',
+  aggregateId: 'aggregateId',
+  status: 'status',
+  createdAt: 'createdAt',
+  processedAt: 'processedAt'
+} as const
+
+export type OutboxEventsScalarFieldEnum = (typeof OutboxEventsScalarFieldEnum)[keyof typeof OutboxEventsScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {
@@ -1017,6 +1113,15 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
 
@@ -1134,6 +1239,62 @@ export type EnumUploadStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$Pri
  * Reference to a field of type 'UploadStatus[]'
  */
 export type ListEnumUploadStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UploadStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'OUTBOX_EVENT_TYPE'
+ */
+export type EnumOUTBOX_EVENT_TYPEFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OUTBOX_EVENT_TYPE'>
+    
+
+
+/**
+ * Reference to a field of type 'OUTBOX_EVENT_TYPE[]'
+ */
+export type ListEnumOUTBOX_EVENT_TYPEFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OUTBOX_EVENT_TYPE[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Json'
+ */
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+/**
+ * Reference to a field of type 'QueryMode'
+ */
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+/**
+ * Reference to a field of type 'AGGREGATE_TYPE'
+ */
+export type EnumAGGREGATE_TYPEFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AGGREGATE_TYPE'>
+    
+
+
+/**
+ * Reference to a field of type 'AGGREGATE_TYPE[]'
+ */
+export type ListEnumAGGREGATE_TYPEFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AGGREGATE_TYPE[]'>
+    
+
+
+/**
+ * Reference to a field of type 'OUTBOX_EVENT_STATUS'
+ */
+export type EnumOUTBOX_EVENT_STATUSFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OUTBOX_EVENT_STATUS'>
+    
+
+
+/**
+ * Reference to a field of type 'OUTBOX_EVENT_STATUS[]'
+ */
+export type ListEnumOUTBOX_EVENT_STATUSFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OUTBOX_EVENT_STATUS[]'>
     
 
 
@@ -1307,6 +1468,7 @@ export type GlobalOmitConfig = {
   userStorage?: Prisma.UserStorageOmit
   file?: Prisma.FileOmit
   fileUpload?: Prisma.FileUploadOmit
+  outboxEvents?: Prisma.OutboxEventsOmit
 }
 
 /* Types for Logging */

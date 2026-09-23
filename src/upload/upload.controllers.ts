@@ -14,9 +14,6 @@ export class UploadController {
         const userId = req.auth.sub;
         const { fileName, size, contentType, folderId } = req.body;
 
-        console.log(`Received upload request for user ${userId} in folder ${folderId} with fileName: ${fileName}, size: ${size}, contentType: ${contentType}`);
-    
-
         if(!folderId) {
             const error = createHttpError(400, "Missing required field");
             this.logger.error(`UploadController.uploadFile: ${error.message}`);

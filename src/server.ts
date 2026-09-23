@@ -1,6 +1,7 @@
 import { app } from "./app.js";
 import { Config } from "./config/index.js";
 import logger from "./config/logger.js";
+import { sqsConsumer } from "./infrastructure/sqs/sqs.consumer.js";
 
 
 const startServer = async () => {
@@ -10,6 +11,7 @@ const startServer = async () => {
         const server = app.listen(PORT, () => {
             logger.info("Server is running on port " + PORT);
         });
+        sqsConsumer.start(); // Start the SQS consumer when the server starts
         // Graceful shutdown
           const shutdown = async () => {
                logger.info('Shutting down gracefully...');

@@ -2,9 +2,10 @@ import createHttpError from "http-errors";
 import prisma from "../config/prisma";
 import { FileData } from "./upload.types";
 import { Config } from "../config";
-import { uploadRepository } from "./upload.repository";
+
 import { calculatePartSize, fileValidated, getFileCategory, isPartsValidated } from "../utils";
 import { bigint } from "zod";
+import { uploadRepository } from "../infrastructure/s3/s3.repository";
 
 export class UploadServices {
     constructor() {
@@ -73,7 +74,7 @@ export class UploadServices {
 
         const partSize = calculatePartSize(fileData.size);
 
-        const s3KeyName = `${folder.path}/${fileName}`;
+        const s3KeyName = `${folder.id}/${fileName}`;
 
         const totalParts = Math.ceil(Number(fileData.size) / Number(partSize));
 

@@ -69,3 +69,8 @@ export type File = Prisma.FileModel
  * 
  */
 export type FileUpload = Prisma.FileUploadModel
+/**
+ * Model OutboxEvents
+ * 
+ */
+export type OutboxEvents = Prisma.OutboxEventsModel

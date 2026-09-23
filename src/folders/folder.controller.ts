@@ -39,7 +39,7 @@ export class FolderController {
 
     listRootFolders = async (req: Request<GetAllFoldersQuery>, res: Response, next: NextFunction) => {
         
-        const userId = (req as AuthRequest).auth.sub;
+        const userId = req.auth.sub;
         const { cursor, pageSize } = listRootFoldersSchema.parse(req.query);
 
         const folders = await this.folderServices.listRootFolders(userId, cursor, pageSize );
@@ -118,8 +118,7 @@ export class FolderController {
         res.status(200).json({
             message: "Folder deleted successfully",
             folder: folder
-            // folderId: folder.id,
-            // folderName: folder.name
+    
         })
     }
 

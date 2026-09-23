@@ -1,9 +1,8 @@
-import { AbortMultipartUploadCommand, CompleteMultipartUploadCommand, CreateMultipartUploadCommand, HeadObjectCommand, ListPartsCommand, UploadPartCommand } from "@aws-sdk/client-s3";
-import { Config } from "../config";
-import { FileData } from "./upload.types";
-import { s3Client } from "../config/aws-s3";
+import { AbortMultipartUploadCommand, CompleteMultipartUploadCommand, CreateMultipartUploadCommand, DeleteObjectCommand, HeadObjectCommand, ListPartsCommand, UploadPartCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-
+import { Config } from "../../config";
+import { FileData } from "../../upload/upload.types";
+import { s3Client } from "../../config/s3";
 class UploadRepository {
     
     bucketName: string = Config.aws.bucketName;
@@ -85,6 +84,16 @@ class UploadRepository {
         console.log("ListParts response:", response);
         return response;
 
+    }
+
+    async deleteObject(key: string) {
+        const command = new DeleteObjectCommand({
+            Bucket: this.bucketName,
+            Key: key,
+        })
+        const response = await s3Client.send(command);
+        console.log("DeleteObject response:", response);
+        return response;
     }
 
    }

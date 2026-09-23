@@ -29,5 +29,7 @@ export const Config = {
         secretAccessKey: required(process.env.AWS_SECRET_ACCESS_KEY, "AWS_SECRET_ACCESS_KEY"),
         region: required(process.env.AWS_REGION, "AWS_REGION"),
         bucketName: required(process.env.AWS_BUCKET_NAME, "AWS_BUCKET_NAME"),
+        queueName: required(process.env.AWS_QUEUE_NAME, "AWS_QUEUE_NAME"),
+        queueUrl: required(process.env.AWS_QUEUE_URL, "AWS_QUEUE_URL"),
     }
 }

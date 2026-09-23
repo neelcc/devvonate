@@ -1,0 +1,19 @@
+-- CreateEnum
+CREATE TYPE "OUTBOX_EVENT_STATUS" AS ENUM ('PENDING', 'PROCESSED', 'FAILED');
+
+-- CreateEnum
+CREATE TYPE "OUTBOX_EVENT_TYPE" AS ENUM ('FILE_DELETION', 'FILE_BATCH_DELETION');
+
+-- CreateTable
+CREATE TABLE "OutboxEvents" (
+    "id" TEXT NOT NULL,
+    "eventType" "OUTBOX_EVENT_TYPE" NOT NULL,
+    "payload" JSONB NOT NULL,
+    "aggregateType" TEXT NOT NULL,
+    "aggregateId" TEXT NOT NULL,
+    "status" "OUTBOX_EVENT_STATUS" NOT NULL DEFAULT 'PENDING',
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "processedAt" TIMESTAMP(3),
+
+    CONSTRAINT "OutboxEvents_pkey" PRIMARY KEY ("id")
+);
