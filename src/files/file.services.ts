@@ -30,6 +30,10 @@ export class FileService {
             },
             data: {
                 name: name
+            },
+            select: {
+                id: true,
+                name: true
             }
         });
 
@@ -61,7 +65,7 @@ export class FileService {
                     id: fileId
                 },
                 data: {
-                    status: "DELETED",
+                    status: "TRASHED",
                     deletedAt: new Date()
                 },
                 select: {
@@ -88,10 +92,10 @@ export class FileService {
 
         })
 
-       
+
         return {
             ...UpdatedFile,
-            size : UpdatedFile.size.toString(),
+            size: UpdatedFile.size.toString(),
         };
 
     }
@@ -104,7 +108,7 @@ export class FileService {
                 deletedAt: {
                     not: null
                 },
-                status: "DELETED"
+                status: "TRASHED"
             }
         });
 
@@ -125,7 +129,8 @@ export class FileService {
                 },
                 select: {
                     size: true,
-                    name: true
+                    name: true,
+                    id: true
                 }
             });
 
@@ -146,7 +151,7 @@ export class FileService {
         })
         return {
             ...UpdatedFile,
-            size : UpdatedFile.size.toString(),
+            size: UpdatedFile.size.toString(),
         };
     }
 
@@ -179,14 +184,14 @@ export class FileService {
                 deletedAt: null,
                 status: "ACTIVE"
             },
-            select : {
+            select: {
                 id: true,
                 name: true,
                 folderId: true
             }
         });
 
-          if (!file) {
+        if (!file) {
             const error = createHttpError(404, "File not found");
             throw error;
         }
@@ -208,7 +213,7 @@ export class FileService {
             throw error;
         }
 
-      
+
 
         if (file.folderId === newParentFolder.id) {
             const error = createHttpError(400, "File is already in the specified folder");
@@ -229,7 +234,7 @@ export class FileService {
                 folderId: true
             }
         });
-            
+
         return updatedFile;
 
     }
@@ -242,33 +247,33 @@ export class FileService {
                 deletedAt: {
                     not: null
                 },
-                status: "DELETED"
+                status: "TRASHED"
             },
             select: {
                 id: true,
                 name: true,
                 size: true,
                 s3KeyName: true
-            }   
+            }
         });
 
         if (!file) {
-            const error = createHttpError(404, "File not found");
+            const error = createHttpError(404, "File not found or It is not in the trash");
             throw error;
         }
 
         const deletedFile = await prisma.$transaction(async (tx) => {
-            
-           const deletedFile = await tx.file.delete({
+
+            const deletedFile = await tx.file.delete({
                 where: {
                     id: file.id,
                     userId: userId
                 },
-            select: {
-                id: true,
-                name: true,
-                size: true
-            }
+                select: {
+                    id: true,
+                    name: true,
+                    size: true
+                }
             });
 
             await tx.userStorage.update({
@@ -276,24 +281,89 @@ export class FileService {
                     userId: userId
                 },
                 data: {
-                    trashBytes: {   
+                    trashBytes: {
                         decrement: file.size
                     }
                 }
             })
 
-            return deletedFile; 
+            await tx.outboxEvents.create({
+                data: {
+                    eventType: "FILE_DELETION",
+                    aggregateType: "FILE",
+                    aggregateId: file.id,
+                    payload: {
+                        objectKey: file.s3KeyName,
+                    },
+                }
+            })
+
+            return {
+                ...deletedFile,
+                size: deletedFile.size.toString(),
+            };
 
         });
 
-        // sqsProducer.deleteS3Object({
-        //     objectKey: file.s3KeyName,
-        //     messageId: crypto.randomUUID(),
-        //     userId: userId,
-        // });
-       
 
-        return deletedFile; 
+        return deletedFile;
+
+    }
+
+    deleteAllTrashFiles = async (userId: string) => {
+        const trashedFiles = await prisma.file.findMany({
+            where: {
+                userId: userId,
+                deletedAt: {
+                    not: null
+                },
+                status: "TRASHED"
+            },
+            select: {
+                id: true,
+                name: true,
+                s3KeyName: true,
+            }
+        });
+
+        if (trashedFiles.length === 0) {
+            const error = createHttpError(404, "No trashed files found");
+            throw error;
+        }
+
+        const deletedFiles = await prisma.$transaction(async (tx) => {
+            const deletedFiles = await tx.file.deleteMany({
+                where: {
+                    id: {
+                        in: trashedFiles.map(file => file.id)
+                    },
+                    userId: userId
+                }
+            });
+
+            await tx.userStorage.update({
+                where: {
+                    userId: userId
+                },
+                data: {
+                    trashBytes: 0
+                }
+            })
+
+            await tx.outboxEvents.createMany({
+                data: {
+                    aggregateType: "USER",
+                    eventType: "FILE_BATCH_DELETION",
+                    aggregateId: userId,
+                    payload: {
+                        objectKeys: trashedFiles.map(file => file.s3KeyName)
+                    }
+                },
+            });
+            return deletedFiles;
+        })
+
+    return deletedFiles;
 
     }
 

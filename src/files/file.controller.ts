@@ -3,6 +3,7 @@ import { FileService } from "./file.services";
 import { Request, Response, NextFunction  } from "express"
 import createHttpError from "http-errors";
 import { FileParams } from "./file.types";
+import id from "zod/v4/locales/id.js";
 
 export class FileController {
 
@@ -31,11 +32,10 @@ export class FileController {
 
         res.status(200).json({
             message: "File renamed successfully",
-            data: response
+            name: response.name,
+            id: response.id
         })
-
-
-    } 
+    }
 
     deleteFile = async (req: Request<FileParams>, res: Response, next: NextFunction) => {
         const userId = req.auth.sub;
@@ -51,11 +51,13 @@ export class FileController {
             return next(error);
         }
 
-        const response = await this.fileService.deleteFile(userId, fileId);
+        const response = await this.fileService.permanentlyDeleteFile(userId, fileId);
 
         res.status(200).json({
             message: "File deleted successfully",
-            data: response
+            name: response.name,
+            id: response.id,
+            size: response.size
         })
     }
 
@@ -77,7 +79,9 @@ export class FileController {
 
         res.status(200).json({
             message: "File restored successfully",
-            data: response
+            name: response.name,
+            id: response.id,
+            size: response.size
         })
     }
 
@@ -123,7 +127,8 @@ export class FileController {
 
         res.status(200).json({
             message: "File moved successfully",
-            data: response
+            id: response.id, 
+            newFolderId: response.folderId
         })
     }
 
@@ -145,10 +150,27 @@ export class FileController {
 
         res.status(200).json({
             message: "File permanently deleted successfully",
-            data: response
+            id: response.id,
+            name: response.name
         })
 
     }
 
+    deleteAllTrashFiles = async (req: Request, res: Response, next: NextFunction) => {
+        const userId = req.auth.id;
 
+        if(!userId){
+            const error = createHttpError(400, "User ID is required");
+            return next(error);
+        }
+
+        const deletedFiles = await this.fileService.deleteAllTrashFiles(userId);
+
+        res.status(200).json({
+            message: "All trash files deleted successfully",
+            count: deletedFiles.count,
+        })
+
+    }
+    
 }

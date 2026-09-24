@@ -1,0 +1,1 @@
+console.log("Deleting multiple objects from bucket learning-s3-bucket-neel:");

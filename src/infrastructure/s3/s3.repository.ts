@@ -1,8 +1,9 @@
-import { AbortMultipartUploadCommand, CompleteMultipartUploadCommand, CreateMultipartUploadCommand, DeleteObjectCommand, HeadObjectCommand, ListPartsCommand, UploadPartCommand } from "@aws-sdk/client-s3";
+import { AbortMultipartUploadCommand, CompleteMultipartUploadCommand, CreateMultipartUploadCommand, DeleteObjectCommand, DeleteObjectsCommand, HeadObjectCommand, ListPartsCommand, UploadPartCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { Config } from "../../config";
 import { FileData } from "../../upload/upload.types";
 import { s3Client } from "../../config/s3";
+import logger from "../../config/logger";
 class UploadRepository {
     
     bucketName: string = Config.aws.bucketName;
@@ -96,8 +97,36 @@ class UploadRepository {
         return response;
     }
 
+    async deleteMultipleObjects(keys: string[]) {
+        const objects = keys.map(key => ({ Key: key }))
+
+        logger.info(`Deleting multiple objects from bucket ${this.bucketName}:`, objects);
+
+        const command = new DeleteObjectsCommand({
+            Bucket: this.bucketName,
+            Delete: {
+                Objects: objects,
+                Quiet: false,
+            },
+        })
+       try {
+        const {Deleted, Errors} = await s3Client.send(command);
+
+       logger.info(`Deleted ${Deleted?.length || 0} objects successfully.`);
+
+       
+    if (Errors && Errors.length > 0) {
+      logger.error(`${Errors.length} errors occurred during deletion:`, Errors);
+    }
+  }     catch (err) {
+        logger.error("Critical error executing delete operation:", err);
+  }
+    }
+
    }
 
   
 
 export const uploadRepository = new UploadRepository();
+
+

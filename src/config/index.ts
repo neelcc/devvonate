@@ -24,6 +24,8 @@ export const Config = {
     JWKS_URI: required(process.env.JWKS_URI, "JWKS_URI"),
     DEFAULT_PART_SIZE: (required(process.env.DEFAULT_PART_SIZE, "DEFAULT_PART_SIZE")),
     FREE_TIER_BYTES: BigInt(required(process.env.FREE_TIER_BYTES, "FREE_TIER_BYTES")),
+    POLL_INTERVAL_MS: Number(required(process.env.POLL_INTERVAL_MS, "POLL_INTERVAL_MS")),
+    BATCH_SIZE: Number(required(process.env.BATCH_SIZE, "BATCH_SIZE")),
     aws : {
         accessKeyId: required(process.env.AWS_ACCESS_KEY_ID, "AWS_ACCESS_KEY_ID"),
         secretAccessKey: required(process.env.AWS_SECRET_ACCESS_KEY, "AWS_SECRET_ACCESS_KEY"),
@@ -31,5 +33,6 @@ export const Config = {
         bucketName: required(process.env.AWS_BUCKET_NAME, "AWS_BUCKET_NAME"),
         queueName: required(process.env.AWS_QUEUE_NAME, "AWS_QUEUE_NAME"),
         queueUrl: required(process.env.AWS_QUEUE_URL, "AWS_QUEUE_URL"),
-    }
+    },
+    
 }

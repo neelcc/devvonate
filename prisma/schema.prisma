@@ -20,7 +20,7 @@ enum Role {
 enum FileStatus {
   ACTIVE
   IN_PROGRESS
-  ARCHIVED
+  TRASHED
   DELETING
   DELETED
 }
@@ -177,4 +177,6 @@ model OutboxEvents {
   status        OUTBOX_EVENT_STATUS @default(PENDING)
   createdAt     DateTime            @default(now())
   processedAt   DateTime?
+
+  @@map("outboxEvents")
 }

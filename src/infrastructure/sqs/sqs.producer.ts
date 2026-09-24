@@ -1,6 +1,6 @@
 import { S3Client } from "@aws-sdk/client-s3";
 import { Config } from "../../config";
-import { DeleteFilePayload, SQSMessageEnvelope, SQSMessageType } from "./sqs.types";
+import { DeleteFilePayload, SQSMessageEnvelope } from "./sqs.types";
 import { sqsClient } from "../../config/sqs";
 import { SendMessageCommand } from "@aws-sdk/client-sqs";
 

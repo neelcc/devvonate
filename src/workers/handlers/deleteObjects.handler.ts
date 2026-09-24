@@ -3,14 +3,14 @@ import { DeleteFilePayload } from "../../infrastructure/sqs/sqs.types";
 
 
 export async function deleteTrashFile(payload: DeleteFilePayload) {
-  // your S3 DeleteObjects logic goes here
-  // if this throws, dispatch() will bubble the error up,
-  // and the consumer loop will skip deleteMessage() → message retries
 
   const response = await uploadRepository.deleteObject(payload.objectKey);
   console.log("DeleteTrashFile response:", response);
-  
 
 }
 
-export async function deleteAllTrashFile(payload: DeleteFilePayload[]) {}
+export async function deleteAllTrashFile(payload: DeleteFilePayload[]) {
+  const keys = payload.map(p => p.objectKey);
+  const response = await uploadRepository.deleteMultipleObjects(keys);
+  console.log("DeleteAllTrashFile response:", response);
+}

@@ -7,6 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "run": " cross-env NODE_ENV=development tsx watch src/server.ts",
     "dev": " cross-env NODE_ENV=development tsx watch src/server.ts",
+    "s3": "cross-env NODE_ENV=development tsx watch src/infrastructure/s3/s3.repository.ts",
+    "start:relay": "cross-env NODE_ENV=development tsx watch src/relay-entry.ts",
     "build": "tsc",
     "start": "node dist/index.js",
     "postinstall": "prisma skills sync || exit 0"

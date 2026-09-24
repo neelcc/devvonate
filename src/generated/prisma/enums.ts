@@ -20,7 +20,7 @@ export type Role = (typeof Role)[keyof typeof Role]
 export const FileStatus = {
   ACTIVE: 'ACTIVE',
   IN_PROGRESS: 'IN_PROGRESS',
-  ARCHIVED: 'ARCHIVED',
+  TRASHED: 'TRASHED',
   DELETING: 'DELETING',
   DELETED: 'DELETED'
 } as const
