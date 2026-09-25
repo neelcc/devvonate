@@ -1,17 +1,17 @@
-import { AbortMultipartUploadCommand, CompleteMultipartUploadCommand, CreateMultipartUploadCommand, DeleteObjectCommand, DeleteObjectsCommand, HeadObjectCommand, ListPartsCommand, UploadPartCommand } from "@aws-sdk/client-s3";
+import { AbortMultipartUploadCommand, CompleteMultipartUploadCommand, CreateMultipartUploadCommand, DeleteObjectCommand, DeleteObjectsCommand, GetObjectCommand, HeadObjectCommand, ListPartsCommand, UploadPartCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { Config } from "../../config";
 import { FileData } from "../../upload/upload.types";
 import { s3Client } from "../../config/s3";
 import logger from "../../config/logger";
-class UploadRepository {
+class S3Repository {
     
     bucketName: string = Config.aws.bucketName;
 
     constructor() {
     }
 
-   async uploadFile(fileData: FileData, key: string, partSize: bigint) {
+   async CreateMultipartUpload(fileData: FileData, key: string) {
         const command = new CreateMultipartUploadCommand({
             Bucket: this.bucketName,
             Key: key,
@@ -123,10 +123,23 @@ class UploadRepository {
   }
     }
 
+    async downloadFile(key: string) {
+        const command = new GetObjectCommand({
+            Bucket: this.bucketName,
+            Key: key,
+            ResponseContentDisposition: `attachment; filename="${key}"`,
+        });
+
+        const preSignedUrl = await getSignedUrl(s3Client, command, { expiresIn: 3600 });
+
+        console.log(`Presigned URL for downloading file ${key}: ${preSignedUrl}`);
+        return preSignedUrl;
+    }
+
    }
 
   
 
-export const uploadRepository = new UploadRepository();
+export const s3Repository = new S3Repository();
 
 

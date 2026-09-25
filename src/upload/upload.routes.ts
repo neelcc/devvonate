@@ -19,4 +19,4 @@ router.post('/:uploadId/parts/presign', authenticate, validateParams(uploadRoute
 router.post('/:uploadId/complete', authenticate, asyncWrapper(uploadController.completeMultipartUpload) )
 router.post('/:uploadId/abort', authenticate, validateParams(uploadRouteParamsSchema), asyncWrapper(uploadController.abortMultipartUpload) )
 router.post('/dummy', asyncWrapper(uploadController.dummyEndpoint) )
-export default router;  
+export default router;   

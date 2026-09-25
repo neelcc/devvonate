@@ -125,48 +125,48 @@ model UserStorage {
   @@map("userStorage")
 }
 
-model File {
-  id          String       @id @default(uuid())
-  folderId    String
-  userId      String
-  name        String
-  path        String // e.g. "  <rootId>/<child1Id>/<child2Id>/"
-  size        BigInt // in bytes
-  contentType String
-  category    FileCategory
-  deletedAt   DateTime?
-  s3KeyName   String       @unique
-  status      FileStatus   @default(ACTIVE)
-  user        User         @relation(fields: [userId], references: [id])
-  folder      Folder       @relation(fields: [folderId], references: [id])
+  model File {
+    id          String       @id @default(uuid())
+    folderId    String
+    userId      String
+    name        String
+    path        String // e.g. "  <rootId>/<child1Id>/<child2Id>/"
+    size        BigInt // in bytes
+    contentType String
+    category    FileCategory
+    deletedAt   DateTime?
+    s3KeyName   String       @unique
+    status      FileStatus   @default(ACTIVE)
+    user        User         @relation(fields: [userId], references: [id])
+    folder      Folder       @relation(fields: [folderId], references: [id])
 
-  FileUpload FileUpload[]
+    fileUpload  FileUpload?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 
-  @@index([userId, deletedAt])
-  @@index([path])
-  @@map("files")
-}
+    @@index([userId, deletedAt])
+    @@index([path])
+    @@map("files")
+  }
 
-model FileUpload {
-  id         String       @id @default(uuid())
-  fileId     String
-  s3UploadId String       @unique
-  file       File         @relation(fields: [fileId], references: [id], onDelete: Cascade)
-  userId     String
-  user       User         @relation(fields: [userId], references: [id])
-  totalParts Int          @default(0)
-  partsSize  BigInt       @default(0) // in bytes
-  status     UploadStatus @default(PENDING)
-  s3ETag     String?      @unique
-  expiresAt  DateTime?
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
+  model FileUpload {
+    id         String       @id @default(uuid())
+    fileId     String       @unique
+    s3UploadId String       @unique
+    file       File         @relation(fields: [fileId], references: [id], onDelete: Cascade)
+    userId     String
+    user       User         @relation(fields: [userId], references: [id])
+    totalParts Int          @default(0)
+    partsSize  BigInt       @default(0) // in bytes
+    status     UploadStatus @default(PENDING)
+    s3ETag     String?      @unique
+    expiresAt  DateTime?
+    createdAt  DateTime     @default(now())
+    updatedAt  DateTime     @updatedAt
 
-  @@map("fileUploads")
-}
+    @@map("fileUploads")
+  }
 
 model OutboxEvents {
   id            String              @id @default(uuid())

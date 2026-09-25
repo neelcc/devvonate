@@ -16,10 +16,10 @@ router.get('/:id/folders', authenticate , validateParams(getChildFoldersSchema) 
 router.get('/', authenticate, validateQuery(listRootFoldersSchema) , asyncWrapper(folderController.listRootFolders));
 router.patch('/rename/:id', authenticate , validateParams(renameFolderParamsSchema), validateBody(renameFolderSchema), 
 asyncWrapper(folderController.renameFolder));
-router.post('/dummy', asyncWrapper(folderController.dummyRoute));
 router.patch('/move/:id', authenticate , validateParams(moveFolderParamsSchema), validateBody(moveFolderSchema),
 asyncWrapper(folderController.moveFolder));
 router.delete('/:id', authenticate , validateParams(deleteFolderParamsSchema), asyncWrapper(folderController.deleteFolder));
 
+router.post('/dummy', asyncWrapper(folderController.dummyRoute));
 
 export default router;  

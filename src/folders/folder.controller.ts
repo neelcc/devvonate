@@ -22,7 +22,12 @@ export class FolderController {
 
         res.status(201).json({
             message: "Folder created successfully",
-            folder: folder
+            name: folder.name,
+            id: folder.id,
+            parentId: folder.parentFolderId,
+            userId: folder.userId,
+            createdAt: folder.createdAt,
+            updatedAt: folder.updatedAt
         })
     }
 
@@ -69,7 +74,9 @@ export class FolderController {
 
         res.status(200).json({
             message: "Folder renamed successfully",
-            folder: folder
+            name: folder.name,
+            id: folder.id,
+            parentId: folder.parentFolderId,
         })
     }
 
@@ -99,9 +106,13 @@ export class FolderController {
 
         res.status(200).json({
             message: "Folder moved successfully",
-            folder: folder
+            name: folder.name,
+            id: folder.id,
+            parentId: folder.parentFolderId,
+            updatedAt: folder.updatedAt
         })
     }
+   
 
     deleteFolder = async (req: Request, res: Response, next: NextFunction) => {
         const folderId = req.params.id;
@@ -117,8 +128,8 @@ export class FolderController {
 
         res.status(200).json({
             message: "Folder deleted successfully",
-            folder: folder
-    
+            name: folder.name,
+            id: folder.id,
         })
     }
 

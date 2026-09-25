@@ -140,6 +140,7 @@ export class AuthController {
             const user = await this.authServices.findById(req.auth.sub);
             res.status(201).send({
                 id: user?.id,
+                firstName: user?.firstName,
             });
         } catch (err) {
             console.log(err);

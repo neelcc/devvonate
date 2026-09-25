@@ -36,7 +36,7 @@ router.post("/refresh", validateRefreshtoken, (req, res, next) =>
     authcontroller.refresh(req as AuthRequest, res, next),
 );
 
-    router.post("/logout", authenticate, parseRefreshToken, (req, res, next) =>
+router.post("/logout", authenticate, parseRefreshToken, (req, res, next) =>
         authcontroller.logout(req as AuthRequest, res, next),
 );
 

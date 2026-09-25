@@ -29,7 +29,7 @@ export class UploadController {
         }
         
 
-        const response = await this.uploadServices.uploadFile({ fileName, size: BigInt(size), contentType }, folderId, userId)
+        const response = await this.uploadServices.CreateMultipartUpload({ fileName, size: BigInt(size), contentType }, folderId, userId)
 
         this.logger.info(`UploadController.uploadFile: File uploaded successfully for user ${userId} in folder ${folderId}`);
 

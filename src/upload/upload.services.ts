@@ -2,16 +2,14 @@ import createHttpError from "http-errors";
 import prisma from "../config/prisma";
 import { FileData } from "./upload.types";
 import { Config } from "../config";
-
 import { calculatePartSize, fileValidated, getFileCategory, isPartsValidated } from "../utils";
-import { bigint } from "zod";
-import { uploadRepository } from "../infrastructure/s3/s3.repository";
+import { s3Repository } from "../infrastructure/s3/s3repository";
 
 export class UploadServices {
     constructor() {
     }
 
-    async uploadFile(fileData: FileData, folderId: string, userId: string) {
+    async CreateMultipartUpload(fileData: FileData, folderId: string, userId: string) {
         // save metadata and status pending to database and also check if the folder exists and belongs to the user and folder should not root folder 
 
         console.log(`UploadServices.uploadFile: Received upload request for user ${userId} in folder ${folderId} with fileName: ${fileData.fileName}, size: ${fileData.size}, contentType: ${fileData.contentType}`);
@@ -133,7 +131,7 @@ export class UploadServices {
             };
         })
 
-        const response = await uploadRepository.uploadFile(fileData, s3KeyName, partSize);
+        const response = await s3Repository.CreateMultipartUpload(fileData, s3KeyName);
 
         if (!response || !response.UploadId) {
             const error = createHttpError(500, "Failed to initiate multipart upload");
@@ -192,7 +190,7 @@ export class UploadServices {
             throw error;
         }
 
-        const preSignedUrl = await uploadRepository.generatePresignedUrl(uploadId, key, partNumber);
+        const preSignedUrl = await s3Repository.generatePresignedUrl(uploadId, key, partNumber);
 
         return preSignedUrl;
     }
@@ -226,7 +224,7 @@ export class UploadServices {
             throw error;
         }
 
-        const s3PartList = await uploadRepository.listParts(key, uploadId);
+        const s3PartList = await s3Repository.listParts(key, uploadId);
 
         if (!s3PartList || !s3PartList.Parts || s3PartList.Parts.length === 0) {
             const error = createHttpError(400, "No parts found in S3 for the given uploadId and key");
@@ -241,9 +239,9 @@ export class UploadServices {
             throw error;
         }
 
-        const completeMultipartUploadResponse = await uploadRepository.completeMultipartUpload(uploadId, key, parts);
+        const completeMultipartUploadResponse = await s3Repository.completeMultipartUpload(uploadId, key, parts);
 
-        const headObjectResponse = await uploadRepository.headObject(key);
+        const headObjectResponse = await s3Repository.headObject(key);
 
         const contentLength = headObjectResponse.ContentLength;
         const contentType = headObjectResponse.ContentType;
@@ -345,7 +343,7 @@ export class UploadServices {
             throw error;
         }
 
-        const response = await uploadRepository.abortMultipartUpload(uploadId, key);
+        const response = await s3Repository.abortMultipartUpload(uploadId, key);
 
         await prisma.$transaction(async (tx) => {
 
@@ -378,7 +376,7 @@ export class UploadServices {
         const key = "34c2789e-37e0-4fa1-8347-dcd849b80a26/a09a893a-2ac5-493d-8d5c-67de6d9e9bf8/FirsT__1789973812978";
         const uploadId = "Ah5CDO5d4Ca7jtk4dj8EWbOjTeGKd30XUQGsbU2Ww0sfdUzjwWvR5sbdcuGsXW1qfB4n3OwW_WqWofr_CXhK.aXkdE.hXCdEGmhdzNaT5zGCzgJFqaWeJlspNG8QsouL";
 
-        const response = await uploadRepository.listParts(key, uploadId);
+        const response = await s3Repository.listParts(key, uploadId);
 
         return {
             message: "Dummy endpoint reached successfully",
