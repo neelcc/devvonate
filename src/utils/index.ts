@@ -50,6 +50,12 @@ export function fileValidated(contentLength: number, contentType: string, fileSi
     return true;
 } 
 
+export function sortPartsByPartNumber(parts: { ETag: string; PartNumber: number }[]): { ETag: string; PartNumber: number }[] {
+  const sortedParts = [...parts].sort(
+  (a, b) => a.PartNumber - b.PartNumber,
+);
+return sortedParts;
+}
 
 export function isPartsValidated(
   parts: { ETag: string; PartNumber: number }[],

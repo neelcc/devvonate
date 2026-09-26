@@ -40,4 +40,8 @@ router.post("/logout", authenticate, parseRefreshToken, (req, res, next) =>
         authcontroller.logout(req as AuthRequest, res, next),
 );
 
+router.get("/storage", authenticate, (req, res, next) =>
+    authcontroller.getStorage(req as AuthRequest, res, next),
+);
+
 export default router;

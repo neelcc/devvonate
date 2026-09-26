@@ -81,6 +81,7 @@ export class FolderController {
     }
 
     moveFolder = async (req: Request<MoveFolderParams>, res: Response, next: NextFunction) => {
+        console.log("req.body i called", req.body);
         const folderId = req.params.id;
         const newParentId = req.body.newParentId;
         const userId = (req as AuthRequest).auth.sub;

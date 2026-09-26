@@ -2,7 +2,7 @@ import createHttpError from "http-errors";
 import prisma from "../config/prisma";
 import { FileData } from "./upload.types";
 import { Config } from "../config";
-import { calculatePartSize, fileValidated, getFileCategory, isPartsValidated } from "../utils";
+import { calculatePartSize, fileValidated, getFileCategory, isPartsValidated, sortPartsByPartNumber } from "../utils";
 import { s3Repository } from "../infrastructure/s3/s3repository";
 
 export class UploadServices {
@@ -165,7 +165,7 @@ export class UploadServices {
     }
 
 
-    async generatePresignedUrl(uploadId: string, key: string, partNumber: number, userId: string) {
+    async generatePresignedUrl(uploadId: string, key: string, PartNumber: number, userId: string) {
 
         const fileUpload = await prisma.fileUpload.findFirst({
             where: {
@@ -190,7 +190,7 @@ export class UploadServices {
             throw error;
         }
 
-        const preSignedUrl = await s3Repository.generatePresignedUrl(uploadId, key, partNumber);
+        const preSignedUrl = await s3Repository.generatePresignedUrl(uploadId, key, PartNumber);
 
         return preSignedUrl;
     }
@@ -230,19 +230,26 @@ export class UploadServices {
             const error = createHttpError(400, "No parts found in S3 for the given uploadId and key");
             throw error;
         }
+        const sortedParts = sortPartsByPartNumber(parts);
         console.log(`S3 Parts List for uploadId ${uploadId} and key ${key}:`, s3PartList.Parts);
         console.log(`Received parts for completion:`, parts);
-        const isPartsValid = isPartsValidated(parts, s3PartList.Parts);
+        const isPartsValid = isPartsValidated(sortedParts, s3PartList.Parts);
         console.log(`Parts validation result for uploadId ${uploadId} and key ${key}:`, isPartsValid);
         if (!isPartsValid) {
             const error = createHttpError(400, "Parts validation failed. The provided parts do not match the parts in S3.");
             throw error;
         }
-
-        const completeMultipartUploadResponse = await s3Repository.completeMultipartUpload(uploadId, key, parts);
+        console.log(`parts: `, sortedParts);
+        
+        const completeMultipartUploadResponse = await s3Repository.completeMultipartUpload(uploadId, key, sortedParts);
+        console.log("----------------------------------------------");
+        console.log(`CompleteMultipartUploadResponse for uploadId ${uploadId} and key ${key}:`, completeMultipartUploadResponse);
+        console.log("----------------------------------------------");
 
         const headObjectResponse = await s3Repository.headObject(key);
-
+        console.log("******************************");
+        console.log(`HeadObjectResponse for key ${key}:`, headObjectResponse);
+        console.log("******************************");
         const contentLength = headObjectResponse.ContentLength;
         const contentType = headObjectResponse.ContentType;
 
@@ -251,33 +258,39 @@ export class UploadServices {
             throw error;
         }
 
+        console.log(`FileUpload : ${fileUpload}`);
+        console.log(`HeadObjectResponse : ${headObjectResponse}`);
+
+
         const isFileValidated = fileValidated(contentLength, contentType, fileUpload.file.size, fileUpload.file.contentType);
 
         let updatedFile = null;
 
         if (fileUpload.file && isFileValidated) {
-            console.log(`File metadata matches for file ${fileUpload.file.id}. Updating status to ACTIVE.`);
-
-            await prisma.$transaction(async (tx) => {
-                updatedFile = await prisma.file.update({
+            updatedFile = await prisma.$transaction(async (tx) => {
+                const file = await tx.file.update({
                     where: {
-                        id: fileUpload.file.id
+                        id: fileUpload.file.id,
                     },
                     data: {
                         createdAt: new Date(),
                         updatedAt: new Date(),
-                        status: 'ACTIVE',
+                        status: "ACTIVE",
                         FileUpload: {
                             update: {
                                 where: {
-                                    id: fileUpload.id
+                                    id: fileUpload.id,
                                 },
                                 data: {
-                                    status: 'COMPLETED',
-                                    ...(completeMultipartUploadResponse.ETag !== undefined ? { s3ETag: completeMultipartUploadResponse.ETag } : {}),
-                                }
-                            }
-                        }
+                                    status: "COMPLETED",
+                                    ...(completeMultipartUploadResponse.ETag
+                                        ? {
+                                            s3ETag: completeMultipartUploadResponse.ETag,
+                                        }
+                                        : {}),
+                                },
+                            },
+                        },
                     },
                     select: {
                         id: true,
@@ -289,12 +302,12 @@ export class UploadServices {
                         path: true,
                         createdAt: true,
                         updatedAt: true,
-                    }
-                })
+                    },
+                });
 
                 await tx.userStorage.update({
                     where: {
-                        userId: userId,
+                        userId,
                     },
                     data: {
                         reservedBytes: {
@@ -302,19 +315,23 @@ export class UploadServices {
                         },
                         usedBytes: {
                             increment: fileUpload.file.size,
-                        }
-                    }
-                })
+                        },
+                    },
+                });
 
-            })
-
-
+                return file;
+            });
         }
 
         return {
             completeResponse: completeMultipartUploadResponse,
-            headObjectResponse: headObjectResponse,
+            headObjectResponse,
             updatedFile: updatedFile
+                ? {
+                    ...updatedFile,
+                    size: updatedFile.size.toString(),
+                }
+                : null,
         };
     }
 

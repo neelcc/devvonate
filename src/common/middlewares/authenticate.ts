@@ -11,7 +11,9 @@
         }) as GetVerificationKey,
         algorithms: ["RS256"],
         getToken: (req) => {
-
+            console.log("req.cookiessssssssssssssssssssssss");
+            
+           
             if (
                 req.headers.authorization &&
                 req.headers.authorization.split(" ")[1]

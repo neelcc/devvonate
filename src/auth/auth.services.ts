@@ -78,6 +78,21 @@ export class AuthServices {
         return user;
     }
 
+    async getUserStorage(userId: string) {
+        const userStorage = await prisma.userStorage.findUnique({
+            where: { userId },
+            select: {
+                totalBytes: true,
+                usedBytes: true,
+            },
+        });
+        return {
+            ...userStorage,
+            total : userStorage?.totalBytes.toString(),
+            used : userStorage?.usedBytes.toString(),
+        };
+    }
+
     async comparePassword(userPassword: string, passwordHash: string) {
         return await bcrypt.compare(userPassword, passwordHash);
     }

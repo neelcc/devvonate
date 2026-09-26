@@ -137,6 +137,7 @@ export class AuthController {
 
     async self(req: AuthRequest, res: Response, next: NextFunction) {
         try {
+            console.log("Request auth : ", req.auth)
             const user = await this.authServices.findById(req.auth.sub);
             res.status(201).send({
                 id: user?.id,
@@ -205,6 +206,8 @@ export class AuthController {
 
     async logout(req: AuthRequest, res: Response, next: NextFunction) {
         try {
+            console.log("Request auth : ", req.auth)
+             this.logger.info("User is logging out", { id: req.auth.sub });
             await this.authServices.deleteRefreshToken(Number(req.auth.id));
 
             this.logger.info("User has been logout", { id: req.auth.sub });
@@ -213,6 +216,37 @@ export class AuthController {
             res.clearCookie("refreshToken");
 
             res.json({});
+        } catch (error) 
+        {
+            console.log("Error while logging out",error);
+            this.logger.error("Error occurred while logging out", { error });
+            next(error);
+            return;
+        }
+    }
+
+    async getStorage(req: AuthRequest, res: Response, next: NextFunction) {
+        try {
+            console.log("Request auth : ", req.auth)
+            console.log("STorage request for user : ", req.auth.sub)
+            const user = await this.authServices.findById(req.auth.sub);
+            const storage = await this.authServices.getUserStorage(req.auth.sub);
+            console.log("Storage fetched for user : ", storage)
+            console.log("User fetched for storage : ", user)
+            if (!user) {
+                const error = createHttpError(
+                    400,
+                    "User with the token could not find",
+                );
+                next(error);
+                return;
+            }
+
+            res.status(200).json({
+                message: "User storage fetched successfully",
+                usedBytes: storage.used,
+                totalBytes: storage.total,
+            });
         } catch (error) {
             next(error);
             return;

@@ -45,7 +45,7 @@ class S3Repository {
             }
         })
         const completeMultipartUploadResponse = await s3Client.send(command);
-
+        console.log("Multipart upload completed:", completeMultipartUploadResponse);
         return completeMultipartUploadResponse;
         
     }

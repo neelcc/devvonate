@@ -13,7 +13,7 @@ export class UploadController {
     uploadFile = async (req: Request, res: Response, next: NextFunction) => {
         const userId = req.auth.sub;
         const { fileName, size, contentType, folderId } = req.body;
-
+        
         if(!folderId) {
             const error = createHttpError(400, "Missing required field");
             this.logger.error(`UploadController.uploadFile: ${error.message}`);
@@ -44,28 +44,29 @@ export class UploadController {
     generatePresignedUrl = async (req: Request<UploadRouteParams>, res: Response, next: NextFunction) => {
         const userId = req.auth.sub;
         const uploadId = req.params.uploadId;
-        const {  key, partNumber } = req.body;
+        const {  key, PartNumber } = req.body;
 
-        if (!uploadId || !key || !partNumber) {
-            const error = createHttpError(400, "Missing required fields: uploadId, key, partNumber");
+        this.logger.info(`UploadController.generatePresignedUrl: Generating presigned URL for user ${userId}, uploadId ${uploadId}, key ${key}, PartNumber ${PartNumber}`);
+
+        if (!uploadId || !key || !PartNumber) {
+            const error = createHttpError(400, "Missing required fields: uploadId, key, PartNumber");
             this.logger.error(`UploadController.generatePresignedUrl: ${error.message}`);
             return next(error);
         }
 
-        const preSignedUrl = await this.uploadServices.generatePresignedUrl(uploadId, key, partNumber, userId);
+        const preSignedUrl = await this.uploadServices.generatePresignedUrl(uploadId, key, PartNumber, userId);
         res.status(200).json({
             message: "Presigned URL generated successfully",
-            data: {
-                presignedUrl: preSignedUrl
-            }
+            url : preSignedUrl
         });
     }
 
-    completeMultipartUpload = async (req: Request, res: Response, next: NextFunction) => {
+    completeMultipartUpload = async (req: Request<UploadRouteParams>, res: Response, next: NextFunction) => {
 
         const userId = req.auth.sub;
-        const { uploadId, key, parts } = req.body;
-
+        const uploadId = req.params.uploadId;
+        const {  key, parts } = req.body;
+        this.logger.info(`UploadController.completeMultipartUpload: Completing multipart upload for user ${userId}, uploadId ${uploadId}, key ${key}, parts ${JSON.stringify(parts)}`);
         if (!uploadId || !key || !parts || !Array.isArray(parts)) {
             const error = createHttpError(400, "Missing required fields: uploadId, key, parts");
             this.logger.error(`UploadController.completeMultipartUpload: ${error.message}`);
