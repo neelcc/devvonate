@@ -1,10 +1,9 @@
 import { FileCategory } from "../../generated/prisma/browser";
 
 export const Roles = {
-    User: "user",
-    Admin: "admin",
+  User: "user",
+  Admin: "admin",
 } as const;
-
 
 export const MIME_TYPE_CATEGORIES = {
   [FileCategory.DOCUMENT]: new Set([

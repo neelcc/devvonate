@@ -1,12 +1,9 @@
 // workers/outbox-relay.worker.ts
-
 import { Config } from "../config";
 import logger from "../config/logger";
 import prisma from "../config/prisma";
 import { OUTBOX_EVENT_STATUS } from "../generated/prisma/enums";
 import { sqsProducer } from "../infrastructure/sqs/sqs.producer";
-
-
 
 async function publishPendingEvents() {
   const pendingEvents = await prisma.outboxEvents.findMany({
@@ -30,7 +27,7 @@ async function publishPendingEvents() {
           messageId: event.id,
           associatedId: event.aggregateId,
           triggeredAt: new Date().toISOString(),
-        }
+        },
       });
 
       await prisma.outboxEvents.update({

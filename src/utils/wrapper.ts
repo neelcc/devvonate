@@ -7,9 +7,9 @@ export const asyncWrapper = <
   ResBody = any,
   ReqBody = any,
   ReqQuery = ParsedQs,
-  Locals extends Record<string, any> = Record<string, any>
+  Locals extends Record<string, any> = Record<string, any>,
 >(
-  requestHandler: RequestHandler<P, ResBody, ReqBody, ReqQuery, Locals>
+  requestHandler: RequestHandler<P, ResBody, ReqBody, ReqQuery, Locals>,
 ): RequestHandler<P, ResBody, ReqBody, ReqQuery, Locals> => {
   return (req, res, next) => {
     Promise.resolve(requestHandler(req, res, next)).catch(next);

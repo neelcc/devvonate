@@ -4,34 +4,33 @@ import { Config } from "../config";
 import type { FileCategory } from "../generated/prisma/browser";
 
 export const decodeCursor = (cursor: string) => {
-    return JSON.parse(Buffer.from(cursor, 'base64url').toString('utf-8'));
-}
+  return JSON.parse(Buffer.from(cursor, "base64url").toString("utf-8"));
+};
 
-export const encodeCursor = (id: string | undefined, createdAt: Date | undefined ) => {
-    return Buffer.from(JSON.stringify({
-        id,
-        createdAt: createdAt?.toISOString(),    
-    })).toString('base64url');
-}
+export const encodeCursor = (
+  id: string | undefined,
+  createdAt: Date | undefined,
+) => {
+  return Buffer.from(
+    JSON.stringify({
+      id,
+      createdAt: createdAt?.toISOString(),
+    }),
+  ).toString("base64url");
+};
 
 export const calculatePartSize = (fileSize: bigint) => {
-    const defaultPartSize = BigInt(Config.DEFAULT_PART_SIZE);
-    const calculatedPartSize = BigInt(fileSize) / 10n;
-    const partSize =
-            defaultPartSize > calculatedPartSize
-                ? defaultPartSize
-                : calculatedPartSize;
-    return partSize;
-}
+  const defaultPartSize = BigInt(Config.DEFAULT_PART_SIZE);
+  const calculatedPartSize = BigInt(fileSize) / 10n;
+  const partSize =
+    defaultPartSize > calculatedPartSize ? defaultPartSize : calculatedPartSize;
+  return partSize;
+};
 
-export function getFileCategory(
-  mimeType: string
-): FileCategory | null {
+export function getFileCategory(mimeType: string): FileCategory | null {
   const normalizedMimeType = mimeType.toLowerCase().trim();
 
-  for (const [category, mimeTypes] of Object.entries(
-    MIME_TYPE_CATEGORIES
-  )) {
+  for (const [category, mimeTypes] of Object.entries(MIME_TYPE_CATEGORIES)) {
     if (mimeTypes.has(normalizedMimeType)) {
       return category as FileCategory;
     }
@@ -40,21 +39,26 @@ export function getFileCategory(
   return null;
 }
 
-export function fileValidated(contentLength: number, contentType: string, fileSize: bigint, fileContentType: string): boolean {
-    if (BigInt(contentLength) !== fileSize) {
-        return false;
-    }
-    if (contentType !== fileContentType) {
-        return false;
-    }
-    return true;
-} 
+export function fileValidated(
+  contentLength: number,
+  contentType: string,
+  fileSize: bigint,
+  fileContentType: string,
+): boolean {
+  if (BigInt(contentLength) !== fileSize) {
+    return false;
+  }
+  if (contentType !== fileContentType) {
+    return false;
+  }
+  return true;
+}
 
-export function sortPartsByPartNumber(parts: { ETag: string; PartNumber: number }[]): { ETag: string; PartNumber: number }[] {
-  const sortedParts = [...parts].sort(
-  (a, b) => a.PartNumber - b.PartNumber,
-);
-return sortedParts;
+export function sortPartsByPartNumber(
+  parts: { ETag: string; PartNumber: number }[],
+): { ETag: string; PartNumber: number }[] {
+  const sortedParts = [...parts].sort((a, b) => a.PartNumber - b.PartNumber);
+  return sortedParts;
 }
 
 export function isPartsValidated(
@@ -74,11 +78,8 @@ export function isPartsValidated(
       return false;
     }
     const s3ETag = s3Part.ETag?.replace(/^"|"$/g, "");
-    
-    if (
-      part.ETag !== s3ETag ||
-      part.PartNumber !== s3Part.PartNumber
-    ) {
+
+    if (part.ETag !== s3ETag || part.PartNumber !== s3Part.PartNumber) {
       return false;
     }
   }

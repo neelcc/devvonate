@@ -6,41 +6,40 @@ import z from "zod";
 
 export type CreateFolderData = z.infer<typeof createFolderSchema>;
 
-
 export interface Folder {
   id?: string;
   name: string;
   parentId: string | null;
   userId: string;
   createdAt?: Date;
-  updatedAt?: Date;  
+  updatedAt?: Date;
 }
 
 export interface CreateFolderRequest extends Request {
-  body : {
+  body: {
     name: string;
     parentId?: string;
-  }
+  };
 }
 
 export interface RenameFolderRequest extends Request {
-    params: {
-        id: string;
-    };
-    body: {
-        name: string;
-    };
+  params: {
+    id: string;
+  };
+  body: {
+    name: string;
+  };
 }
 
 export interface GetFolderParams extends ParamsDictionary {
-    id: string;
+  id: string;
 }
 
 export interface MoveFolderParams extends ParamsDictionary {
-    id: string;
+  id: string;
 }
 
 export interface GetAllFoldersQuery {
-    cursor?: string;
-    pageSize?: number;
+  cursor?: string;
+  pageSize?: number;
 }

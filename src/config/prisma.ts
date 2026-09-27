@@ -1,11 +1,11 @@
-import { PrismaPg } from '@prisma/adapter-pg';
-import { Config } from '.';
-import { PrismaClient } from '../generated/prisma/client';
+import { PrismaPg } from "@prisma/adapter-pg";
+import { Config } from ".";
+import { PrismaClient } from "../generated/prisma/client";
 
 const connectionString = Config.DATABASE_URL;
 
 const globalForPrisma = globalThis as typeof globalThis & {
-    prisma?: PrismaClient;
+  prisma?: PrismaClient;
 };
 
 if (!globalForPrisma.prisma) {
@@ -13,7 +13,7 @@ if (!globalForPrisma.prisma) {
 
   globalForPrisma.prisma = new PrismaClient({
     adapter,
-    log: ['error', 'warn'],
+    log: ["error", "warn"],
   });
 }
 

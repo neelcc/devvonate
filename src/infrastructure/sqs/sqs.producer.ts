@@ -5,46 +5,25 @@ import { sqsClient } from "../../config/sqs";
 import { SendMessageCommand } from "@aws-sdk/client-sqs";
 
 class SQSProducer {
+  s3BucketName: string = Config.aws.bucketName;
+  queueName: string = Config.aws.queueName;
 
-    s3BucketName: string = Config.aws.bucketName;
-    queueName: string = Config.aws.queueName;
+  constructor() {}
 
-    constructor() {}
+  async sendMessage(message: SQSMessageEnvelope) {
+    console.log("Sending message to SQS:", message);
+    const command = new SendMessageCommand({
+      MessageBody: JSON.stringify(message),
+      QueueUrl: Config.aws.queueUrl,
+      DelaySeconds: 5,
+    });
 
+    const response = await sqsClient.send(command);
 
-    async sendMessage(message: SQSMessageEnvelope) {
+    console.log("Message sent to SQS:", response);
 
-        console.log("Sending message to SQS:", message);
-        const command = new SendMessageCommand({
-            MessageBody: JSON.stringify(message),
-            QueueUrl: Config.aws.queueUrl,
-            DelaySeconds: 5,
-        })
-
-        const response = await sqsClient.send(command)
-
-        console.log("Message sent to SQS:", response);
-
-        return response;
-    }   
-
-    // async deleteS3Object(deleteFilePayload: DeleteFilePayload) {
-    //     return this.sendMessage(
-    //         {
-    //             type: SQSMessageType.FILE_DELETION,
-    //             payload: {
-    //                 bucketName: this.s3BucketName,
-    //                 objectKey: deleteFilePayload.objectKey
-    //             },
-    //         metadata: {
-    //             messageId: deleteFilePayload.messageId,
-    //             userId: deleteFilePayload.userId,
-    //             triggeredAt: new Date().toISOString(),
-    //         }
-    //         }, 
-    //     )
-    // }
-
+    return response;
+  }
 }
 
 export const sqsProducer = new SQSProducer();

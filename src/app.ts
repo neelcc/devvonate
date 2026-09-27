@@ -1,8 +1,8 @@
 import express from "express";
-import  AuthRoutes  from "./auth/auth.routes";
-import  FoldersRoutes  from "./folders/folder.routes";
-import  UploadRoutes  from "./upload/upload.routes";
-import FilesRoutes from "./files/file.routes"
+import AuthRoutes from "./auth/auth.routes";
+import FoldersRoutes from "./folders/folder.routes";
+import UploadRoutes from "./upload/upload.routes";
+import FilesRoutes from "./files/file.routes";
 import { globalErrorHandler } from "./common/middlewares/globalErrorHandler";
 import cookieParser from "cookie-parser";
 import path from "path";
@@ -10,21 +10,21 @@ import cors from "cors";
 
 export const app = express();
 app.use(express.json());
-app.use(cors(
-    {
-        origin: "http://localhost:5173",
-        credentials: true,
-    }
-))
 app.use(
-    "/.well-known",
-    express.static(path.join(__dirname, "../public/.well-known")),
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  }),
+);
+app.use(
+  "/.well-known",
+  express.static(path.join(__dirname, "../public/.well-known")),
 );
 app.use(cookieParser());
-app.use('/api/v1/users', AuthRoutes )
-app.use('/api/v1/folders', FoldersRoutes )
-app.use('/api/v1/uploads', UploadRoutes )
-app.use('/api/v1/files', FilesRoutes);
+app.use("/api/v1/users", AuthRoutes);
+app.use("/api/v1/folders", FoldersRoutes);
+app.use("/api/v1/uploads", UploadRoutes);
+app.use("/api/v1/files", FilesRoutes);
 
 // const __filename = fileURLToPath(import.meta.url);
 // const __dirname = path.dirname(__filename);
@@ -35,7 +35,5 @@ app.use('/api/v1/files', FilesRoutes);
 // );
 app.use(globalErrorHandler);
 app.get("/", (req, res) => {
-    res.send("Welcome to the Admin Service API");
+  res.send("Welcome to the Admin Service API");
 });
-
-

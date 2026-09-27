@@ -1,22 +1,132 @@
-import { ListPartsCommand } from "@aws-sdk/client-s3";
-import { Config } from "../../config";
-import { s3Client } from "../../config/s3";
+// import { ListPartsCommand } from "@aws-sdk/client-s3";
+// import { Config } from "../../config";
+// import { s3Client } from "../../config/s3";
 
-console.log("Deleting multiple objects from bucket learning-s3-bucket-neel:");
+// console.log("Deleting multiple objects from bucket learning-s3-bucket-neel:");
 
-async function  listParts(key: string, uploadId: string) {
-        const params = {
-            Bucket: Config.aws.bucketName,
-            Key: key,
-            UploadId: uploadId,
-            MaxParts: 1000,
+// async function listParts(key: string, uploadId: string) {
+//   const params = {
+//     Bucket: Config.aws.bucketName,
+//     Key: key,
+//     UploadId: uploadId,
+//     MaxParts: 1000,
+//   };
+
+//   const command = new ListPartsCommand(params);
+//   const response = await s3Client.send(command);
+//   console.log("ListParts response:", response);
+//   return response;
+// }
+
+// const key = "a09a893a-2ac5-493d-8d5c-67de6d9e9bf8/Neel FIrstsssss__1790425599196";
+// const uploadId =  "jjdEnQxPmXTHCs9hn8omvVwEayUbvfrg4GCrO9Cunuq8YNyB4tsERxZ5vGGfaTP_yF.CkEXB7jk_nBTYQwpivoPopMKmhkWedp9Uist47EEKiKxv_cUibRUZkq223MZR"
+
+// const listPartsResult =  listParts(key, uploadId).then((result) => {
+//   console.log("ListParts result:", result);
+// }).catch((error) => {
+//   console.error("Error listing parts:", error);
+// });
+
+
+
+// scripts/abort-stuck-uploads.ts
+import {
+  S3Client,
+  AbortMultipartUploadCommand,
+} from '@aws-sdk/client-s3';
+import { s3Client } from '../../config/s3';
+import prisma from '../../config/prisma';
+import { FileStatus, UploadStatus } from '../../generated/prisma/browser';
+import { Config } from '../../config';
+
+
+const BUCKET_NAME = Config.aws.bucketName; // Replace with your S3 bucket name
+
+interface StuckFile {
+  id: string;
+  s3KeyName: string;
+  fileUpload: {
+    id: string;
+    s3UploadId: string;
+  } | null;
+}
+
+async function main() {
+  const stuckFiles: StuckFile[] = await prisma.file.findMany({
+    where: {
+      status: FileStatus.IN_PROGRESS,
+      fileUpload: {
+        status: UploadStatus.PENDING,
+      },
+    },
+    select: {
+      id: true,
+      s3KeyName: true,
+      fileUpload: {
+        select: {
+          id: true,
+          s3UploadId: true,
+        },
+      },
+    },
+  });
+
+  console.log(`Found ${stuckFiles.length} stuck file(s) to clean up.`);
+
+  const succeeded: string[] = [];
+  const failed: { fileId: string; error: string }[] = [];
+
+  for (const file of stuckFiles) {
+    if (!file.fileUpload) continue; // safety guard, shouldn't happen given the filter
+
+    try {
+      // 1. Abort the multipart upload on S3
+      await s3Client.send(
+        new AbortMultipartUploadCommand({
+          Bucket: BUCKET_NAME,
+          Key: file.s3KeyName,
+          UploadId: file.fileUpload.s3UploadId,
+        }),
+      );
+
+      // 2. Delete the File row (cascades to FileUpload via onDelete: Cascade)
+      await prisma.file.delete({
+        where: { id: file.id },
+      });
+
+      succeeded.push(file.id);
+      console.log(`Aborted + deleted file ${file.id}`);
+    } catch (err: any) {
+      // NoSuchUpload just means S3 already expired/cleared it — treat as OK to delete
+      if (err?.name === 'NoSuchUpload') {
+        try {
+          await prisma.file.delete({ where: { id: file.id } });
+          succeeded.push(file.id);
+          console.log(`Upload already gone on S3, deleted DB record for ${file.id}`);
+          continue;``
+        } catch (deleteErr: any) {
+          failed.push({ fileId: file.id, error: deleteErr.message });
+          continue;
         }
+      }
 
-        const command = new ListPartsCommand(params);
-        const response = await s3Client.send(command);
-        console.log("ListParts response:", response);
-        return response;
+      failed.push({ fileId: file.id, error: err.message ?? String(err) });
+      console.error(`Failed on file ${file.id}:`, err.message ?? err);
     }
+  }
 
+  console.log('\n--- Summary ---');
+  console.log(`Succeeded: ${succeeded.length}`);
+  console.log(`Failed: ${failed.length}`);
+  if (failed.length) {
+    console.table(failed);
+  }
+}
 
-    listParts("a09a893a-2ac5-493d-8d5c-67de6d9e9bf8/FirsT__1790317384442", "YyC_RC5lNwQuesCY8XFnCNDBbFIxcVeI4SaJ88APE1lhnGvBj87X5drxiaxwmxRpp2rvrvN.cEqCuz.Vm_ij_RVSjmXSF57vrhh4Xw7qH12K85ol99KVcH3w5zdvv4PN")
+main()
+  .catch((e) => {
+    console.error('Fatal error:', e);
+    process.exit(1);
+  })
+  .finally(async () => {
+  });
