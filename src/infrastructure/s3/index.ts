@@ -1,31 +1,3 @@
-// import { ListPartsCommand } from "@aws-sdk/client-s3";
-// import { Config } from "../../config";
-// import { s3Client } from "../../config/s3";
-
-// console.log("Deleting multiple objects from bucket learning-s3-bucket-neel:");
-
-// async function listParts(key: string, uploadId: string) {
-//   const params = {
-//     Bucket: Config.aws.bucketName,
-//     Key: key,
-//     UploadId: uploadId,
-//     MaxParts: 1000,
-//   };
-
-//   const command = new ListPartsCommand(params);
-//   const response = await s3Client.send(command);
-//   console.log("ListParts response:", response);
-//   return response;
-// }
-
-// const key = "a09a893a-2ac5-493d-8d5c-67de6d9e9bf8/Neel FIrstsssss__1790425599196";
-// const uploadId =  "jjdEnQxPmXTHCs9hn8omvVwEayUbvfrg4GCrO9Cunuq8YNyB4tsERxZ5vGGfaTP_yF.CkEXB7jk_nBTYQwpivoPopMKmhkWedp9Uist47EEKiKxv_cUibRUZkq223MZR"
-
-// const listPartsResult =  listParts(key, uploadId).then((result) => {
-//   console.log("ListParts result:", result);
-// }).catch((error) => {
-//   console.error("Error listing parts:", error);
-// });
 
 
 
