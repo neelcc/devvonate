@@ -98,7 +98,6 @@ model Folder {
   userId         String
   parentFolderId String?
   name           String
-  path           String // e.g. "  <rootId>/<child1Id>/<child2Id>/"
   deletedAt      DateTime?
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
@@ -110,7 +109,7 @@ model Folder {
 
   @@unique([parentFolderId, name, userId], name: "uniq_name_in_parent")
   @@index([userId, deletedAt])
-  @@index([path])
+  @@index([parentFolderId, deletedAt])
   @@map("folders")
 }
 
@@ -133,7 +132,6 @@ model UserStorage {
     folderId    String
     userId      String
     name        String
-    path        String // e.g. "  <rootId>/<child1Id>/<child2Id>/"
     size        BigInt // in bytes
     contentType String
     category    FileCategory
@@ -149,7 +147,7 @@ model UserStorage {
     updatedAt DateTime @updatedAt
 
     @@index([userId, deletedAt])
-    @@index([path])
+    @@index([folderId, deletedAt])
     @@map("files")
   }
 

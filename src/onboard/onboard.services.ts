@@ -25,18 +25,12 @@ class OnboardServices {
         data: {
           userId: userId,
           name: rootName,
-          path: "",
           parentFolderId: null,
         },
         select: {
           id: true,
-        },
-      });
-
-      await prismaTx.folder.update({
-        where: { id: folder.id },
-        data: {
-          path: folder.id,
+          name: true,
+          parentFolderId: true,
         },
       });
 

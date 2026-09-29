@@ -29,7 +29,6 @@ export type FolderMinAggregateOutputType = {
   userId: string | null
   parentFolderId: string | null
   name: string | null
-  path: string | null
   deletedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -40,7 +39,6 @@ export type FolderMaxAggregateOutputType = {
   userId: string | null
   parentFolderId: string | null
   name: string | null
-  path: string | null
   deletedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -51,7 +49,6 @@ export type FolderCountAggregateOutputType = {
   userId: number
   parentFolderId: number
   name: number
-  path: number
   deletedAt: number
   createdAt: number
   updatedAt: number
@@ -64,7 +61,6 @@ export type FolderMinAggregateInputType = {
   userId?: true
   parentFolderId?: true
   name?: true
-  path?: true
   deletedAt?: true
   createdAt?: true
   updatedAt?: true
@@ -75,7 +71,6 @@ export type FolderMaxAggregateInputType = {
   userId?: true
   parentFolderId?: true
   name?: true
-  path?: true
   deletedAt?: true
   createdAt?: true
   updatedAt?: true
@@ -86,7 +81,6 @@ export type FolderCountAggregateInputType = {
   userId?: true
   parentFolderId?: true
   name?: true
-  path?: true
   deletedAt?: true
   createdAt?: true
   updatedAt?: true
@@ -170,7 +164,6 @@ export type FolderGroupByOutputType = {
   userId: string
   parentFolderId: string | null
   name: string
-  path: string
   deletedAt: Date | null
   createdAt: Date
   updatedAt: Date
@@ -202,7 +195,6 @@ export type FolderWhereInput = {
   userId?: Prisma.StringFilter<"Folder"> | string
   parentFolderId?: Prisma.StringNullableFilter<"Folder"> | string | null
   name?: Prisma.StringFilter<"Folder"> | string
-  path?: Prisma.StringFilter<"Folder"> | string
   deletedAt?: Prisma.DateTimeNullableFilter<"Folder"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Folder"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Folder"> | Date | string
@@ -217,7 +209,6 @@ export type FolderOrderByWithRelationInput = {
   userId?: Prisma.SortOrder
   parentFolderId?: Prisma.SortOrderInput | Prisma.SortOrder
   name?: Prisma.SortOrder
-  path?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -236,7 +227,6 @@ export type FolderWhereUniqueInput = Prisma.AtLeast<{
   userId?: Prisma.StringFilter<"Folder"> | string
   parentFolderId?: Prisma.StringNullableFilter<"Folder"> | string | null
   name?: Prisma.StringFilter<"Folder"> | string
-  path?: Prisma.StringFilter<"Folder"> | string
   deletedAt?: Prisma.DateTimeNullableFilter<"Folder"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Folder"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Folder"> | Date | string
@@ -251,7 +241,6 @@ export type FolderOrderByWithAggregationInput = {
   userId?: Prisma.SortOrder
   parentFolderId?: Prisma.SortOrderInput | Prisma.SortOrder
   name?: Prisma.SortOrder
-  path?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -268,7 +257,6 @@ export type FolderScalarWhereWithAggregatesInput = {
   userId?: Prisma.StringWithAggregatesFilter<"Folder"> | string
   parentFolderId?: Prisma.StringNullableWithAggregatesFilter<"Folder"> | string | null
   name?: Prisma.StringWithAggregatesFilter<"Folder"> | string
-  path?: Prisma.StringWithAggregatesFilter<"Folder"> | string
   deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Folder"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Folder"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Folder"> | Date | string
@@ -277,7 +265,6 @@ export type FolderScalarWhereWithAggregatesInput = {
 export type FolderCreateInput = {
   id?: string
   name: string
-  path: string
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -292,7 +279,6 @@ export type FolderUncheckedCreateInput = {
   userId: string
   parentFolderId?: string | null
   name: string
-  path: string
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -303,7 +289,6 @@ export type FolderUncheckedCreateInput = {
 export type FolderUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -318,7 +303,6 @@ export type FolderUncheckedUpdateInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   parentFolderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -331,7 +315,6 @@ export type FolderCreateManyInput = {
   userId: string
   parentFolderId?: string | null
   name: string
-  path: string
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -340,7 +323,6 @@ export type FolderCreateManyInput = {
 export type FolderUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -351,7 +333,6 @@ export type FolderUncheckedUpdateManyInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   parentFolderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -383,7 +364,6 @@ export type FolderCountOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   parentFolderId?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  path?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -394,7 +374,6 @@ export type FolderMaxOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   parentFolderId?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  path?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -405,7 +384,6 @@ export type FolderMinOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   parentFolderId?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  path?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -537,7 +515,6 @@ export type FolderUpdateOneRequiredWithoutFilesNestedInput = {
 export type FolderCreateWithoutUserInput = {
   id?: string
   name: string
-  path: string
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -550,7 +527,6 @@ export type FolderUncheckedCreateWithoutUserInput = {
   id?: string
   parentFolderId?: string | null
   name: string
-  path: string
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -592,7 +568,6 @@ export type FolderScalarWhereInput = {
   userId?: Prisma.StringFilter<"Folder"> | string
   parentFolderId?: Prisma.StringNullableFilter<"Folder"> | string | null
   name?: Prisma.StringFilter<"Folder"> | string
-  path?: Prisma.StringFilter<"Folder"> | string
   deletedAt?: Prisma.DateTimeNullableFilter<"Folder"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Folder"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Folder"> | Date | string
@@ -601,7 +576,6 @@ export type FolderScalarWhereInput = {
 export type FolderCreateWithoutChildrenInput = {
   id?: string
   name: string
-  path: string
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -615,7 +589,6 @@ export type FolderUncheckedCreateWithoutChildrenInput = {
   userId: string
   parentFolderId?: string | null
   name: string
-  path: string
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -630,7 +603,6 @@ export type FolderCreateOrConnectWithoutChildrenInput = {
 export type FolderCreateWithoutParentInput = {
   id?: string
   name: string
-  path: string
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -643,7 +615,6 @@ export type FolderUncheckedCreateWithoutParentInput = {
   id?: string
   userId: string
   name: string
-  path: string
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -675,7 +646,6 @@ export type FolderUpdateToOneWithWhereWithoutChildrenInput = {
 export type FolderUpdateWithoutChildrenInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -689,7 +659,6 @@ export type FolderUncheckedUpdateWithoutChildrenInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   parentFolderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -715,7 +684,6 @@ export type FolderUpdateManyWithWhereWithoutParentInput = {
 export type FolderCreateWithoutFilesInput = {
   id?: string
   name: string
-  path: string
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -729,7 +697,6 @@ export type FolderUncheckedCreateWithoutFilesInput = {
   userId: string
   parentFolderId?: string | null
   name: string
-  path: string
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -755,7 +722,6 @@ export type FolderUpdateToOneWithWhereWithoutFilesInput = {
 export type FolderUpdateWithoutFilesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -769,7 +735,6 @@ export type FolderUncheckedUpdateWithoutFilesInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   parentFolderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -780,7 +745,6 @@ export type FolderCreateManyUserInput = {
   id?: string
   parentFolderId?: string | null
   name: string
-  path: string
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -789,7 +753,6 @@ export type FolderCreateManyUserInput = {
 export type FolderUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -802,7 +765,6 @@ export type FolderUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   parentFolderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -814,7 +776,6 @@ export type FolderUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   parentFolderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -824,7 +785,6 @@ export type FolderCreateManyParentInput = {
   id?: string
   userId: string
   name: string
-  path: string
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -833,7 +793,6 @@ export type FolderCreateManyParentInput = {
 export type FolderUpdateWithoutParentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -846,7 +805,6 @@ export type FolderUncheckedUpdateWithoutParentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -858,7 +816,6 @@ export type FolderUncheckedUpdateManyWithoutParentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -909,7 +866,6 @@ export type FolderSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   userId?: boolean
   parentFolderId?: boolean
   name?: boolean
-  path?: boolean
   deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -925,7 +881,6 @@ export type FolderSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   userId?: boolean
   parentFolderId?: boolean
   name?: boolean
-  path?: boolean
   deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -938,7 +893,6 @@ export type FolderSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   userId?: boolean
   parentFolderId?: boolean
   name?: boolean
-  path?: boolean
   deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -951,13 +905,12 @@ export type FolderSelectScalar = {
   userId?: boolean
   parentFolderId?: boolean
   name?: boolean
-  path?: boolean
   deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type FolderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "parentFolderId" | "name" | "path" | "deletedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["folder"]>
+export type FolderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "parentFolderId" | "name" | "deletedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["folder"]>
 export type FolderInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   parent?: boolean | Prisma.Folder$parentArgs<ExtArgs>
@@ -987,7 +940,6 @@ export type $FolderPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     userId: string
     parentFolderId: string | null
     name: string
-    path: string
     deletedAt: Date | null
     createdAt: Date
     updatedAt: Date
@@ -1422,7 +1374,6 @@ export interface FolderFieldRefs {
   readonly userId: Prisma.FieldRef<"Folder", 'String'>
   readonly parentFolderId: Prisma.FieldRef<"Folder", 'String'>
   readonly name: Prisma.FieldRef<"Folder", 'String'>
-  readonly path: Prisma.FieldRef<"Folder", 'String'>
   readonly deletedAt: Prisma.FieldRef<"Folder", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Folder", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Folder", 'DateTime'>

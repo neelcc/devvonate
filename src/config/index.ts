@@ -46,4 +46,7 @@ export const Config = {
     queueName: required(process.env.AWS_QUEUE_NAME, "AWS_QUEUE_NAME"),
     queueUrl: required(process.env.AWS_QUEUE_URL, "AWS_QUEUE_URL"),
   },
+  REDIS_URL: required(process.env.REDIS_URL, "REDIS_URL"),
+  MAX_PART_RETRIES: Number(required(process.env.MAX_PART_RETRIES, "MAX_PART_RETRIES")),
+  FAILURE_TTL: Number(required(process.env.FAILURE_TTL, "FAILURE_TTL")),
 };

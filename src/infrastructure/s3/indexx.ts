@@ -18,8 +18,8 @@ async function listParts(key: string, uploadId: string) {
   return response;
 }
 
-const key="758c7533-47de-4f6f-9751-45e1ea1b481b/First son 1__1790599963762";
-const uploadId="7Aj2Nbxla5jVYZhlGlIbs6Umgk1pl5cTjBqSWyPdiLOWJiXJ_DJaw61nPsNgxn0pUJKZ97jBHa4Oc9PADpBzZ0nvXRSY9zqshB16uCGjbqGpIbHFf3GVXLWJrvbOKcy4"
+const key="758c7533-47de-4f6f-9751-45e1ea1b481b/First son 1__1790658659839";
+const uploadId="tJns3pFPngCamkgdDl5AWF3ZmZEoBosusQcK0NKf4eMpMZ9lGXGbsh3mNj.h4f6O.88GH6BL6LPWjcG7S1RbqTWRLQa3TCi5ruYqo1N.AZHHOAEREUL8B.ShOx8WLzl2"
 
 const listPartsResult =  listParts(key, uploadId).then((result) => {
   console.log("ListParts result:", result);

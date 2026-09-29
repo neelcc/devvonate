@@ -42,7 +42,6 @@ export class FolderServices {
           name: data.name,
           parentFolderId: parentFolder?.id ?? user?.rootFolderId ?? null,
           userId,
-          path: "",
         },
         select: {
           id: true,
@@ -51,22 +50,8 @@ export class FolderServices {
         },
       });
 
-      console.log("New Folder Created:", newFolder);
 
-      const path = parentFolder
-        ? `${parentFolder.path}/${newFolder.id}`
-        : `${newFolder.parentFolderId}/${newFolder.id}`;
-
-      console.log("Computed Path:", path);
-
-      return tx.folder.update({
-        where: {
-          id: newFolder.id,
-        },
-        data: {
-          path,
-        },
-      });
+      return newFolder;
     });
   }
 
@@ -213,7 +198,6 @@ export class FolderServices {
       },
       select: {
         id: true,
-        path: true,
         parentFolderId: true,
       },
     });
@@ -245,7 +229,6 @@ export class FolderServices {
       },
       select: {
         id: true,
-        path: true,
         updatedAt: true,
       },
     });
@@ -262,32 +245,17 @@ export class FolderServices {
 
     console.log("New Parent Folder:", newParentFolder);
 
-    const isDescendant = newParentFolder.path.includes(folderId);
-
-    console.log("Is Descendant:", isDescendant);
-
-    if (isDescendant) {
-      const error = createHttpError(
-        409,
-        "Cannot move folder to its descendant",
-      );
-      throw error;
-    }
-
-    const newPath = `${newParentFolder.path}/${folder.id}`;
 
     return await prisma.folder.update({
       where: { id: folderId },
       data: {
         parentFolderId: newParentId,
-        path: newPath,
         updatedAt: new Date(),
       },
       select: {
         id: true,
         name: true,
         parentFolderId: true,
-        path: true,
         updatedAt: true,
       },
     });

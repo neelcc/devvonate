@@ -39,7 +39,6 @@ export type FileMinAggregateOutputType = {
   folderId: string | null
   userId: string | null
   name: string | null
-  path: string | null
   size: bigint | null
   contentType: string | null
   category: $Enums.FileCategory | null
@@ -55,7 +54,6 @@ export type FileMaxAggregateOutputType = {
   folderId: string | null
   userId: string | null
   name: string | null
-  path: string | null
   size: bigint | null
   contentType: string | null
   category: $Enums.FileCategory | null
@@ -71,7 +69,6 @@ export type FileCountAggregateOutputType = {
   folderId: number
   userId: number
   name: number
-  path: number
   size: number
   contentType: number
   category: number
@@ -97,7 +94,6 @@ export type FileMinAggregateInputType = {
   folderId?: true
   userId?: true
   name?: true
-  path?: true
   size?: true
   contentType?: true
   category?: true
@@ -113,7 +109,6 @@ export type FileMaxAggregateInputType = {
   folderId?: true
   userId?: true
   name?: true
-  path?: true
   size?: true
   contentType?: true
   category?: true
@@ -129,7 +124,6 @@ export type FileCountAggregateInputType = {
   folderId?: true
   userId?: true
   name?: true
-  path?: true
   size?: true
   contentType?: true
   category?: true
@@ -232,7 +226,6 @@ export type FileGroupByOutputType = {
   folderId: string
   userId: string
   name: string
-  path: string
   size: bigint
   contentType: string
   category: $Enums.FileCategory
@@ -271,7 +264,6 @@ export type FileWhereInput = {
   folderId?: Prisma.StringFilter<"File"> | string
   userId?: Prisma.StringFilter<"File"> | string
   name?: Prisma.StringFilter<"File"> | string
-  path?: Prisma.StringFilter<"File"> | string
   size?: Prisma.BigIntFilter<"File"> | bigint | number
   contentType?: Prisma.StringFilter<"File"> | string
   category?: Prisma.EnumFileCategoryFilter<"File"> | $Enums.FileCategory
@@ -290,7 +282,6 @@ export type FileOrderByWithRelationInput = {
   folderId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  path?: Prisma.SortOrder
   size?: Prisma.SortOrder
   contentType?: Prisma.SortOrder
   category?: Prisma.SortOrder
@@ -313,7 +304,6 @@ export type FileWhereUniqueInput = Prisma.AtLeast<{
   folderId?: Prisma.StringFilter<"File"> | string
   userId?: Prisma.StringFilter<"File"> | string
   name?: Prisma.StringFilter<"File"> | string
-  path?: Prisma.StringFilter<"File"> | string
   size?: Prisma.BigIntFilter<"File"> | bigint | number
   contentType?: Prisma.StringFilter<"File"> | string
   category?: Prisma.EnumFileCategoryFilter<"File"> | $Enums.FileCategory
@@ -331,7 +321,6 @@ export type FileOrderByWithAggregationInput = {
   folderId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  path?: Prisma.SortOrder
   size?: Prisma.SortOrder
   contentType?: Prisma.SortOrder
   category?: Prisma.SortOrder
@@ -355,7 +344,6 @@ export type FileScalarWhereWithAggregatesInput = {
   folderId?: Prisma.StringWithAggregatesFilter<"File"> | string
   userId?: Prisma.StringWithAggregatesFilter<"File"> | string
   name?: Prisma.StringWithAggregatesFilter<"File"> | string
-  path?: Prisma.StringWithAggregatesFilter<"File"> | string
   size?: Prisma.BigIntWithAggregatesFilter<"File"> | bigint | number
   contentType?: Prisma.StringWithAggregatesFilter<"File"> | string
   category?: Prisma.EnumFileCategoryWithAggregatesFilter<"File"> | $Enums.FileCategory
@@ -369,7 +357,6 @@ export type FileScalarWhereWithAggregatesInput = {
 export type FileCreateInput = {
   id?: string
   name: string
-  path: string
   size: bigint | number
   contentType: string
   category: $Enums.FileCategory
@@ -388,7 +375,6 @@ export type FileUncheckedCreateInput = {
   folderId: string
   userId: string
   name: string
-  path: string
   size: bigint | number
   contentType: string
   category: $Enums.FileCategory
@@ -403,7 +389,6 @@ export type FileUncheckedCreateInput = {
 export type FileUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   size?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   contentType?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
@@ -422,7 +407,6 @@ export type FileUncheckedUpdateInput = {
   folderId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   size?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   contentType?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
@@ -439,7 +423,6 @@ export type FileCreateManyInput = {
   folderId: string
   userId: string
   name: string
-  path: string
   size: bigint | number
   contentType: string
   category: $Enums.FileCategory
@@ -453,7 +436,6 @@ export type FileCreateManyInput = {
 export type FileUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   size?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   contentType?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
@@ -469,7 +451,6 @@ export type FileUncheckedUpdateManyInput = {
   folderId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   size?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   contentType?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
@@ -495,7 +476,6 @@ export type FileCountOrderByAggregateInput = {
   folderId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  path?: Prisma.SortOrder
   size?: Prisma.SortOrder
   contentType?: Prisma.SortOrder
   category?: Prisma.SortOrder
@@ -515,7 +495,6 @@ export type FileMaxOrderByAggregateInput = {
   folderId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  path?: Prisma.SortOrder
   size?: Prisma.SortOrder
   contentType?: Prisma.SortOrder
   category?: Prisma.SortOrder
@@ -531,7 +510,6 @@ export type FileMinOrderByAggregateInput = {
   folderId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  path?: Prisma.SortOrder
   size?: Prisma.SortOrder
   contentType?: Prisma.SortOrder
   category?: Prisma.SortOrder
@@ -660,7 +638,6 @@ export type FileUpdateOneRequiredWithoutFileUploadNestedInput = {
 export type FileCreateWithoutUserInput = {
   id?: string
   name: string
-  path: string
   size: bigint | number
   contentType: string
   category: $Enums.FileCategory
@@ -677,7 +654,6 @@ export type FileUncheckedCreateWithoutUserInput = {
   id?: string
   folderId: string
   name: string
-  path: string
   size: bigint | number
   contentType: string
   category: $Enums.FileCategory
@@ -723,7 +699,6 @@ export type FileScalarWhereInput = {
   folderId?: Prisma.StringFilter<"File"> | string
   userId?: Prisma.StringFilter<"File"> | string
   name?: Prisma.StringFilter<"File"> | string
-  path?: Prisma.StringFilter<"File"> | string
   size?: Prisma.BigIntFilter<"File"> | bigint | number
   contentType?: Prisma.StringFilter<"File"> | string
   category?: Prisma.EnumFileCategoryFilter<"File"> | $Enums.FileCategory
@@ -737,7 +712,6 @@ export type FileScalarWhereInput = {
 export type FileCreateWithoutFolderInput = {
   id?: string
   name: string
-  path: string
   size: bigint | number
   contentType: string
   category: $Enums.FileCategory
@@ -754,7 +728,6 @@ export type FileUncheckedCreateWithoutFolderInput = {
   id?: string
   userId: string
   name: string
-  path: string
   size: bigint | number
   contentType: string
   category: $Enums.FileCategory
@@ -795,7 +768,6 @@ export type FileUpdateManyWithWhereWithoutFolderInput = {
 export type FileCreateWithoutFileUploadInput = {
   id?: string
   name: string
-  path: string
   size: bigint | number
   contentType: string
   category: $Enums.FileCategory
@@ -813,7 +785,6 @@ export type FileUncheckedCreateWithoutFileUploadInput = {
   folderId: string
   userId: string
   name: string
-  path: string
   size: bigint | number
   contentType: string
   category: $Enums.FileCategory
@@ -843,7 +814,6 @@ export type FileUpdateToOneWithWhereWithoutFileUploadInput = {
 export type FileUpdateWithoutFileUploadInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   size?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   contentType?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
@@ -861,7 +831,6 @@ export type FileUncheckedUpdateWithoutFileUploadInput = {
   folderId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   size?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   contentType?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
@@ -876,7 +845,6 @@ export type FileCreateManyUserInput = {
   id?: string
   folderId: string
   name: string
-  path: string
   size: bigint | number
   contentType: string
   category: $Enums.FileCategory
@@ -890,7 +858,6 @@ export type FileCreateManyUserInput = {
 export type FileUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   size?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   contentType?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
@@ -907,7 +874,6 @@ export type FileUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   folderId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   size?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   contentType?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
@@ -923,7 +889,6 @@ export type FileUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   folderId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   size?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   contentType?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
@@ -938,7 +903,6 @@ export type FileCreateManyFolderInput = {
   id?: string
   userId: string
   name: string
-  path: string
   size: bigint | number
   contentType: string
   category: $Enums.FileCategory
@@ -952,7 +916,6 @@ export type FileCreateManyFolderInput = {
 export type FileUpdateWithoutFolderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   size?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   contentType?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
@@ -969,7 +932,6 @@ export type FileUncheckedUpdateWithoutFolderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   size?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   contentType?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
@@ -985,7 +947,6 @@ export type FileUncheckedUpdateManyWithoutFolderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  path?: Prisma.StringFieldUpdateOperationsInput | string
   size?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   contentType?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
@@ -1003,7 +964,6 @@ export type FileSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   folderId?: boolean
   userId?: boolean
   name?: boolean
-  path?: boolean
   size?: boolean
   contentType?: boolean
   category?: boolean
@@ -1022,7 +982,6 @@ export type FileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   folderId?: boolean
   userId?: boolean
   name?: boolean
-  path?: boolean
   size?: boolean
   contentType?: boolean
   category?: boolean
@@ -1040,7 +999,6 @@ export type FileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   folderId?: boolean
   userId?: boolean
   name?: boolean
-  path?: boolean
   size?: boolean
   contentType?: boolean
   category?: boolean
@@ -1058,7 +1016,6 @@ export type FileSelectScalar = {
   folderId?: boolean
   userId?: boolean
   name?: boolean
-  path?: boolean
   size?: boolean
   contentType?: boolean
   category?: boolean
@@ -1069,7 +1026,7 @@ export type FileSelectScalar = {
   updatedAt?: boolean
 }
 
-export type FileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "folderId" | "userId" | "name" | "path" | "size" | "contentType" | "category" | "deletedAt" | "s3KeyName" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["file"]>
+export type FileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "folderId" | "userId" | "name" | "size" | "contentType" | "category" | "deletedAt" | "s3KeyName" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["file"]>
 export type FileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   folder?: boolean | Prisma.FolderDefaultArgs<ExtArgs>
@@ -1096,7 +1053,6 @@ export type $FilePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     folderId: string
     userId: string
     name: string
-    path: string
     size: bigint
     contentType: string
     category: $Enums.FileCategory
@@ -1535,7 +1491,6 @@ export interface FileFieldRefs {
   readonly folderId: Prisma.FieldRef<"File", 'String'>
   readonly userId: Prisma.FieldRef<"File", 'String'>
   readonly name: Prisma.FieldRef<"File", 'String'>
-  readonly path: Prisma.FieldRef<"File", 'String'>
   readonly size: Prisma.FieldRef<"File", 'BigInt'>
   readonly contentType: Prisma.FieldRef<"File", 'String'>
   readonly category: Prisma.FieldRef<"File", 'FileCategory'>

@@ -1,0 +1,42 @@
+  services:
+    postgres:
+      image: postgres:latest
+      container_name: drive-pg
+      restart: unless-stopped
+      environment:
+        POSTGRES_USER: neel
+        POSTGRES_PASSWORD: neeldrive
+        POSTGRES_DB: drive-db-pg
+      ports:
+      - "5432:5432"
+      volumes:
+      - postgres_data:/var/lib/postgresql
+
+    redis:
+      image: redis:7-alpine
+      container_name: drive-redis
+      restart: unless-stopped
+      ports:
+      - "6379:6379"
+      volumes:
+      - redis_data:/data
+      command: redis-server --appendonly yes
+
+    redis-insight:
+     image: redis/redisinsight:latest
+     container_name: drive-redis-insight
+     restart: unless-stopped
+     ports:
+      - "5540:5540"
+     volumes:
+      - redis_insight_data:/data
+     depends_on:
+      - redis
+
+  volumes:
+   postgres_data:
+     external: true
+
+   redis_data:
+
+   redis_insight_data:

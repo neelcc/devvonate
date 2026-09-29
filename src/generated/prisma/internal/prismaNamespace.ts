@@ -1011,7 +1011,6 @@ export const FolderScalarFieldEnum = {
   userId: 'userId',
   parentFolderId: 'parentFolderId',
   name: 'name',
-  path: 'path',
   deletedAt: 'deletedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -1039,7 +1038,6 @@ export const FileScalarFieldEnum = {
   folderId: 'folderId',
   userId: 'userId',
   name: 'name',
-  path: 'path',
   size: 'size',
   contentType: 'contentType',
   category: 'category',
