@@ -22,7 +22,7 @@ import {
 } from "./folders.validator";
 
 const router = express.Router();
-const folderServices = new FolderServices();
+const folderServices = new FolderServices(logger);
 const folderController = new FolderController(folderServices, logger);
 
 router.post(
@@ -32,17 +32,12 @@ router.post(
   asyncWrapper(folderController.createFolder),
 );
 router.get(
-  "/:id/folders",
+  "/:id",
   authenticate,
   validateParams(getChildFoldersSchema),
   asyncWrapper(folderController.getChildFolders),
 );
-router.get(
-  "/",
-  authenticate,
-  validateQuery(listRootFoldersSchema),
-  asyncWrapper(folderController.listRootFolders),
-);
+
 router.patch(
   "/rename/:id",
   authenticate,

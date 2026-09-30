@@ -107,7 +107,7 @@ export class UploadServices {
           id: true,
           name: true,
           size: true,
-          contentType: true,
+          category: true,
           status: true,
           s3KeyName: true,
           createdAt: true,
@@ -172,7 +172,6 @@ export class UploadServices {
 
     return {
       ...file,
-      size: fileData.size.toString(),
       totalSize: fileData.size.toString(),
       uploadId: response.UploadId,
     };
@@ -499,7 +498,7 @@ export class UploadServices {
 
   const attempt = await incrementPartFailCount({ uploadId, partNumber });
 
-  if (attempt >= Config.MAX_PART_RETRIES) {
+  if (attempt > Config.MAX_PART_RETRIES) {
     await this.abortMultipartUpload(uploadId, fileUpload.file.s3KeyName, userId);
     return {
       action: "ABORT",

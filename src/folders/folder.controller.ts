@@ -55,26 +55,7 @@ export class FolderController {
     });
   };
 
-  listRootFolders = async (
-    req: Request<GetAllFoldersQuery>,
-    res: Response,
-    next: NextFunction,
-  ) => {
-    const userId = req.auth.sub;
-    const { cursor, pageSize } = listRootFoldersSchema.parse(req.query);
-
-    const folders = await this.folderServices.listRootFolders(
-      userId,
-      cursor,
-      pageSize,
-    );
-
-    res.status(200).json({
-      message: "Folders retrieved successfully",
-      folders: folders,
-    });
-  };
-
+ 
   renameFolder = async (
     req: RenameFolderRequest,
     res: Response,

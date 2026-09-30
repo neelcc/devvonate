@@ -20,7 +20,7 @@ export class UploadController {
       next(error);
       return;
     }
-
+    
     if (!fileName || !size || !contentType) {
       const error = createHttpError(
         400,

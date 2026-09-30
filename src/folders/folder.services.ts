@@ -2,9 +2,10 @@ import createHttpError from "http-errors";
 import prisma from "../config/prisma";
 import { CreateFolderData, Folder } from "./folder.types";
 import { decodeCursor, encodeCursor } from "../utils";
+import { Logger } from "winston";
 
 export class FolderServices {
-  constructor() {}
+  constructor(private readonly logger: Logger) {}
 
   async createFolder(data: CreateFolderData, userId: string) {
     return prisma.$transaction(async (tx) => {
@@ -24,8 +25,6 @@ export class FolderServices {
         }
       }
 
-      console.log("Parent Folder:", parentFolder);
-
       const user = await tx.user.findUnique({
         where: {
           id: userId,
@@ -34,8 +33,6 @@ export class FolderServices {
           rootFolderId: true,
         },
       });
-
-      console.log("User Root Folder ID:", user?.rootFolderId);
 
       const newFolder = await tx.folder.create({
         data: {
@@ -47,9 +44,17 @@ export class FolderServices {
           id: true,
           name: true,
           parentFolderId: true,
+          userId: true,
+          createdAt: true,
+          updatedAt: true,
+          deletedAt: true,
         },
       });
+      
 
+      this.logger.info(
+        `FolderServices.createFolder: Folder created successfully for user ${userId} with name ${data.name}`,
+      );
 
       return newFolder;
     });
@@ -108,87 +113,20 @@ export class FolderServices {
       },
     });
     const hasNextPage = folders.length > pageSize;
+    const resultFolders = hasNextPage ? folders.slice(0, pageSize) : folders;
 
     return {
-      data: folders,
+      data: resultFolders,
       nextCursor: hasNextPage
         ? encodeCursor(
-            folders[folders.length - 1]?.id,
-            folders[folders.length - 1]?.createdAt,
+            resultFolders[resultFolders.length - 1]?.id,
+            resultFolders[resultFolders .length - 1]?.createdAt,
           )
         : null,
     };
   }
 
-  async listRootFolders(
-    userId: string,
-    cursor?: string,
-    pageSize: number = 10,
-  ) {
-    const decodedCursor = cursor ? decodeCursor(cursor) : null;
-
-    const user = await prisma.user.findUnique({
-      where: {
-        id: userId,
-      },
-      select: {
-        rootFolderId: true,
-      },
-    });
-
-    if (!user || !user.rootFolderId) {
-      const error = createHttpError(404, "User or root folder not found");
-      throw error;
-    }
-
-    const folders = await prisma.folder.findMany({
-      take: pageSize + 1,
-
-      orderBy: [
-        {
-          createdAt: "asc",
-        },
-        {
-          id: "asc",
-        },
-      ],
-      where: {
-        userId,
-        parentFolderId: user.rootFolderId,
-        deletedAt: null,
-        ...(decodedCursor && {
-          OR: [
-            {
-              createdAt: {
-                gt: new Date(decodedCursor.createdAt),
-              },
-            },
-            {
-              createdAt: new Date(decodedCursor.createdAt),
-              id: {
-                gt: decodedCursor.id,
-              },
-            },
-          ],
-        }),
-      },
-    });
-
-    const hasNextPage = folders.length > pageSize;
-    const items = hasNextPage ? folders.slice(0, -1) : folders;
-    const nextCursor = hasNextPage
-      ? encodeCursor(
-          items[items.length - 1]?.id,
-          items[items.length - 1]?.createdAt,
-        )
-      : null;
-
-    return {
-      data: items,
-      nextCursor: nextCursor,
-    };
-  }
-
+ 
   async moveFolder(folderId: string, newParentId: string, userId: string) {
     const folder = await prisma.folder.findFirst({
       where: {
