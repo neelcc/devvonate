@@ -70,6 +70,11 @@ export type File = Prisma.FileModel
  */
 export type FileUpload = Prisma.FileUploadModel
 /**
+ * Model Blobs
+ * 
+ */
+export type Blobs = Prisma.BlobsModel
+/**
  * Model OutboxEvents
  * 
  */

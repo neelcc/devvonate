@@ -7,6 +7,7 @@ import {
   GetObjectCommand,
   HeadObjectCommand,
   ListPartsCommand,
+  PutObjectCommand,
   UploadPartCommand,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
@@ -26,8 +27,21 @@ class S3Repository {
       ContentType: fileData.contentType,
     });
     const response = await s3Client.send(command);
-    console.log("Multipart upload initiated:", response.UploadId);
+
     return response;
+  }
+
+  async SinglePutUpload(fileData: FileData, key: string){
+    const command = new PutObjectCommand({
+      Bucket: this.bucketName,
+      Key: key,
+      ContentType: fileData.contentType,
+    });
+    const url = await getSignedUrl(s3Client, command, {
+      expiresIn: Config.aws.presignedUrlExpiration, 
+    });
+    
+    return url;
   }
 
   async generatePresignedUrl(
@@ -42,7 +56,7 @@ class S3Repository {
       PartNumber: partNumber,
     });
     const preSignedUrl = await getSignedUrl(s3Client, command, {
-      expiresIn: 3600,
+      expiresIn: Config.aws.presignedUrlExpiration,
     });
 
     return preSignedUrl;

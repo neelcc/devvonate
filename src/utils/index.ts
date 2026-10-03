@@ -24,6 +24,7 @@ export const calculatePartSize = (fileSize: bigint) => {
   const calculatedPartSize = BigInt(fileSize) / 10n;
   const partSize =
     defaultPartSize > calculatedPartSize ? defaultPartSize : calculatedPartSize;
+  
   return partSize;
 };
 
@@ -85,4 +86,30 @@ export function isPartsValidated(
   }
 
   return true;
+}
+
+export function getAvailableBytes(availableStorage: {
+  totalBytes: bigint;
+  usedBytes: bigint;
+  trashBytes: bigint;
+  reservedBytes: bigint;
+}): bigint {
+  return (
+    availableStorage.totalBytes -
+    availableStorage.usedBytes -
+    availableStorage.trashBytes -
+    availableStorage.reservedBytes
+  );
+}
+
+export function getPartsInfo(
+  fileSize: bigint,
+  userId: string,
+  folderId: string,
+  fileName: string,
+): { partSize: bigint;  totalParts: number } {
+  const partSize = calculatePartSize(fileSize);
+  const totalParts = Math.ceil(Number(fileSize) / Number(partSize));
+
+  return { partSize,  totalParts };
 }

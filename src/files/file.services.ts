@@ -243,7 +243,11 @@ export class FileService {
         id: true,
         name: true,
         size: true,
-        s3KeyName: true,
+        blob: {
+          select: {
+            s3KeyName: true,
+          }
+        }
       },
     });
 
@@ -253,6 +257,53 @@ export class FileService {
         "File not found or It is not in the trash",
       );
       throw error;
+    }
+
+    const s3KeyName = file.blob?.s3KeyName;
+
+    if (!s3KeyName) {
+      const error = createHttpError(
+        404,
+        "S3 key name not found for the file",
+      );
+      throw error;
+    }
+
+    const blob = await prisma.blobs.findFirst({
+      where: {
+        fileId: file.id,
+      },
+      select: {
+        id: true,
+        refCount: true,
+      }
+    })
+
+    if(!blob) {
+      const error = createHttpError(
+        404,
+        "Blob not found for the file",
+      );
+      throw error;
+    }
+
+    if(blob.refCount > 1) {
+      await prisma.blobs.update({
+        where: {
+          id: blob.id,
+        },
+        data: {
+          refCount: {
+            decrement: 1,
+          }
+        }
+      })
+      return {
+        id: file.id,
+        name: file.name,
+        size: file.size.toString(),
+        message: "File reference count decremented, not deleted from S3",
+      }
     }
 
     const deletedFile = await prisma.$transaction(async (tx) => {
@@ -285,7 +336,7 @@ export class FileService {
           aggregateType: "FILE",
           aggregateId: file.id,
           payload: {
-            objectKey: file.s3KeyName,
+            objectKey: s3KeyName,
           },
         },
       });
@@ -293,8 +344,11 @@ export class FileService {
       return {
         ...deletedFile,
         size: deletedFile.size.toString(),
+        message: "File deleted successfully and S3 deletion event queued",
       };
     });
+
+
 
     return deletedFile;
   };

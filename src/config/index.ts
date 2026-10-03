@@ -45,6 +45,18 @@ export const Config = {
     bucketName: required(process.env.AWS_BUCKET_NAME, "AWS_BUCKET_NAME"),
     queueName: required(process.env.AWS_QUEUE_NAME, "AWS_QUEUE_NAME"),
     queueUrl: required(process.env.AWS_QUEUE_URL, "AWS_QUEUE_URL"),
+    presignedUrlExpiration: Number(
+      required(
+        process.env.AWS_PRESIGNED_URL_EXPIRATION,
+        "AWS_PRESIGNED_URL_EXPIRATION",
+      ),
+    ),
+    maxFileSizeForSingleUpload: Number(
+      required(
+        process.env.AWS_MAX_FILE_SIZE_FOR_SINGLE_UPLOAD,
+        "AWS_MAX_FILE_SIZE_FOR_SINGLE_UPLOAD",
+      ),
+    ),
   },
   REDIS_URL: required(process.env.REDIS_URL, "REDIS_URL"),
   MAX_PART_RETRIES: Number(required(process.env.MAX_PART_RETRIES, "MAX_PART_RETRIES")),

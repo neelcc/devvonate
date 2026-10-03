@@ -5,6 +5,7 @@ export const uploadFileSchema = z.object({
   size: z.number().int().positive("File size must be a positive integer!"),
   contentType: z.string().trim().min(1, "File content type is required!"),
   folderId: z.string().trim().min(1, "Folder ID is required!"),
+  sha256: z.string().trim().min(1, "SHA256 hash is required!"),
 });
 
 export const uploadRouteParamsSchema = z.object({

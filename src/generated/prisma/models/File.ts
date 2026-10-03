@@ -43,7 +43,6 @@ export type FileMinAggregateOutputType = {
   contentType: string | null
   category: $Enums.FileCategory | null
   deletedAt: Date | null
-  s3KeyName: string | null
   status: $Enums.FileStatus | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -58,7 +57,6 @@ export type FileMaxAggregateOutputType = {
   contentType: string | null
   category: $Enums.FileCategory | null
   deletedAt: Date | null
-  s3KeyName: string | null
   status: $Enums.FileStatus | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -73,7 +71,6 @@ export type FileCountAggregateOutputType = {
   contentType: number
   category: number
   deletedAt: number
-  s3KeyName: number
   status: number
   createdAt: number
   updatedAt: number
@@ -98,7 +95,6 @@ export type FileMinAggregateInputType = {
   contentType?: true
   category?: true
   deletedAt?: true
-  s3KeyName?: true
   status?: true
   createdAt?: true
   updatedAt?: true
@@ -113,7 +109,6 @@ export type FileMaxAggregateInputType = {
   contentType?: true
   category?: true
   deletedAt?: true
-  s3KeyName?: true
   status?: true
   createdAt?: true
   updatedAt?: true
@@ -128,7 +123,6 @@ export type FileCountAggregateInputType = {
   contentType?: true
   category?: true
   deletedAt?: true
-  s3KeyName?: true
   status?: true
   createdAt?: true
   updatedAt?: true
@@ -230,7 +224,6 @@ export type FileGroupByOutputType = {
   contentType: string
   category: $Enums.FileCategory
   deletedAt: Date | null
-  s3KeyName: string
   status: $Enums.FileStatus
   createdAt: Date
   updatedAt: Date
@@ -268,13 +261,13 @@ export type FileWhereInput = {
   contentType?: Prisma.StringFilter<"File"> | string
   category?: Prisma.EnumFileCategoryFilter<"File"> | $Enums.FileCategory
   deletedAt?: Prisma.DateTimeNullableFilter<"File"> | Date | string | null
-  s3KeyName?: Prisma.StringFilter<"File"> | string
   status?: Prisma.EnumFileStatusFilter<"File"> | $Enums.FileStatus
   createdAt?: Prisma.DateTimeFilter<"File"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"File"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   folder?: Prisma.XOR<Prisma.FolderScalarRelationFilter, Prisma.FolderWhereInput>
   fileUpload?: Prisma.XOR<Prisma.FileUploadNullableScalarRelationFilter, Prisma.FileUploadWhereInput> | null
+  blob?: Prisma.XOR<Prisma.BlobsNullableScalarRelationFilter, Prisma.BlobsWhereInput> | null
 }
 
 export type FileOrderByWithRelationInput = {
@@ -286,18 +279,17 @@ export type FileOrderByWithRelationInput = {
   contentType?: Prisma.SortOrder
   category?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  s3KeyName?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
   folder?: Prisma.FolderOrderByWithRelationInput
   fileUpload?: Prisma.FileUploadOrderByWithRelationInput
+  blob?: Prisma.BlobsOrderByWithRelationInput
 }
 
 export type FileWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  s3KeyName?: string
   AND?: Prisma.FileWhereInput | Prisma.FileWhereInput[]
   OR?: Prisma.FileWhereInput[]
   NOT?: Prisma.FileWhereInput | Prisma.FileWhereInput[]
@@ -314,7 +306,8 @@ export type FileWhereUniqueInput = Prisma.AtLeast<{
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   folder?: Prisma.XOR<Prisma.FolderScalarRelationFilter, Prisma.FolderWhereInput>
   fileUpload?: Prisma.XOR<Prisma.FileUploadNullableScalarRelationFilter, Prisma.FileUploadWhereInput> | null
-}, "id" | "s3KeyName">
+  blob?: Prisma.XOR<Prisma.BlobsNullableScalarRelationFilter, Prisma.BlobsWhereInput> | null
+}, "id">
 
 export type FileOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -325,7 +318,6 @@ export type FileOrderByWithAggregationInput = {
   contentType?: Prisma.SortOrder
   category?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  s3KeyName?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -348,7 +340,6 @@ export type FileScalarWhereWithAggregatesInput = {
   contentType?: Prisma.StringWithAggregatesFilter<"File"> | string
   category?: Prisma.EnumFileCategoryWithAggregatesFilter<"File"> | $Enums.FileCategory
   deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"File"> | Date | string | null
-  s3KeyName?: Prisma.StringWithAggregatesFilter<"File"> | string
   status?: Prisma.EnumFileStatusWithAggregatesFilter<"File"> | $Enums.FileStatus
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"File"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"File"> | Date | string
@@ -361,13 +352,13 @@ export type FileCreateInput = {
   contentType: string
   category: $Enums.FileCategory
   deletedAt?: Date | string | null
-  s3KeyName: string
   status?: $Enums.FileStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutFilesInput
   folder: Prisma.FolderCreateNestedOneWithoutFilesInput
   fileUpload?: Prisma.FileUploadCreateNestedOneWithoutFileInput
+  blob?: Prisma.BlobsCreateNestedOneWithoutFileInput
 }
 
 export type FileUncheckedCreateInput = {
@@ -379,11 +370,11 @@ export type FileUncheckedCreateInput = {
   contentType: string
   category: $Enums.FileCategory
   deletedAt?: Date | string | null
-  s3KeyName: string
   status?: $Enums.FileStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   fileUpload?: Prisma.FileUploadUncheckedCreateNestedOneWithoutFileInput
+  blob?: Prisma.BlobsUncheckedCreateNestedOneWithoutFileInput
 }
 
 export type FileUpdateInput = {
@@ -393,13 +384,13 @@ export type FileUpdateInput = {
   contentType?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  s3KeyName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumFileStatusFieldUpdateOperationsInput | $Enums.FileStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutFilesNestedInput
   folder?: Prisma.FolderUpdateOneRequiredWithoutFilesNestedInput
   fileUpload?: Prisma.FileUploadUpdateOneWithoutFileNestedInput
+  blob?: Prisma.BlobsUpdateOneWithoutFileNestedInput
 }
 
 export type FileUncheckedUpdateInput = {
@@ -411,11 +402,11 @@ export type FileUncheckedUpdateInput = {
   contentType?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  s3KeyName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumFileStatusFieldUpdateOperationsInput | $Enums.FileStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   fileUpload?: Prisma.FileUploadUncheckedUpdateOneWithoutFileNestedInput
+  blob?: Prisma.BlobsUncheckedUpdateOneWithoutFileNestedInput
 }
 
 export type FileCreateManyInput = {
@@ -427,7 +418,6 @@ export type FileCreateManyInput = {
   contentType: string
   category: $Enums.FileCategory
   deletedAt?: Date | string | null
-  s3KeyName: string
   status?: $Enums.FileStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -440,7 +430,6 @@ export type FileUpdateManyMutationInput = {
   contentType?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  s3KeyName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumFileStatusFieldUpdateOperationsInput | $Enums.FileStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -455,7 +444,6 @@ export type FileUncheckedUpdateManyInput = {
   contentType?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  s3KeyName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumFileStatusFieldUpdateOperationsInput | $Enums.FileStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -480,7 +468,6 @@ export type FileCountOrderByAggregateInput = {
   contentType?: Prisma.SortOrder
   category?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
-  s3KeyName?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -499,7 +486,6 @@ export type FileMaxOrderByAggregateInput = {
   contentType?: Prisma.SortOrder
   category?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
-  s3KeyName?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -514,7 +500,6 @@ export type FileMinOrderByAggregateInput = {
   contentType?: Prisma.SortOrder
   category?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
-  s3KeyName?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -635,6 +620,20 @@ export type FileUpdateOneRequiredWithoutFileUploadNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.FileUpdateToOneWithWhereWithoutFileUploadInput, Prisma.FileUpdateWithoutFileUploadInput>, Prisma.FileUncheckedUpdateWithoutFileUploadInput>
 }
 
+export type FileCreateNestedOneWithoutBlobInput = {
+  create?: Prisma.XOR<Prisma.FileCreateWithoutBlobInput, Prisma.FileUncheckedCreateWithoutBlobInput>
+  connectOrCreate?: Prisma.FileCreateOrConnectWithoutBlobInput
+  connect?: Prisma.FileWhereUniqueInput
+}
+
+export type FileUpdateOneRequiredWithoutBlobNestedInput = {
+  create?: Prisma.XOR<Prisma.FileCreateWithoutBlobInput, Prisma.FileUncheckedCreateWithoutBlobInput>
+  connectOrCreate?: Prisma.FileCreateOrConnectWithoutBlobInput
+  upsert?: Prisma.FileUpsertWithoutBlobInput
+  connect?: Prisma.FileWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.FileUpdateToOneWithWhereWithoutBlobInput, Prisma.FileUpdateWithoutBlobInput>, Prisma.FileUncheckedUpdateWithoutBlobInput>
+}
+
 export type FileCreateWithoutUserInput = {
   id?: string
   name: string
@@ -642,12 +641,12 @@ export type FileCreateWithoutUserInput = {
   contentType: string
   category: $Enums.FileCategory
   deletedAt?: Date | string | null
-  s3KeyName: string
   status?: $Enums.FileStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   folder: Prisma.FolderCreateNestedOneWithoutFilesInput
   fileUpload?: Prisma.FileUploadCreateNestedOneWithoutFileInput
+  blob?: Prisma.BlobsCreateNestedOneWithoutFileInput
 }
 
 export type FileUncheckedCreateWithoutUserInput = {
@@ -658,11 +657,11 @@ export type FileUncheckedCreateWithoutUserInput = {
   contentType: string
   category: $Enums.FileCategory
   deletedAt?: Date | string | null
-  s3KeyName: string
   status?: $Enums.FileStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   fileUpload?: Prisma.FileUploadUncheckedCreateNestedOneWithoutFileInput
+  blob?: Prisma.BlobsUncheckedCreateNestedOneWithoutFileInput
 }
 
 export type FileCreateOrConnectWithoutUserInput = {
@@ -703,7 +702,6 @@ export type FileScalarWhereInput = {
   contentType?: Prisma.StringFilter<"File"> | string
   category?: Prisma.EnumFileCategoryFilter<"File"> | $Enums.FileCategory
   deletedAt?: Prisma.DateTimeNullableFilter<"File"> | Date | string | null
-  s3KeyName?: Prisma.StringFilter<"File"> | string
   status?: Prisma.EnumFileStatusFilter<"File"> | $Enums.FileStatus
   createdAt?: Prisma.DateTimeFilter<"File"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"File"> | Date | string
@@ -716,12 +714,12 @@ export type FileCreateWithoutFolderInput = {
   contentType: string
   category: $Enums.FileCategory
   deletedAt?: Date | string | null
-  s3KeyName: string
   status?: $Enums.FileStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutFilesInput
   fileUpload?: Prisma.FileUploadCreateNestedOneWithoutFileInput
+  blob?: Prisma.BlobsCreateNestedOneWithoutFileInput
 }
 
 export type FileUncheckedCreateWithoutFolderInput = {
@@ -732,11 +730,11 @@ export type FileUncheckedCreateWithoutFolderInput = {
   contentType: string
   category: $Enums.FileCategory
   deletedAt?: Date | string | null
-  s3KeyName: string
   status?: $Enums.FileStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   fileUpload?: Prisma.FileUploadUncheckedCreateNestedOneWithoutFileInput
+  blob?: Prisma.BlobsUncheckedCreateNestedOneWithoutFileInput
 }
 
 export type FileCreateOrConnectWithoutFolderInput = {
@@ -772,12 +770,12 @@ export type FileCreateWithoutFileUploadInput = {
   contentType: string
   category: $Enums.FileCategory
   deletedAt?: Date | string | null
-  s3KeyName: string
   status?: $Enums.FileStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutFilesInput
   folder: Prisma.FolderCreateNestedOneWithoutFilesInput
+  blob?: Prisma.BlobsCreateNestedOneWithoutFileInput
 }
 
 export type FileUncheckedCreateWithoutFileUploadInput = {
@@ -789,10 +787,10 @@ export type FileUncheckedCreateWithoutFileUploadInput = {
   contentType: string
   category: $Enums.FileCategory
   deletedAt?: Date | string | null
-  s3KeyName: string
   status?: $Enums.FileStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  blob?: Prisma.BlobsUncheckedCreateNestedOneWithoutFileInput
 }
 
 export type FileCreateOrConnectWithoutFileUploadInput = {
@@ -818,12 +816,12 @@ export type FileUpdateWithoutFileUploadInput = {
   contentType?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  s3KeyName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumFileStatusFieldUpdateOperationsInput | $Enums.FileStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutFilesNestedInput
   folder?: Prisma.FolderUpdateOneRequiredWithoutFilesNestedInput
+  blob?: Prisma.BlobsUpdateOneWithoutFileNestedInput
 }
 
 export type FileUncheckedUpdateWithoutFileUploadInput = {
@@ -835,10 +833,86 @@ export type FileUncheckedUpdateWithoutFileUploadInput = {
   contentType?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  s3KeyName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumFileStatusFieldUpdateOperationsInput | $Enums.FileStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  blob?: Prisma.BlobsUncheckedUpdateOneWithoutFileNestedInput
+}
+
+export type FileCreateWithoutBlobInput = {
+  id?: string
+  name: string
+  size: bigint | number
+  contentType: string
+  category: $Enums.FileCategory
+  deletedAt?: Date | string | null
+  status?: $Enums.FileStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutFilesInput
+  folder: Prisma.FolderCreateNestedOneWithoutFilesInput
+  fileUpload?: Prisma.FileUploadCreateNestedOneWithoutFileInput
+}
+
+export type FileUncheckedCreateWithoutBlobInput = {
+  id?: string
+  folderId: string
+  userId: string
+  name: string
+  size: bigint | number
+  contentType: string
+  category: $Enums.FileCategory
+  deletedAt?: Date | string | null
+  status?: $Enums.FileStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  fileUpload?: Prisma.FileUploadUncheckedCreateNestedOneWithoutFileInput
+}
+
+export type FileCreateOrConnectWithoutBlobInput = {
+  where: Prisma.FileWhereUniqueInput
+  create: Prisma.XOR<Prisma.FileCreateWithoutBlobInput, Prisma.FileUncheckedCreateWithoutBlobInput>
+}
+
+export type FileUpsertWithoutBlobInput = {
+  update: Prisma.XOR<Prisma.FileUpdateWithoutBlobInput, Prisma.FileUncheckedUpdateWithoutBlobInput>
+  create: Prisma.XOR<Prisma.FileCreateWithoutBlobInput, Prisma.FileUncheckedCreateWithoutBlobInput>
+  where?: Prisma.FileWhereInput
+}
+
+export type FileUpdateToOneWithWhereWithoutBlobInput = {
+  where?: Prisma.FileWhereInput
+  data: Prisma.XOR<Prisma.FileUpdateWithoutBlobInput, Prisma.FileUncheckedUpdateWithoutBlobInput>
+}
+
+export type FileUpdateWithoutBlobInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  size?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  contentType?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumFileStatusFieldUpdateOperationsInput | $Enums.FileStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutFilesNestedInput
+  folder?: Prisma.FolderUpdateOneRequiredWithoutFilesNestedInput
+  fileUpload?: Prisma.FileUploadUpdateOneWithoutFileNestedInput
+}
+
+export type FileUncheckedUpdateWithoutBlobInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  folderId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  size?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  contentType?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumFileStatusFieldUpdateOperationsInput | $Enums.FileStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  fileUpload?: Prisma.FileUploadUncheckedUpdateOneWithoutFileNestedInput
 }
 
 export type FileCreateManyUserInput = {
@@ -849,7 +923,6 @@ export type FileCreateManyUserInput = {
   contentType: string
   category: $Enums.FileCategory
   deletedAt?: Date | string | null
-  s3KeyName: string
   status?: $Enums.FileStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -862,12 +935,12 @@ export type FileUpdateWithoutUserInput = {
   contentType?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  s3KeyName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumFileStatusFieldUpdateOperationsInput | $Enums.FileStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   folder?: Prisma.FolderUpdateOneRequiredWithoutFilesNestedInput
   fileUpload?: Prisma.FileUploadUpdateOneWithoutFileNestedInput
+  blob?: Prisma.BlobsUpdateOneWithoutFileNestedInput
 }
 
 export type FileUncheckedUpdateWithoutUserInput = {
@@ -878,11 +951,11 @@ export type FileUncheckedUpdateWithoutUserInput = {
   contentType?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  s3KeyName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumFileStatusFieldUpdateOperationsInput | $Enums.FileStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   fileUpload?: Prisma.FileUploadUncheckedUpdateOneWithoutFileNestedInput
+  blob?: Prisma.BlobsUncheckedUpdateOneWithoutFileNestedInput
 }
 
 export type FileUncheckedUpdateManyWithoutUserInput = {
@@ -893,7 +966,6 @@ export type FileUncheckedUpdateManyWithoutUserInput = {
   contentType?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  s3KeyName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumFileStatusFieldUpdateOperationsInput | $Enums.FileStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -907,7 +979,6 @@ export type FileCreateManyFolderInput = {
   contentType: string
   category: $Enums.FileCategory
   deletedAt?: Date | string | null
-  s3KeyName: string
   status?: $Enums.FileStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -920,12 +991,12 @@ export type FileUpdateWithoutFolderInput = {
   contentType?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  s3KeyName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumFileStatusFieldUpdateOperationsInput | $Enums.FileStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutFilesNestedInput
   fileUpload?: Prisma.FileUploadUpdateOneWithoutFileNestedInput
+  blob?: Prisma.BlobsUpdateOneWithoutFileNestedInput
 }
 
 export type FileUncheckedUpdateWithoutFolderInput = {
@@ -936,11 +1007,11 @@ export type FileUncheckedUpdateWithoutFolderInput = {
   contentType?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  s3KeyName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumFileStatusFieldUpdateOperationsInput | $Enums.FileStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   fileUpload?: Prisma.FileUploadUncheckedUpdateOneWithoutFileNestedInput
+  blob?: Prisma.BlobsUncheckedUpdateOneWithoutFileNestedInput
 }
 
 export type FileUncheckedUpdateManyWithoutFolderInput = {
@@ -951,7 +1022,6 @@ export type FileUncheckedUpdateManyWithoutFolderInput = {
   contentType?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumFileCategoryFieldUpdateOperationsInput | $Enums.FileCategory
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  s3KeyName?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumFileStatusFieldUpdateOperationsInput | $Enums.FileStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -968,13 +1038,13 @@ export type FileSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   contentType?: boolean
   category?: boolean
   deletedAt?: boolean
-  s3KeyName?: boolean
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   folder?: boolean | Prisma.FolderDefaultArgs<ExtArgs>
   fileUpload?: boolean | Prisma.File$fileUploadArgs<ExtArgs>
+  blob?: boolean | Prisma.File$blobArgs<ExtArgs>
 }, ExtArgs["result"]["file"]>
 
 export type FileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -986,7 +1056,6 @@ export type FileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   contentType?: boolean
   category?: boolean
   deletedAt?: boolean
-  s3KeyName?: boolean
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1003,7 +1072,6 @@ export type FileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   contentType?: boolean
   category?: boolean
   deletedAt?: boolean
-  s3KeyName?: boolean
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1020,17 +1088,17 @@ export type FileSelectScalar = {
   contentType?: boolean
   category?: boolean
   deletedAt?: boolean
-  s3KeyName?: boolean
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type FileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "folderId" | "userId" | "name" | "size" | "contentType" | "category" | "deletedAt" | "s3KeyName" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["file"]>
+export type FileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "folderId" | "userId" | "name" | "size" | "contentType" | "category" | "deletedAt" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["file"]>
 export type FileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   folder?: boolean | Prisma.FolderDefaultArgs<ExtArgs>
   fileUpload?: boolean | Prisma.File$fileUploadArgs<ExtArgs>
+  blob?: boolean | Prisma.File$blobArgs<ExtArgs>
 }
 export type FileIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1047,6 +1115,7 @@ export type $FilePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     user: Prisma.$UserPayload<ExtArgs>
     folder: Prisma.$FolderPayload<ExtArgs>
     fileUpload: Prisma.$FileUploadPayload<ExtArgs> | null
+    blob: Prisma.$BlobsPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1057,7 +1126,6 @@ export type $FilePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     contentType: string
     category: $Enums.FileCategory
     deletedAt: Date | null
-    s3KeyName: string
     status: $Enums.FileStatus
     createdAt: Date
     updatedAt: Date
@@ -1458,6 +1526,7 @@ export interface Prisma__FileClient<T, Null = never, ExtArgs extends runtime.Typ
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   folder<T extends Prisma.FolderDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FolderDefaultArgs<ExtArgs>>): Prisma.Prisma__FolderClient<runtime.Types.Result.GetResult<Prisma.$FolderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   fileUpload<T extends Prisma.File$fileUploadArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.File$fileUploadArgs<ExtArgs>>): Prisma.Prisma__FileUploadClient<runtime.Types.Result.GetResult<Prisma.$FileUploadPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  blob<T extends Prisma.File$blobArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.File$blobArgs<ExtArgs>>): Prisma.Prisma__BlobsClient<runtime.Types.Result.GetResult<Prisma.$BlobsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1495,7 +1564,6 @@ export interface FileFieldRefs {
   readonly contentType: Prisma.FieldRef<"File", 'String'>
   readonly category: Prisma.FieldRef<"File", 'FileCategory'>
   readonly deletedAt: Prisma.FieldRef<"File", 'DateTime'>
-  readonly s3KeyName: Prisma.FieldRef<"File", 'String'>
   readonly status: Prisma.FieldRef<"File", 'FileStatus'>
   readonly createdAt: Prisma.FieldRef<"File", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"File", 'DateTime'>
@@ -1916,6 +1984,25 @@ export type File$fileUploadArgs<ExtArgs extends runtime.Types.Extensions.Interna
    */
   include?: Prisma.FileUploadInclude<ExtArgs> | null
   where?: Prisma.FileUploadWhereInput
+}
+
+/**
+ * File.blob
+ */
+export type File$blobArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Blobs
+   */
+  select?: Prisma.BlobsSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Blobs
+   */
+  omit?: Prisma.BlobsOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BlobsInclude<ExtArgs> | null
+  where?: Prisma.BlobsWhereInput
 }
 
 /**

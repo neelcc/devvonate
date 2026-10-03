@@ -12,7 +12,7 @@ export class UploadController {
 
   uploadFile = async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.auth.sub;
-    const { fileName, size, contentType, folderId } = req.body;
+    const { fileName, size, contentType, folderId, sha256 } = req.body;
 
     if (!folderId) {
       const error = createHttpError(400, "Missing required field");
@@ -21,20 +21,23 @@ export class UploadController {
       return;
     }
     
-    if (!fileName || !size || !contentType) {
+    if (!fileName || !size || !contentType || !sha256) {
       const error = createHttpError(
         400,
-        "Missing required fields: fileName, size, contentType",
+        "Missing required fields: fileName, size, contentType, sha256",
       );
       this.logger.error(`UploadController.uploadFile: ${error.message}`);
       next(error);
       return;
     }
 
-    const response = await this.uploadServices.CreateMultipartUpload(
+
+
+    const response = await this.uploadServices.InitUpload(
       { fileName, size: BigInt(size), contentType },
       folderId,
       userId,
+      sha256,
     );
 
     this.logger.info(

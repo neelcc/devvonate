@@ -57,6 +57,7 @@ export const ModelName = {
   UserStorage: 'UserStorage',
   File: 'File',
   FileUpload: 'FileUpload',
+  Blobs: 'Blobs',
   OutboxEvents: 'OutboxEvents'
 } as const
 
@@ -138,7 +139,6 @@ export const FileScalarFieldEnum = {
   contentType: 'contentType',
   category: 'category',
   deletedAt: 'deletedAt',
-  s3KeyName: 's3KeyName',
   status: 'status',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -162,6 +162,22 @@ export const FileUploadScalarFieldEnum = {
 } as const
 
 export type FileUploadScalarFieldEnum = (typeof FileUploadScalarFieldEnum)[keyof typeof FileUploadScalarFieldEnum]
+
+
+export const BlobsScalarFieldEnum = {
+  id: 'id',
+  fileId: 'fileId',
+  s3KeyName: 's3KeyName',
+  size: 'size',
+  contentType: 'contentType',
+  refCount: 'refCount',
+  sha256: 'sha256',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BlobsScalarFieldEnum = (typeof BlobsScalarFieldEnum)[keyof typeof BlobsScalarFieldEnum]
 
 
 export const OutboxEventsScalarFieldEnum = {

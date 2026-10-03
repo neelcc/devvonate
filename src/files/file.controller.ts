@@ -179,9 +179,10 @@ export class FileController {
     );
 
     res.status(200).json({
-      message: "File permanently deleted successfully",
+      message: response.message,
       id: response.id,
       name: response.name,
+      size: response.size,
     });
   };
 

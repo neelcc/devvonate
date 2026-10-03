@@ -75,6 +75,7 @@ model User {
   folders       Folder[]
   refreshTokens RefreshToken[]
   storage       UserStorage?
+  blobs         Blobs[]
   fileUploads   FileUpload[]
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
@@ -136,12 +137,12 @@ model UserStorage {
     contentType String
     category    FileCategory
     deletedAt   DateTime?
-    s3KeyName   String       @unique
     status      FileStatus   @default(ACTIVE)
     user        User         @relation(fields: [userId], references: [id])
     folder      Folder       @relation(fields: [folderId], references: [id])
 
     fileUpload  FileUpload?
+    blob       Blobs?
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -167,6 +168,25 @@ model UserStorage {
     updatedAt  DateTime     @updatedAt
 
     @@map("fileUploads")
+  }
+
+  model Blobs {
+    id        String   @id @default(uuid())
+    fileId    String   @unique
+    s3KeyName String   @unique
+    size      BigInt   // in bytes
+    contentType String
+    refCount  Int      @default(0)
+    sha256    String   @unique
+    userId    String
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    file      File     @relation(fields: [fileId], references: [id], onDelete: Cascade)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@map("blobs")
+    @@index([sha256, refCount, size])
+    
   }
 
 model OutboxEvents {
