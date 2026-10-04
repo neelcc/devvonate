@@ -4,7 +4,7 @@ import { UploadServices } from "./upload.services";
 import logger from "../config/logger";
 import { asyncWrapper } from "../utils/wrapper";
 import authenticate from "../common/middlewares/authenticate";
-import { uploadFileSchema, uploadRouteParamsSchema } from "./upload.validators";
+import { uploadCompleteSchema, uploadFileSchema, uploadRouteParamsSchema } from "./upload.validators";
 import { validateBody, validateParams } from "../common/middlewares/validation";
 
 const router = express.Router();
@@ -26,6 +26,8 @@ router.post(
 router.post(
   "/:uploadId/complete",
   authenticate,
+  validateParams(uploadRouteParamsSchema),
+  validateBody(uploadCompleteSchema),
   asyncWrapper(uploadController.completeMultipartUpload),
 );
 router.post(

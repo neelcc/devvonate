@@ -1,11 +1,11 @@
 import createHttpError from "http-errors";
 import prisma from "../config/prisma";
-import { CreateFolderData, Folder } from "./folder.types";
+import { CreateFolderData, Folder, PaginatedResultFile, PaginatedResultFolder } from "./folder.types";
 import { decodeCursor, encodeCursor } from "../utils";
 import { Logger } from "winston";
 
 export class FolderServices {
-  constructor(private readonly logger: Logger) {}
+  constructor(private readonly logger: Logger) { }
 
   async createFolder(data: CreateFolderData, userId: string) {
     return prisma.$transaction(async (tx) => {
@@ -50,7 +50,7 @@ export class FolderServices {
           deletedAt: true,
         },
       });
-      
+
 
       this.logger.info(
         `FolderServices.createFolder: Folder created successfully for user ${userId} with name ${data.name}`,
@@ -64,8 +64,14 @@ export class FolderServices {
     folderId: string,
     userId: string,
     cursor?: string,
-    pageSize: number = 5,
+    pageSize: number = 3,
   ) {
+    let resultFolders : PaginatedResultFolder[] = [];
+    let resultFiles : PaginatedResultFile[] = [];
+    let remaining : number = pageSize;
+    const decodedCursor = cursor ? decodeCursor(cursor) : null;
+    let nextCursor : string | null = null;
+
     const folder = await prisma.folder.findFirst({
       where: {
         id: folderId,
@@ -79,54 +85,126 @@ export class FolderServices {
       throw error;
     }
 
-    const decodedCursor = cursor ? decodeCursor(cursor) : null;
 
-    const folders = await prisma.folder.findMany({
-      take: pageSize + 1,
-      orderBy: [
-        {
-          createdAt: "asc",
-        },
-        {
-          id: "asc",
-        },
-      ],
-      where: {
-        parentFolderId: folderId,
-        userId: userId,
-        deletedAt: null,
-        ...(decodedCursor && {
-          OR: [
-            {
-              createdAt: {
-                gt: new Date(decodedCursor.createdAt),
+    if (!decodedCursor || decodedCursor.cursorType === "folder") {
+      const folders = await prisma.folder.findMany({
+        take: remaining + 1,
+        orderBy: [
+          {
+            createdAt: "asc",
+          },
+          {
+            id: "asc",
+          },
+        ],
+        where: {
+          parentFolderId: folderId,
+          userId: userId,
+          deletedAt: null,
+          ...(decodedCursor && {
+            OR: [
+              {
+                createdAt: {
+                  gt: new Date(decodedCursor.createdAt),
+                },
               },
-            },
-            {
-              createdAt: new Date(decodedCursor.createdAt),
-              id: {
-                gt: decodedCursor.id,
+              {
+                createdAt: new Date(decodedCursor.createdAt),
+                id: {
+                  gt: decodedCursor.id,
+                },
               },
-            },
-          ],
-        }),
-      },
-    });
-    const hasNextPage = folders.length > pageSize;
-    const resultFolders = hasNextPage ? folders.slice(0, pageSize) : folders;
+            ],
+          }),
+        },
+        select: {
+          id: true,
+          name: true,
+          createdAt: true,
+        }
+      });
+      const hasNextPage = folders.length > pageSize;
+      remaining = remaining - folders.length;
+      console.log("remainingItems", remaining);
+      resultFolders = hasNextPage ? folders.slice(0, pageSize) : folders;
+
+      if(hasNextPage){
+         nextCursor = encodeCursor(
+          "folder",
+          resultFolders[resultFolders.length - 1]?.id,
+          resultFolders[resultFolders.length - 1]?.createdAt,
+         )
+      } else if(remaining === 0){
+        console.log("Fetching ifelse:", remaining);
+        nextCursor = encodeCursor("file", undefined, undefined);
+        console.log("nextCursor ifelse:", nextCursor);
+      }
+    }
+
+
+    if( !nextCursor && remaining > 0 ) {
+      const fileCursor = decodedCursor?.cursorType === "file" && decodedCursor.id ? decodedCursor : null;
+      console.log("Fetching files with remaining items:", remaining);
+      const files = await prisma.file.findMany({
+        take: remaining + 1,
+        orderBy: [
+          {
+            createdAt: "asc",
+          },
+          {
+            id: "asc",
+          },
+        ],
+        where: {
+          folderId: folderId,
+          userId: userId,
+          deletedAt: null,
+          status: "ACTIVE",
+          ...(fileCursor && {
+            OR: [
+              {
+                createdAt: {
+                  gt: new Date(fileCursor.createdAt),
+                },
+              },
+              {
+                createdAt: new Date(fileCursor.createdAt),
+                id: {
+                  gt: fileCursor.id,
+                },
+              },
+            ],
+          }),
+        },
+        select: {
+          id: true,
+          name: true,
+          category: true,
+          folderId: true,
+          createdAt: true,
+        }
+      });
+      const hasNextPage = files.length > remaining;
+      resultFiles = hasNextPage ? files.slice(0, remaining) : files;
+
+      if(hasNextPage){
+         nextCursor = encodeCursor(
+          "file",
+          resultFiles[resultFiles.length - 1]?.id,
+          resultFiles[resultFiles.length - 1]?.createdAt,
+        )
+      }
+    }
+
 
     return {
-      data: resultFolders,
-      nextCursor: hasNextPage
-        ? encodeCursor(
-            resultFolders[resultFolders.length - 1]?.id,
-            resultFolders[resultFolders .length - 1]?.createdAt,
-          )
-        : null,
+      folders : resultFolders,
+      files : resultFiles,
+      nextCursor,
     };
-  }
+  
+    }
 
- 
   async moveFolder(folderId: string, newParentId: string, userId: string) {
     const folder = await prisma.folder.findFirst({
       where: {
@@ -277,4 +355,5 @@ export class FolderServices {
       },
     });
   }
+  
 }

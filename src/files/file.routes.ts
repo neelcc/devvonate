@@ -23,7 +23,7 @@ router.patch(
   asyncWrapper(fileController.renameFile),
 );
 router.delete(
-  "/delete/:id",
+  "/:id",
   authenticate,
   validateParams(fileParamsSchema),
   asyncWrapper(fileController.deleteFile),
@@ -49,7 +49,7 @@ router.delete(
   asyncWrapper(fileController.deleteFile),
 );
 router.delete(
-  "/delete-all-trash",
+  "/trash",
   authenticate,
   asyncWrapper(fileController.deleteAllTrashFiles),
 );

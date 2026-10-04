@@ -2,17 +2,20 @@ import { Part } from "@aws-sdk/client-s3";
 import { MIME_TYPE_CATEGORIES } from "../common/constants";
 import { Config } from "../config";
 import type { FileCategory } from "../generated/prisma/browser";
+import { Cursor } from "../common/constants/types";
 
-export const decodeCursor = (cursor: string) => {
+export const decodeCursor = (cursor: string) : Cursor => {
   return JSON.parse(Buffer.from(cursor, "base64url").toString("utf-8"));
 };
 
 export const encodeCursor = (
+  cursorType: "folder" | "file",
   id: string | undefined,
   createdAt: Date | undefined,
 ) => {
   return Buffer.from(
     JSON.stringify({
+      cursorType,
       id,
       createdAt: createdAt?.toISOString(),
     }),

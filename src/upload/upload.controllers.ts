@@ -56,17 +56,17 @@ export class UploadController {
     next: NextFunction,
   ) => {
     const userId = req.auth.sub;
-    const uploadId = req.params.uploadId;
-    const { key, PartNumber } = req.body;
+    const fileUploadId = req.params.fileUploadId;
+    const {  PartNumber } = req.body;
 
     this.logger.info(
-      `UploadController.generatePresignedUrl: Generating presigned URL for user ${userId}, uploadId ${uploadId}, key ${key}, PartNumber ${PartNumber}`,
+      `UploadController.generatePresignedUrl: Generating presigned URL for user ${userId}, fileUploadId ${fileUploadId},  PartNumber ${PartNumber}`,
     );
 
-    if (!uploadId || !key || !PartNumber) {
+    if (!fileUploadId || !PartNumber) {
       const error = createHttpError(
         400,
-        "Missing required fields: uploadId, key, PartNumber",
+        "Missing required fields: fileUploadId,  PartNumber",
       );
       this.logger.error(
         `UploadController.generatePresignedUrl: ${error.message}`,
@@ -75,8 +75,7 @@ export class UploadController {
     }
 
     const preSignedUrl = await this.uploadServices.generatePresignedUrl(
-      uploadId,
-      key,
+      fileUploadId,
       PartNumber,
       userId,
     );
@@ -86,21 +85,22 @@ export class UploadController {
     });
   };
 
+  
   completeMultipartUpload = async (
     req: Request<UploadRouteParams>,
     res: Response,
     next: NextFunction,
   ) => {
     const userId = req.auth.sub;
-    const uploadId = req.params.uploadId;
-    const { key, parts } = req.body;
+    const fileUploadId = req.params.fileUploadId;
+    const { parts } = req.body;
     this.logger.info(
-      `UploadController.completeMultipartUpload: Completing multipart upload for user ${userId}, uploadId ${uploadId}, key ${key}, parts ${JSON.stringify(parts)}`,
+      `UploadController.completeMultipartUpload: Completing multipart upload for user ${userId}, fileUploadId ${fileUploadId}, parts length ${parts.length}`,
     );
-    if (!uploadId || !key || !parts || !Array.isArray(parts)) {
+    if (!fileUploadId || !parts || !Array.isArray(parts)) {
       const error = createHttpError(
         400,
-        "Missing required fields: uploadId, key, parts",
+        "Missing required fields: fileUploadId, parts",
       );
       this.logger.error(
         `UploadController.completeMultipartUpload: ${error.message}`,
@@ -109,8 +109,7 @@ export class UploadController {
     }
 
     const response = await this.uploadServices.completeMultipartUpload(
-      uploadId,
-      key,
+      fileUploadId,
       userId,
       parts,
     );
@@ -121,8 +120,7 @@ export class UploadController {
 
     res.status(200).json({
       message: "Multipart upload completed successfully",
-      data: response.completeResponse,
-      headObjectResponse: response.headObjectResponse,
+      data: response,
     });
   };
 
@@ -132,13 +130,13 @@ export class UploadController {
     next: NextFunction,
   ) => {
     const userId = req.auth.sub;
-    const uploadId = req.params.uploadId;
+    const fileUploadId = req.params.fileUploadId;
     const { key } = req.body;
 
-    if (!uploadId || !key) {
+    if (!fileUploadId || !key) {
       const error = createHttpError(
         400,
-        "Missing required fields: uploadId, key",
+        "Missing required fields: fileUploadId, key",
       );
       this.logger.error(
         `UploadController.abortMultipartUpload: ${error.message}`,
@@ -155,7 +153,7 @@ export class UploadController {
     }
 
     const response = await this.uploadServices.abortMultipartUpload(
-      uploadId,
+      fileUploadId,
       key,
       userId,
     );
@@ -194,14 +192,14 @@ export class UploadController {
 
   checkPartStatus = async (req: Request<PartStatusRouteParams>, res: Response, next: NextFunction) => {
     const userId = req.auth.sub;
-    const uploadId = req.params.uploadId;
+    const fileUploadId = req.params.fileUploadId;
     const status = req.query.status as string;
     const partNumber = parseInt(req.params.partNumber, 10);
 
-    if (!uploadId || !partNumber || !status) {
+    if (!fileUploadId || !partNumber || !status) {
       const error = createHttpError(
         400,
-        "Missing required fields: uploadId, partNumber, status",
+        "Missing required fields: fileUploadId, partNumber, status",
       );
       this.logger.error(
         `UploadController.checkPartStatus: ${error.message}`,
@@ -209,10 +207,10 @@ export class UploadController {
       return next(error);
     }
 
-    const response = await this.uploadServices.checkPartStatus(uploadId, partNumber, status, userId);
+    const response = await this.uploadServices.checkPartStatus(fileUploadId, partNumber, status, userId);
 
     this.logger.info(
-      `UploadController.checkPartStatus: Checked part status successfully for user ${userId}, uploadId ${uploadId}, partNumber ${partNumber}`,
+      `UploadController.checkPartStatus: Checked part status successfully for user ${userId}, fileUploadId ${fileUploadId}, partNumber ${partNumber}`,
     );
     
     res.status(200).json({

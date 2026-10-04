@@ -7,7 +7,7 @@ const MAX_PART_RETRIES = Config.MAX_PART_RETRIES || 3;
 const FAILURE_TTL = Config.FAILURE_TTL || 60 * 60; // 1 hour
 
 function getPartFailureKey(data : UploadAttemptArgs) {
-  return `upload:${data.uploadId}:part:${data.partNumber}:failures`;
+  return `upload:${data.s3UploadId}:part:${data.partNumber}:failures`;
 }
 
 export async function incrementPartFailCount(data : UploadAttemptArgs) {

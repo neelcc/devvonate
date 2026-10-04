@@ -1,4 +1,10 @@
 export type UploadAttemptArgs = {
-    uploadId: string;
+    s3UploadId: string;
     partNumber: number;
+}
+
+export type Cursor = {
+    cursorType: "folder" | "file";
+    id: string;
+    createdAt: string;
 }

@@ -3,7 +3,6 @@ import { FileService } from "./file.services";
 import { Request, Response, NextFunction } from "express";
 import createHttpError from "http-errors";
 import { FileParams } from "./file.types";
-import id from "zod/v4/locales/id.js";
 
 export class FileController {
   constructor(

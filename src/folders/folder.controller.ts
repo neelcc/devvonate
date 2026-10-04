@@ -9,7 +9,6 @@ import {
   MoveFolderParams,
   RenameFolderRequest,
 } from "./folder.types";
-import { listRootFoldersSchema } from "./folders.validator";
 
 export class FolderController {
   constructor(
@@ -44,15 +43,24 @@ export class FolderController {
     next: NextFunction,
   ) => {
     const userId = req.auth.sub;
-    const folders = await this.folderServices.getChildFolders(
+    const cursor = req.query.cursor as string | undefined;
+      
+
+    const { folders, files, nextCursor } = await this.folderServices.getChildFolders(
       req.params.id,
       userId,
+      cursor
     );
 
     res.status(200).json({
       message: "Folder retrieved successfully",
-      folders: folders,
+      data: {
+        folders: folders,
+        files: files,
+      },
+      nextCursor: nextCursor,
     });
+
   };
 
  

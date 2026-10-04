@@ -65,7 +65,8 @@ export class AuthServices {
       where: {
         id: id,
       },
-    });
+        },
+  );
     if (!user) {
       const error = createHttpError(404, "User not found");
       throw error;

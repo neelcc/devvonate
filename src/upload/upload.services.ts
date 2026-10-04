@@ -122,7 +122,7 @@ export class UploadServices {
 
         return {
           ...file,
-          totalSize: fileData.size.toString(),
+          size: file.size.toString(),
           uploadId: null,
           ACTION: "DUPLICATE",
         }
@@ -158,69 +158,69 @@ export class UploadServices {
     }
 
     const s3KeyName = `users/${userId}/objects/${folderId}/${fileData.fileName}`;
-    
 
-     if(fileData.size > Config.aws.maxFileSizeForSingleUpload) {
-      
+
+    if (fileData.size > Config.aws.maxFileSizeForSingleUpload) {
+
       const file = await prisma.$transaction(async (tx) => {
-      const file = await tx.file.create({
-        data: {
-          name: fileData.fileName,
-          size: fileData.size,
-          contentType: fileData.contentType,
-          userId: userId,
-          folderId: folderId,
-          category: category,
-          status: "IN_PROGRESS",
+        const file = await tx.file.create({
+          data: {
+            name: fileData.fileName,
+            size: fileData.size,
+            contentType: fileData.contentType,
+            userId: userId,
+            folderId: folderId,
+            category: category,
+            status: "IN_PROGRESS",
 
-        },
-        select: {
-          id: true,
-          name: true,
-          size: true,
-          category: true,
-          status: true,
-          createdAt: true,
-          updatedAt: true,
-        },
-      });
-
-      const blob = await tx.blobs.create({
-        data: {
-          fileId: file.id,
-          contentType: fileData.contentType,
-          size: fileData.size,
-          s3KeyName: s3KeyName,
-          userId: userId,
-          refCount: 1,
-          sha256: sha256,
-        },
-        select: {
-          s3KeyName: true,
-        }
-      })
-
-      await tx.userStorage.update({
-        where: {
-          userId: userId,
-        },
-        data: {
-          reservedBytes: {
-            increment: fileData.size,
           },
-        },
-      });
-      return file
+          select: {
+            id: true,
+            name: true,
+            size: true,
+            category: true,
+            status: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        });
+
+        const blob = await tx.blobs.create({
+          data: {
+            fileId: file.id,
+            contentType: fileData.contentType,
+            size: fileData.size,
+            s3KeyName: s3KeyName,
+            userId: userId,
+            refCount: 1,
+            sha256: sha256,
+          },
+          select: {
+            s3KeyName: true,
+          }
+        })
+
+        await tx.userStorage.update({
+          where: {
+            userId: userId,
+          },
+          data: {
+            reservedBytes: {
+              increment: fileData.size,
+            },
+          },
+        });
+        return file
       })
 
       const response = await s3Repository.SinglePutUpload(
         fileData,
         s3KeyName,
-      );  
-      
+      );
+
       return {
         ...file,
-        totalSize: fileData.size.toString(),
+        size: file.size.toString(),
         uploadId: null,
         ACTION: "SINGLE_PUT",
         presignedUrl: response,
@@ -228,8 +228,6 @@ export class UploadServices {
     }
 
     const { partSize, totalParts } = getPartsInfo(fileData.size, userId, folderId, fileData.fileName);
-    
-
 
     const file = await prisma.$transaction(async (tx) => {
 
@@ -261,7 +259,7 @@ export class UploadServices {
           userId: userId,
           partsSize: partSize,
           totalParts: totalParts,
-          s3UploadId: "", 
+          s3UploadId: "",
           status: "PENDING",
         },
         select: {
@@ -298,12 +296,13 @@ export class UploadServices {
 
       return {
         ...file,
+        size: file.size.toString(),
         fileUploadId: fileUpload.id,
         s3KeyName: blob.s3KeyName,
       };
     });
 
-   
+
 
     const response = await s3Repository.CreateMultipartUpload(
       fileData,
@@ -333,27 +332,33 @@ export class UploadServices {
   }
 
   async generatePresignedUrl(
-    uploadId: string,
-    key: string,
+    fileUploadId: string,
     PartNumber: number,
     userId: string,
   ) {
     const fileUpload = await prisma.fileUpload.findFirst({
       where: {
-        s3UploadId: uploadId,
+        id: fileUploadId,
         userId: userId,
         file: {
           userId: userId,
           deletedAt: null,
-          blob: {
-            s3KeyName: key,
-          }
         },
 
       },
       select: {
         id: true,
         fileId: true,
+        s3UploadId: true,
+        file: {
+          select: {
+            blob: {
+              select: {
+                s3KeyName: true,
+              }
+            }
+          }
+        }
       },
     });
 
@@ -362,9 +367,16 @@ export class UploadServices {
       throw error;
     }
 
+    const s3KeyName = fileUpload.file.blob?.s3KeyName;
+
+    if (!s3KeyName) {
+      const error = createHttpError(404, "S3 key name not found for the file upload");
+      throw error;
+    }
+
     const preSignedUrl = await s3Repository.generatePresignedUrl(
-      uploadId,
-      key,
+      fileUpload.s3UploadId,
+      s3KeyName,
       PartNumber,
     );
 
@@ -378,42 +390,59 @@ export class UploadServices {
     return preSignedUrl;
   }
 
-  async completeMultipartUpload(
-    uploadId: string,
-    key: string,
+  async completeMultipartUpload(  
+    fileUploadId: string,
     userId: string,
     parts: { ETag: string; PartNumber: number }[],
   ) {
     const fileUpload = await prisma.fileUpload.findFirst({
       where: {
-        s3UploadId: uploadId,
+        id: fileUploadId,
         file: {
           userId: userId,
           deletedAt: null,
-          blob: {
-            s3KeyName: key,
-          }
         },
       },
       select: {
         id: true,
         fileId: true,
+        status: true,
+        s3UploadId: true,
         file: {
           select: {
             id: true,
             size: true,
             contentType: true,
+            blob: {
+              select: {
+                s3KeyName: true,
+              }
+            }
           },
         },
       },
     });
+
+    if (fileUpload && fileUpload.status === "COMPLETED") {
+      return {
+        message: "Multipart upload already completed",
+
+      }
+    }
 
     if (!fileUpload) {
       const error = createHttpError(404, "File upload not found");
       throw error;
     }
 
-    const s3PartList = await s3Repository.listParts(key, uploadId);
+    const s3KeyName = fileUpload.file.blob?.s3KeyName;
+
+    if (!s3KeyName) {
+      const error = createHttpError(404, "S3 key name not found for the file upload");
+      throw error;
+    }
+
+    const s3PartList = await s3Repository.listParts(s3KeyName, fileUpload.s3UploadId);
 
     if (!s3PartList || !s3PartList.Parts || s3PartList.Parts.length === 0) {
       const error = createHttpError(
@@ -435,13 +464,13 @@ export class UploadServices {
     }
 
     const completeMultipartUploadResponse =
-      await s3Repository.completeMultipartUpload(uploadId, key, sortedParts);
+      await s3Repository.completeMultipartUpload(fileUpload.s3UploadId, s3KeyName, sortedParts);
 
-    const headObjectResponse = await s3Repository.headObject(key);
+    const headObjectResponse = await s3Repository.headObject(s3KeyName);
     const contentLength = headObjectResponse.ContentLength;
     const contentType = headObjectResponse.ContentType;
 
-    if (!contentLength || !contentType) {
+    if (contentLength==null || !contentType) {
       const error = createHttpError(
         500,
         "Failed to retrieve object metadata from S3",
@@ -457,225 +486,231 @@ export class UploadServices {
       fileUpload.file.contentType,
     );
 
-    let updatedFile = null;
-
-    if (fileUpload.file && isFileValidated) {
-      updatedFile = await prisma.$transaction(async (tx) => {
-        const file = await tx.file.update({
-          where: {
-            id: fileUpload.file.id,
-          },
-          data: {
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            status: "ACTIVE",
-            FileUpload: {
-              update: {
-                where: {
-                  id: fileUpload.id,
-                },
-                data: {
-                  status: "COMPLETED",
-                  ...(completeMultipartUploadResponse.ETag
-                    ? {
-                      s3ETag: completeMultipartUploadResponse.ETag,
-                    }
-                    : {}),
-                },
-              },
-            },
-          },
-          select: {
-            id: true,
-            name: true,
-            size: true,
-            contentType: true,
-            status: true,
-            createdAt: true,
-            updatedAt: true,
-            blob: {
-              select: {
-                s3KeyName: true,
-              }
-            }
-          },
-        });
-
-        await tx.userStorage.update({
-          where: {
-            userId,
-          },
-          data: {
-            reservedBytes: {
-              decrement: fileUpload.file.size,
-            },
-            usedBytes: {
-              increment: fileUpload.file.size,
-            },
-          },
-        });
-
-        return file;
-      });
-    }
-
-    return {
-      completeResponse: completeMultipartUploadResponse,
-      headObjectResponse,
-      updatedFile: updatedFile
-        ? {
-          ...updatedFile,
-          size: updatedFile.size.toString(),
-        }
-        : null,
-    };
-  }
-
-  async abortMultipartUpload(uploadId: string, key: string, userId: string) {
-    const file = await prisma.file.findFirst({
-      where: {
-        userId: userId,
-        deletedAt: null,
-        blob: {
-          s3KeyName: key,
-        },
-        fileUpload: {
-          s3UploadId: uploadId,
-        }
-      },
-      select: {
-        id: true,
-        size: true,
-      },
-    });
-
-    if (!file) {
-      const error = createHttpError(404, "File not found for the given uploadId and key");
+    if (!isFileValidated) {
+      const error = createHttpError(
+        400,
+        "File validation failed. The uploaded file does not match the expected size or content type.",
+      );
       throw error;
     }
 
-    const response = await s3Repository.abortMultipartUpload(uploadId, key);
-
-    await prisma.$transaction(async (tx) => {
-      await tx.file.delete({
+    const updatedFile = await prisma.$transaction(async (tx) => {
+      const file = await tx.file.update({
         where: {
-          id: file.id,
+          id: fileUpload.file.id,
+        },
+        data: {
+          updatedAt: new Date(),
+          status: "ACTIVE",
+          FileUpload: {
+            update: {
+              where: {
+                id: fileUpload.id,
+              },
+              data: {
+                status: "COMPLETED",
+                ...(completeMultipartUploadResponse.ETag
+                  ? {
+                    s3ETag: completeMultipartUploadResponse.ETag,
+                  }
+                  : {}),
+              },
+            },
+          },
+        },
+        select: {
+          id: true,
+          name: true,
+          status: true,
+          createdAt: true,
         },
       });
 
       await tx.userStorage.update({
         where: {
-          userId: userId,
+          userId,
         },
         data: {
           reservedBytes: {
-            decrement: file.size,
+            decrement: fileUpload.file.size,
+          },
+          usedBytes: {
+            increment: fileUpload.file.size,
           },
         },
       });
+
+      return file;
     });
 
-    return response;
+    return {
+      ...updatedFile,
+      message: "Multipart upload completed successfully",
   }
+}
+  
+
+
+  async abortMultipartUpload(fileUploadId: string, key: string, userId: string) {
+  const file = await prisma.file.findFirst({
+    where: {
+      userId: userId,
+      deletedAt: null,
+      blob: {
+        s3KeyName: key,
+      },
+      fileUpload: {
+        id: fileUploadId,
+      }
+    },
+    select: {
+      id: true,
+      size: true,
+      fileUpload: {
+        select: {
+          s3UploadId: true,
+        }
+      },
+    },
+  });
+
+  if (!file) {
+    const error = createHttpError(404, "File not found for the given uploadId and key");
+    throw error;
+  }
+
+  if(!file.fileUpload || !file.fileUpload.s3UploadId) {
+    const error = createHttpError(404, "S3 upload ID not found for the given file");
+    throw error;
+  }
+
+  const s3UploadId = file.fileUpload.s3UploadId;
+
+  const response = await s3Repository.abortMultipartUpload(s3UploadId, key);
+
+  await prisma.$transaction(async (tx) => {
+    await tx.file.delete({
+      where: {
+        id: file.id,
+      },
+    });
+
+    await tx.userStorage.update({
+      where: {
+        userId: userId,
+      },
+      data: {
+        reservedBytes: {
+          decrement: file.size,
+        },
+      },
+    });
+  });
+
+  return response;
+}
 
   async abortAllStuckUploads(userId: string) {
-    const response = await prisma.outboxEvents.create({
-      data: {
-        eventType: "ABORT_STUCK_UPLOADS",
-        aggregateType: "USER",
-        aggregateId: userId,
-        payload: {
-          userId: userId,
-        },
-        status: "PENDING",
+  const response = await prisma.outboxEvents.create({
+    data: {
+      eventType: "ABORT_STUCK_UPLOADS",
+      aggregateType: "USER",
+      aggregateId: userId,
+      payload: {
+        userId: userId,
       },
-      select: {
-        id: true,
-        eventType: true,
-        aggregateType: true,
-        aggregateId: true,
-        status: true,
-      }
-    });
-    return response;
+      status: "PENDING",
+    },
+    select: {
+      id: true,
+      eventType: true,
+      aggregateType: true,
+      aggregateId: true,
+      status: true,
+    }
+  });
+  return response;
+}
+
+  async checkPartStatus(fileUploadId: string, partNumber: number, status: string, userId: string) {
+
+  const fileUpload = await prisma.fileUpload.findFirst({
+    where: {
+      id: fileUploadId,
+      file: { userId, deletedAt: null },
+    },
+    select: {
+      id: true,
+      fileId: true,
+      s3UploadId: true,
+      file: { select: { id: true, size: true, blob: { select: { s3KeyName: true } } } },
+    },
+  });
+
+
+  if (!fileUpload) {
+    throw createHttpError(404, "File upload not found");
   }
 
-  async checkPartStatus(uploadId: string, partNumber: number, status: string, userId: string) {
+  const s3UploadId = fileUpload.s3UploadId;
 
+  const s3KeyName = fileUpload.file.blob?.s3KeyName;
 
-    const fileUpload = await prisma.fileUpload.findFirst({
-      where: {
-        s3UploadId: uploadId,
-        file: { userId, deletedAt: null },
-      },
-      select: {
-        id: true,
-        fileId: true,
-        file: { select: { id: true, size: true, blob: { select: { s3KeyName: true } } } },
-      },
-    });
+  if (!s3KeyName) {
+    throw createHttpError(404, "S3 key name not found for the file upload");
+  }
 
-    if (!fileUpload) {
-      throw createHttpError(404, "File upload not found");
-    }
+  await prisma.fileUpload.update({
+    where: { id: fileUpload.id },
+    data: { updatedAt: new Date() },
+  });
 
-    const s3KeyName = fileUpload.file.blob?.s3KeyName;
+  const s3PartList = await s3Repository.listParts(s3KeyName, s3UploadId);
+  const parts = s3PartList?.Parts ?? []; // empty is a valid state, not an error
 
-    if (!s3KeyName) {
-      throw createHttpError(404, "S3 key name not found for the file upload");
-    }
+  const part = parts.find((p) => p.PartNumber === partNumber);
+  const isVerifiedSuccess = status === "SUCCESS" && !!part && !!part.ETag;
 
-    await prisma.fileUpload.update({
-      where: { id: fileUpload.id },
-      data: { updatedAt: new Date() },
-    });
-
-    const s3PartList = await s3Repository.listParts(s3KeyName, uploadId);
-    const parts = s3PartList?.Parts ?? []; // empty is a valid state, not an error
-
-    const part = parts.find((p) => p.PartNumber === partNumber);
-    const isVerifiedSuccess = status === "SUCCESS" && !!part && !!part.ETag;
-
-    if (isVerifiedSuccess) {
-      await clearPartFailCount({ uploadId, partNumber }); // clear stale counter
-      return {
-        action: "NONE",
-        partNumber,
-        message: `Part ${partNumber} has been uploaded successfully.`,
-      };
-    }
-
-    const attempt = await incrementPartFailCount({ uploadId, partNumber });
-
-    if (attempt > Config.MAX_PART_RETRIES) {
-      await this.abortMultipartUpload(uploadId, s3KeyName, userId);
-      return {
-        action: "ABORT",
-        partNumber,
-        message: `Part ${partNumber} has failed ${attempt} times. The upload has been aborted.`,
-      };
-    }
-
-    const url = await s3Repository.generatePresignedUrl(uploadId, s3KeyName, partNumber);
+  if (isVerifiedSuccess) {
+    await clearPartFailCount({  s3UploadId, partNumber }); // clear stale counter
     return {
-      action: "RETRY",
+      action: "NONE",
       partNumber,
-      message: `Part ${partNumber} has failed ${attempt} times. Please retry the upload.`,
-      presignedUrl: url,
+      message: `Part ${partNumber} has been uploaded successfully.`,
     };
   }
+
+  const attempt = await incrementPartFailCount({ s3UploadId, partNumber });
+
+  if (attempt > Config.MAX_PART_RETRIES) {
+    await this.abortMultipartUpload(fileUpload.id, s3KeyName, userId);
+    return {
+      action: "ABORT",
+      partNumber,
+      message: `Part ${partNumber} has failed ${attempt} times. The upload has been aborted.`,
+    };
+  }
+
+  const url = await s3Repository.generatePresignedUrl(fileUpload.id, s3KeyName, partNumber);
+  return {
+    action: "RETRY",
+    partNumber,
+    message: `Part ${partNumber} has failed ${attempt} times. Please retry the upload.`,
+    presignedUrl: url,
+  };
+}
 
   async dummyEndpoint() {
-    const key =
-      "34c2789e-37e0-4fa1-8347-dcd849b80a26/a09a893a-2ac5-493d-8d5c-67de6d9e9bf8/FirsT__1789973812978";
-    const uploadId =
-      "Ah5CDO5d4Ca7jtk4dj8EWbOjTeGKd30XUQGsbU2Ww0sfdUzjwWvR5sbdcuGsXW1qfB4n3OwW_WqWofr_CXhK.aXkdE.hXCdEGmhdzNaT5zGCzgJFqaWeJlspNG8QsouL";
+  const key =
+    "34c2789e-37e0-4fa1-8347-dcd849b80a26/a09a893a-2ac5-493d-8d5c-67de6d9e9bf8/FirsT__1789973812978";
+  const uploadId =
+    "Ah5CDO5d4Ca7jtk4dj8EWbOjTeGKd30XUQGsbU2Ww0sfdUzjwWvR5sbdcuGsXW1qfB4n3OwW_WqWofr_CXhK.aXkdE.hXCdEGmhdzNaT5zGCzgJFqaWeJlspNG8QsouL";
 
-    const response = await s3Repository.listParts(key, uploadId);
+  const response = await s3Repository.listParts(key, uploadId);
 
-    return {
-      message: "Dummy endpoint reached successfully",
-      data: response,
-    };
-  }
+  return {
+    message: "Dummy endpoint reached successfully",
+    data: response,
+  };
+}
 }

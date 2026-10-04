@@ -3,6 +3,7 @@ import { createFolderSchema } from "./folders.validator";
 import { ParamsDictionary } from "express-serve-static-core";
 
 import z from "zod";
+import { FileCategory } from "../generated/prisma/enums";
 
 export type CreateFolderData = z.infer<typeof createFolderSchema>;
 
@@ -42,4 +43,19 @@ export interface MoveFolderParams extends ParamsDictionary {
 export interface GetAllFoldersQuery {
   cursor?: string;
   pageSize?: number;
+}
+
+
+export interface PaginatedResultFolder {
+  name: string;
+  id: string;
+  createdAt: Date;
+}
+
+export interface PaginatedResultFile {
+  name: string;
+  id: string;
+  createdAt: Date;
+  category: FileCategory;
+  folderId: string;
 }

@@ -11,7 +11,6 @@ export default expressjwt({
   }) as GetVerificationKey,
   algorithms: ["RS256"],
   getToken: (req) => {
-    console.log("req.cookiessssssssssssssssssssssss");
 
     if (req.headers.authorization && req.headers.authorization.split(" ")[1]) {
       const token = req.headers.authorization.split(" ")[1];
