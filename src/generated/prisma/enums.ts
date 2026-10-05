@@ -79,3 +79,13 @@ export const AGGREGATE_TYPE = {
 } as const
 
 export type AGGREGATE_TYPE = (typeof AGGREGATE_TYPE)[keyof typeof AGGREGATE_TYPE]
+
+
+export const FolderStatus = {
+  ACTIVE: 'ACTIVE',
+  TRASHED: 'TRASHED',
+  DELETING: 'DELETING',
+  DELETED: 'DELETED'
+} as const
+
+export type FolderStatus = (typeof FolderStatus)[keyof typeof FolderStatus]

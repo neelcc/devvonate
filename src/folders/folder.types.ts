@@ -3,7 +3,7 @@ import { createFolderSchema } from "./folders.validator";
 import { ParamsDictionary } from "express-serve-static-core";
 
 import z from "zod";
-import { FileCategory } from "../generated/prisma/enums";
+import { FileCategory, FileStatus, FolderStatus } from "../generated/prisma/enums";
 
 export type CreateFolderData = z.infer<typeof createFolderSchema>;
 
@@ -23,22 +23,10 @@ export interface CreateFolderRequest extends Request {
   };
 }
 
-export interface RenameFolderRequest extends Request {
-  params: {
-    id: string;
-  };
-  body: {
-    name: string;
-  };
-}
-
-export interface GetFolderParams extends ParamsDictionary {
+export interface FolderParams extends ParamsDictionary {
   id: string;
 }
 
-export interface MoveFolderParams extends ParamsDictionary {
-  id: string;
-}
 
 export interface GetAllFoldersQuery {
   cursor?: string;
@@ -47,15 +35,33 @@ export interface GetAllFoldersQuery {
 
 
 export interface PaginatedResultFolder {
-  name: string;
   id: string;
+  name: string;
+  userId: string;
+  parentFolderId: string | null;
+  status: FolderStatus;
   createdAt: Date;
+  updatedAt: Date;
+  deletedAt: Date | null;
 }
 
 export interface PaginatedResultFile {
   name: string;
   id: string;
+  userId: string;
+  size: string;
+  status: FileStatus;
+  updatedAt: Date;
+  deletedAt: Date | null;
   createdAt: Date;
   category: FileCategory;
   folderId: string;
+}
+
+export interface DeleteFolderResult {
+  id: string;
+  name: string;
+  parentFolderId: string | null;
+  userId: string;
+  status: FolderStatus;
 }

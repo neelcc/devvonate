@@ -63,6 +63,13 @@ enum AGGREGATE_TYPE {
   USER
 }
 
+enum FolderStatus {
+  ACTIVE
+  TRASHED
+  DELETING
+  DELETED
+}
+
 model User {
   id            String         @id @default(uuid())
   firstName     String
@@ -94,25 +101,7 @@ model RefreshToken {
   @@map("refreshTokens")
 }
 
-model Folder {
-  id             String    @id @default(uuid())
-  userId         String
-  parentFolderId String?
-  name           String
-  deletedAt      DateTime?
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
 
-  user     User     @relation(fields: [userId], references: [id])
-  parent   Folder?  @relation("FolderToFolder", fields: [parentFolderId], references: [id])
-  children Folder[] @relation("FolderToFolder")
-  Files    File[]
-
-  @@unique([parentFolderId, name, userId], name: "uniq_name_in_parent")
-  @@index([userId, deletedAt])
-  @@index([parentFolderId, deletedAt])
-  @@map("folders")
-}
 
 model UserStorage {
   id            String   @id @default(uuid())
@@ -128,29 +117,52 @@ model UserStorage {
   @@map("userStorage")
 }
 
-  model File {
-    id          String       @id @default(uuid())
-    folderId    String
-    userId      String
-    name        String
-    size        BigInt // in bytes
-    contentType String
-    category    FileCategory
-    deletedAt   DateTime?
-    status      FileStatus   @default(ACTIVE)
-    user        User         @relation(fields: [userId], references: [id])
-    folder      Folder       @relation(fields: [folderId], references: [id])
 
-    fileUpload  FileUpload?
-    blob        Blobs?
 
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
 
-    @@index([userId, deletedAt])
-    @@index([folderId, deletedAt])
-    @@map("files")
+
+  model Folder {
+    id             String    @id @default(uuid())
+    userId         String
+    parentFolderId String?
+    name           String
+    deletedAt      DateTime?
+    createdAt      DateTime  @default(now())
+    updatedAt      DateTime  @updatedAt
+    status         FolderStatus @default(ACTIVE)
+    user     User     @relation(fields: [userId], references: [id])
+    parent   Folder?  @relation("FolderToFolder", fields: [parentFolderId], references: [id])
+    children Folder[] @relation("FolderToFolder")
+    files    File[]
+
+    @@unique([parentFolderId, name, userId], name: "uniq_name_in_parent")
+    @@index([userId, deletedAt, id])
+    @@map("folders")
   }
+
+    model File {
+      id          String       @id @default(uuid())
+      folderId    String
+      userId      String
+      name        String
+      size        BigInt // in bytes
+      contentType String
+      category    FileCategory
+      deletedAt   DateTime?
+      status      FileStatus   @default(ACTIVE)
+      user        User         @relation(fields: [userId], references: [id])
+      folder      Folder       @relation(fields: [folderId], references: [id])
+
+      fileUpload  FileUpload?
+      blob        Blobs?
+
+      createdAt DateTime @default(now())
+      updatedAt DateTime @updatedAt
+
+      @@index([userId, deletedAt])
+      @@index([folderId, deletedAt])
+      @@map("files")
+    }
 
   model FileUpload {
     id         String       @id @default(uuid())

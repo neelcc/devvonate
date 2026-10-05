@@ -1088,7 +1088,8 @@ export const FolderScalarFieldEnum = {
   name: 'name',
   deletedAt: 'deletedAt',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  status: 'status'
 } as const
 
 export type FolderScalarFieldEnum = (typeof FolderScalarFieldEnum)[keyof typeof FolderScalarFieldEnum]
@@ -1271,6 +1272,20 @@ export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'In
  * Reference to a field of type 'Int[]'
  */
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+/**
+ * Reference to a field of type 'FolderStatus'
+ */
+export type EnumFolderStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FolderStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'FolderStatus[]'
+ */
+export type ListEnumFolderStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FolderStatus[]'>
     
 
 

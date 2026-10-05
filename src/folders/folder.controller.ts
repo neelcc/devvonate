@@ -4,10 +4,8 @@ import { NextFunction, Request, Response } from "express";
 import { AuthRequest } from "../auth/auth.types";
 import createHttpError from "http-errors";
 import {
+  FolderParams,
   GetAllFoldersQuery,
-  GetFolderParams,
-  MoveFolderParams,
-  RenameFolderRequest,
 } from "./folder.types";
 
 export class FolderController {
@@ -38,18 +36,23 @@ export class FolderController {
   };
 
   getChildFolders = async (
-    req: Request<GetFolderParams>,
+    req: Request<FolderParams>,
     res: Response,
     next: NextFunction,
   ) => {
     const userId = req.auth.sub;
     const cursor = req.query.cursor as string | undefined;
-      
+    const folderId = req.params.id;
+
+    if (!folderId) {
+      const error = createHttpError(400, "Folder ID is required");
+      throw error;
+    }  
 
     const { folders, files, nextCursor } = await this.folderServices.getChildFolders(
-      req.params.id,
+      folderId,
       userId,
-      cursor
+      cursor,
     );
 
     res.status(200).json({
@@ -65,12 +68,12 @@ export class FolderController {
 
  
   renameFolder = async (
-    req: RenameFolderRequest,
+    req: Request<FolderParams>,
     res: Response,
     next: NextFunction,
   ) => {
     const folderId = req.params.id;
-    const newName = req.body.name;
+    const { name } = req.body;
     const userId = (req as AuthRequest).auth.sub;
 
     if (!folderId) {
@@ -78,14 +81,14 @@ export class FolderController {
       throw error;
     }
 
-    if (!newName) {
+    if (!name) {
       const error = createHttpError(400, "New folder name is required");
       throw error;
     }
 
     const folder = await this.folderServices.renameFolder(
       folderId,
-      newName,
+      name,
       userId,
     );
 
@@ -98,7 +101,7 @@ export class FolderController {
   };
 
   moveFolder = async (
-    req: Request<MoveFolderParams>,
+    req: Request<FolderParams>,
     res: Response,
     next: NextFunction,
   ) => {
@@ -137,7 +140,7 @@ export class FolderController {
     });
   };
 
-  deleteFolder = async (req: Request, res: Response, next: NextFunction) => {
+  deleteFolder = async (req: Request<FolderParams>, res: Response, next: NextFunction) => {
     const folderId = req.params.id;
     const userId = (req as AuthRequest).auth.sub;
 
@@ -147,17 +150,19 @@ export class FolderController {
       return;
     }
 
-    const folder = await this.folderServices.deleteFolder(
-      folderId as string,
+    const { result, folders } = await this.folderServices.deleteFolder(
+      folderId,
       userId,
     );
 
     res.status(200).json({
       message: "Folder deleted successfully",
-      name: folder.name,
-      id: folder.id,
+      folders: folders,
+      result: result,
     });
   };
+
+  
 
   dummyRoute = async (req: Request, res: Response, next: NextFunction) => {
     console.log(req.hostname);
