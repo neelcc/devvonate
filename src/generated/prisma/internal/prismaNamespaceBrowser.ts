@@ -53,8 +53,8 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   User: 'User',
   RefreshToken: 'RefreshToken',
-  Folder: 'Folder',
   UserStorage: 'UserStorage',
+  Folder: 'Folder',
   File: 'File',
   FileUpload: 'FileUpload',
   Blobs: 'Blobs',
@@ -103,20 +103,6 @@ export const RefreshTokenScalarFieldEnum = {
 export type RefreshTokenScalarFieldEnum = (typeof RefreshTokenScalarFieldEnum)[keyof typeof RefreshTokenScalarFieldEnum]
 
 
-export const FolderScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  parentFolderId: 'parentFolderId',
-  name: 'name',
-  deletedAt: 'deletedAt',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  status: 'status'
-} as const
-
-export type FolderScalarFieldEnum = (typeof FolderScalarFieldEnum)[keyof typeof FolderScalarFieldEnum]
-
-
 export const UserStorageScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -129,6 +115,20 @@ export const UserStorageScalarFieldEnum = {
 } as const
 
 export type UserStorageScalarFieldEnum = (typeof UserStorageScalarFieldEnum)[keyof typeof UserStorageScalarFieldEnum]
+
+
+export const FolderScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  parentFolderId: 'parentFolderId',
+  name: 'name',
+  deletedAt: 'deletedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  status: 'status'
+} as const
+
+export type FolderScalarFieldEnum = (typeof FolderScalarFieldEnum)[keyof typeof FolderScalarFieldEnum]
 
 
 export const FileScalarFieldEnum = {

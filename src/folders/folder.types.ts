@@ -59,9 +59,7 @@ export interface PaginatedResultFile {
 }
 
 export interface DeleteFolderResult {
-  id: string;
-  name: string;
-  parentFolderId: string | null;
-  userId: string;
-  status: FolderStatus;
+  folderId: string;
+  fileIds : string[];
 }
+

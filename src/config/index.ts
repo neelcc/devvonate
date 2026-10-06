@@ -61,4 +61,6 @@ export const Config = {
   REDIS_URL: required(process.env.REDIS_URL, "REDIS_URL"),
   MAX_PART_RETRIES: Number(required(process.env.MAX_PART_RETRIES, "MAX_PART_RETRIES")),
   FAILURE_TTL: Number(required(process.env.FAILURE_TTL, "FAILURE_TTL")),
+  DELETION_BATCH_SIZE: Number(required(process.env.DELETION_BATCH_SIZE, "DELETION_BATCH_SIZE")),
+  TEST_USER_ID: required(process.env.TEST_USER_ID, "TEST_USER_ID"),
 };

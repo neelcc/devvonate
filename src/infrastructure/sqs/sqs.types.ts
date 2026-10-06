@@ -23,3 +23,8 @@ export interface DeleteFilePayload {
 export interface UserOnboardingPayload {
   userId: string;
 }
+
+export interface FolderDeletionPayload {
+  userId: string;
+  folderId: string;
+}

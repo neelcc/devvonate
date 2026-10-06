@@ -17,6 +17,16 @@ export const Role = {
 export type Role = (typeof Role)[keyof typeof Role]
 
 
+export const FolderStatus = {
+  ACTIVE: 'ACTIVE',
+  TRASHED: 'TRASHED',
+  DELETING: 'DELETING',
+  DELETED: 'DELETED'
+} as const
+
+export type FolderStatus = (typeof FolderStatus)[keyof typeof FolderStatus]
+
+
 export const FileStatus = {
   ACTIVE: 'ACTIVE',
   IN_PROGRESS: 'IN_PROGRESS',
@@ -26,6 +36,17 @@ export const FileStatus = {
 } as const
 
 export type FileStatus = (typeof FileStatus)[keyof typeof FileStatus]
+
+
+export const FileCategory = {
+  IMAGE: 'IMAGE',
+  VIDEO: 'VIDEO',
+  AUDIO: 'AUDIO',
+  DOCUMENT: 'DOCUMENT',
+  ARCHIVE: 'ARCHIVE'
+} as const
+
+export type FileCategory = (typeof FileCategory)[keyof typeof FileCategory]
 
 
 export const UploadStatus = {
@@ -41,17 +62,6 @@ export const UploadStatus = {
 export type UploadStatus = (typeof UploadStatus)[keyof typeof UploadStatus]
 
 
-export const FileCategory = {
-  IMAGE: 'IMAGE',
-  VIDEO: 'VIDEO',
-  AUDIO: 'AUDIO',
-  DOCUMENT: 'DOCUMENT',
-  ARCHIVE: 'ARCHIVE'
-} as const
-
-export type FileCategory = (typeof FileCategory)[keyof typeof FileCategory]
-
-
 export const OUTBOX_EVENT_STATUS = {
   PENDING: 'PENDING',
   PROCESSED: 'PROCESSED',
@@ -64,6 +74,8 @@ export type OUTBOX_EVENT_STATUS = (typeof OUTBOX_EVENT_STATUS)[keyof typeof OUTB
 export const OUTBOX_EVENT_TYPE = {
   FILE_DELETION: 'FILE_DELETION',
   FILE_BATCH_DELETION: 'FILE_BATCH_DELETION',
+  FOLDER_DELETION: 'FOLDER_DELETION',
+  FOLDER_BATCH_DELETION: 'FOLDER_BATCH_DELETION',
   USER_ONBOARDING: 'USER_ONBOARDING',
   USER_DELETION: 'USER_DELETION',
   ABORT_STUCK_UPLOADS: 'ABORT_STUCK_UPLOADS'
@@ -79,13 +91,3 @@ export const AGGREGATE_TYPE = {
 } as const
 
 export type AGGREGATE_TYPE = (typeof AGGREGATE_TYPE)[keyof typeof AGGREGATE_TYPE]
-
-
-export const FolderStatus = {
-  ACTIVE: 'ACTIVE',
-  TRASHED: 'TRASHED',
-  DELETING: 'DELETING',
-  DELETED: 'DELETED'
-} as const
-
-export type FolderStatus = (typeof FolderStatus)[keyof typeof FolderStatus]

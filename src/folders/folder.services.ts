@@ -3,11 +3,14 @@ import prisma from "../config/prisma";
 import { CreateFolderData, DeleteFolderResult, Folder, PaginatedResultFile, PaginatedResultFolder } from "./folder.types";
 import { decodeCursor, encodeCursor } from "../utils";
 import { Logger } from "winston";
+import { Config } from "../config";
 
 export class FolderServices {
   constructor(private readonly logger: Logger) { }
 
   async createFolder(data: CreateFolderData, userId: string) {
+
+
     return prisma.$transaction(async (tx) => {
       let parentFolder = null;
 
@@ -77,6 +80,7 @@ export class FolderServices {
         id: folderId,
         userId: userId,
         deletedAt: null,
+        status: "ACTIVE",
       },
     });
 
@@ -100,6 +104,8 @@ export class FolderServices {
         where: {
           parentFolderId: folderId,
           userId: userId,
+        status: "ACTIVE",
+
           deletedAt: null,
           ...(decodedCursor && {
             OR: [
@@ -228,6 +234,7 @@ export class FolderServices {
         id: folderId,
         userId: userId,
         deletedAt: null,
+        status: "ACTIVE"
       },
       select: {
         id: true,
@@ -295,199 +302,64 @@ export class FolderServices {
   }
 
   async deleteFolder(folderId: string, userId: string) {
-   
-    console.log("Deleting folder with ID:", folderId, "for user:", userId);
+    
 
-    // const folder = await prisma.folder.findFirst({
-    //   where: {
-    //     id: folderId,
-    //     userId: userId,
-    //     deletedAt: null,
-    //   },
-    //   select: {
-    //     name: true,
-    //     children: {
-    //       select: {
-    //         id: true,
-    //         name: true,
-    //       },
-    //     },
-    //   },
-    // });
+    const folder = await prisma.folder.findFirst({
+      where: {
+        id: folderId,
+        userId: userId,
+      },
+      select: {
+        id: true,
+        status: true,
+      },
+    });
 
-    const folders: DeleteFolderResult[] = await prisma.$queryRaw`
-    WITH RECURSIVE folder_tree AS (
-    SELECT
-      f.id,
-      f."parentFolderId" AS "parentId",
-      f."userId",
-      f."name" as name,
-      f."status" as status,
-      0 AS depth
-    FROM "folders" f
-    WHERE f.id = ${folderId}
-      AND f."userId" = ${userId}
-      AND f."deletedAt" IS NULL
-      AND f."status" = 'ACTIVE'
-
-    UNION ALL
-
-    SELECT
-      child.id,
-      child."parentFolderId" AS "parentId",
-      child."userId",
-      child."name" ,
-      child."status" as status,
-      ft.depth + 1 AS depth
-    FROM "folders" child
-    INNER JOIN folder_tree ft
-      ON child."parentFolderId" = ft.id
-    WHERE child."userId" = ${userId}
-      AND child."deletedAt" IS NULL
-      AND child."status" = 'ACTIVE'
-  )
-
-  SELECT *
-  FROM folder_tree  
-  ORDER BY depth, id;
-    `;
-
-    const result = await prisma.$queryRaw`
-  WITH RECURSIVE folder_tree AS (
-
-    -- 1. Starting folder
-    SELECT
-      f.id,
-      f."parentFolderId",
-      0 AS depth
-    FROM "folders" f
-    WHERE f.id = ${folderId}
-      AND f."userId" = ${userId}
-      AND f."deletedAt" IS NULL
-
-    UNION ALL
-
-    -- 2. Find children recursively
-    SELECT
-      child.id,
-      child."parentFolderId",
-      ft.depth + 1
-    FROM "folders" child
-    JOIN folder_tree ft
-      ON child."parentFolderId" = ft.id
-    WHERE child."userId" = ${userId}
-      AND child."deletedAt" IS NULL
-  )
-  -- 3. Connect each folder to its files
- SELECT
-  ft.id AS "folderId",
-  COALESCE(
-    ARRAY_AGG(file.id) FILTER (WHERE file.id IS NOT NULL),
-    ARRAY[]::text[]
-  ) AS "fileIds"
-FROM folder_tree ft
-LEFT JOIN "files" file
-  ON file."folderId" = ft.id
-  AND file."userId" = ${userId}
-  AND file."deletedAt" IS NULL
-  AND file."status" = 'ACTIVE'
-GROUP BY ft.id
-ORDER BY ft.id;
-`;
-
-   
-
-    if (!folders) {
-      const error = createHttpError(404, "Folders not found");
+     if(!folder){
+      const error = createHttpError(404, "Folder not found");
       throw error;
     }
 
+    if(folder && folder.status === "DELETING"){
+      return {
+        message : "Folder is already being deleted",
+        id : folder.id,
+      }
+    }
 
-    const folderIds = folders.map(f => f.id);
-
-
-
-
-
-    // await prisma.$transaction(async (tx) => {
-
-    //   const files = await tx.file.findMany({
-    //     where: {
-    //       folderId: { in: folderIds },
-    //       userId: userId,
-    //       deletedAt: null,
-    //       status: "ACTIVE",
-    //     },
-    //     select: {
-    //       id: true,
-    //       folderId: true,
-    //     },
-    //   });
-
-    //   const fileIds = files.map(f => f.id);
-
-    //   const deletedFolders = await tx.folder.updateMany({
-    //     where: {
-    //       id: { in: folderIds },
-    //       userId: userId,
-    //       deletedAt: null,
-    //     },
-    //     data: {
-    //       deletedAt: new Date(),
-    //       status: "DELETING",
-
-    //     },
-    //   });
-
-    //   const deletedFiles = await tx.file.updateMany({
-    //     where: {
-    //       id: { in: fileIds },
-    //       userId: userId,
-    //       deletedAt: null,
-    //     },
-    //     data: {
-    //       deletedAt: new Date(),
-    //       status: "DELETING",
-    //     },
-    //   })
+    if (folder && folder.status === "DELETED") {
+      return {
+        message : "Folder is already deleted",
+        id : folder.id,
+      }
+    }
 
 
+    await prisma.folder.update({
+      where: { id: folderId },
+      data: {
+        status: "DELETING",
+        updatedAt: new Date(),
+      },
+    });
 
-      
+    await prisma.outboxEvents.create({
+      data: {
+        aggregateType: "FOLDER",
+        aggregateId: folderId,
+        eventType: "FOLDER_DELETION",
+        payload: JSON.stringify({ userId, folderId }),
+        createdAt: new Date(),
+      },
+    });
 
 
 
 
-    // })
-
-
-    // const deletedFolder = await prisma.$transaction(async (tx) => {
-    //   if (folder.children && folder.children.length > 0) {
-    //     await tx.folder.updateMany({
-    //       where: {
-    //         parentFolderId: folderId,
-    //         userId: userId,
-    //         deletedAt: null,
-    //       },
-    //       data: {
-    //         deletedAt: new Date(),
-    //       },
-    //     });
-    //   }
-
-    //   return await prisma.folder.update({
-    //     where: { id: folderId },
-    //     data: { deletedAt: new Date() },
-    //     select: {
-    //       id: true,
-    //       name: true,
-    //     },
-    //   });
-    // });
-
+    
     return {
-      result : result,
-      folders: folders,
+      message : "Folder deleted successfully",
+      folderId : folderId,
     }
   }
 
@@ -497,6 +369,10 @@ ORDER BY ft.id;
         id: folderId,
         userId: userId,
         deletedAt: null,
+        status: "ACTIVE",
+      },
+      select: {
+        id: true,
       },
     });
 

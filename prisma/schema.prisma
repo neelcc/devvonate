@@ -17,12 +17,30 @@ enum Role {
   USER
 }
 
+
+enum FolderStatus {
+  ACTIVE
+  TRASHED
+  DELETING
+  DELETED
+}
+
+
 enum FileStatus {
   ACTIVE
   IN_PROGRESS
   TRASHED
   DELETING
   DELETED
+}
+
+
+enum FileCategory {
+  IMAGE
+  VIDEO
+  AUDIO
+  DOCUMENT
+  ARCHIVE
 }
 
 enum UploadStatus {
@@ -35,13 +53,6 @@ enum UploadStatus {
   EXPIRED
 }
 
-enum FileCategory {
-  IMAGE
-  VIDEO
-  AUDIO
-  DOCUMENT
-  ARCHIVE
-}
 
 enum OUTBOX_EVENT_STATUS {
   PENDING
@@ -52,6 +63,8 @@ enum OUTBOX_EVENT_STATUS {
 enum OUTBOX_EVENT_TYPE {
   FILE_DELETION
   FILE_BATCH_DELETION
+  FOLDER_DELETION
+  FOLDER_BATCH_DELETION
   USER_ONBOARDING
   USER_DELETION
   ABORT_STUCK_UPLOADS
@@ -61,13 +74,6 @@ enum AGGREGATE_TYPE {
   FILE
   FOLDER
   USER
-}
-
-enum FolderStatus {
-  ACTIVE
-  TRASHED
-  DELETING
-  DELETED
 }
 
 model User {
@@ -118,9 +124,6 @@ model UserStorage {
 }
 
 
-
-
-
   model Folder {
     id             String    @id @default(uuid())
     userId         String
@@ -140,7 +143,7 @@ model UserStorage {
     @@map("folders")
   }
 
-    model File {
+  model File {
       id          String       @id @default(uuid())
       folderId    String
       userId      String
@@ -163,6 +166,7 @@ model UserStorage {
       @@index([folderId, deletedAt])
       @@map("files")
     }
+
 
   model FileUpload {
     id         String       @id @default(uuid())
@@ -198,7 +202,6 @@ model UserStorage {
 
     @@map("blobs")
     @@index([sha256, refCount, size])
-    
   }
 
 model OutboxEvents {

@@ -399,8 +399,8 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 export const ModelName = {
   User: 'User',
   RefreshToken: 'RefreshToken',
-  Folder: 'Folder',
   UserStorage: 'UserStorage',
+  Folder: 'Folder',
   File: 'File',
   FileUpload: 'FileUpload',
   Blobs: 'Blobs',
@@ -420,7 +420,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "refreshToken" | "folder" | "userStorage" | "file" | "fileUpload" | "blobs" | "outboxEvents"
+    modelProps: "user" | "refreshToken" | "userStorage" | "folder" | "file" | "fileUpload" | "blobs" | "outboxEvents"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -572,80 +572,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    Folder: {
-      payload: Prisma.$FolderPayload<ExtArgs>
-      fields: Prisma.FolderFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.FolderFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$FolderPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.FolderFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$FolderPayload>
-        }
-        findFirst: {
-          args: Prisma.FolderFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$FolderPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.FolderFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$FolderPayload>
-        }
-        findMany: {
-          args: Prisma.FolderFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$FolderPayload>[]
-        }
-        create: {
-          args: Prisma.FolderCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$FolderPayload>
-        }
-        createMany: {
-          args: Prisma.FolderCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.FolderCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$FolderPayload>[]
-        }
-        delete: {
-          args: Prisma.FolderDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$FolderPayload>
-        }
-        update: {
-          args: Prisma.FolderUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$FolderPayload>
-        }
-        deleteMany: {
-          args: Prisma.FolderDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.FolderUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.FolderUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$FolderPayload>[]
-        }
-        upsert: {
-          args: Prisma.FolderUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$FolderPayload>
-        }
-        aggregate: {
-          args: Prisma.FolderAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateFolder>
-        }
-        groupBy: {
-          args: Prisma.FolderGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.FolderGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.FolderCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.FolderCountAggregateOutputType> | number
-        }
-      }
-    }
     UserStorage: {
       payload: Prisma.$UserStoragePayload<ExtArgs>
       fields: Prisma.UserStorageFieldRefs
@@ -717,6 +643,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.UserStorageCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.UserStorageCountAggregateOutputType> | number
+        }
+      }
+    }
+    Folder: {
+      payload: Prisma.$FolderPayload<ExtArgs>
+      fields: Prisma.FolderFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.FolderFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FolderPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.FolderFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FolderPayload>
+        }
+        findFirst: {
+          args: Prisma.FolderFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FolderPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.FolderFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FolderPayload>
+        }
+        findMany: {
+          args: Prisma.FolderFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FolderPayload>[]
+        }
+        create: {
+          args: Prisma.FolderCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FolderPayload>
+        }
+        createMany: {
+          args: Prisma.FolderCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.FolderCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FolderPayload>[]
+        }
+        delete: {
+          args: Prisma.FolderDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FolderPayload>
+        }
+        update: {
+          args: Prisma.FolderUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FolderPayload>
+        }
+        deleteMany: {
+          args: Prisma.FolderDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.FolderUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.FolderUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FolderPayload>[]
+        }
+        upsert: {
+          args: Prisma.FolderUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FolderPayload>
+        }
+        aggregate: {
+          args: Prisma.FolderAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateFolder>
+        }
+        groupBy: {
+          args: Prisma.FolderGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FolderGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.FolderCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FolderCountAggregateOutputType> | number
         }
       }
     }
@@ -1081,20 +1081,6 @@ export const RefreshTokenScalarFieldEnum = {
 export type RefreshTokenScalarFieldEnum = (typeof RefreshTokenScalarFieldEnum)[keyof typeof RefreshTokenScalarFieldEnum]
 
 
-export const FolderScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  parentFolderId: 'parentFolderId',
-  name: 'name',
-  deletedAt: 'deletedAt',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  status: 'status'
-} as const
-
-export type FolderScalarFieldEnum = (typeof FolderScalarFieldEnum)[keyof typeof FolderScalarFieldEnum]
-
-
 export const UserStorageScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -1107,6 +1093,20 @@ export const UserStorageScalarFieldEnum = {
 } as const
 
 export type UserStorageScalarFieldEnum = (typeof UserStorageScalarFieldEnum)[keyof typeof UserStorageScalarFieldEnum]
+
+
+export const FolderScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  parentFolderId: 'parentFolderId',
+  name: 'name',
+  deletedAt: 'deletedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  status: 'status'
+} as const
+
+export type FolderScalarFieldEnum = (typeof FolderScalarFieldEnum)[keyof typeof FolderScalarFieldEnum]
 
 
 export const FileScalarFieldEnum = {
@@ -1276,20 +1276,6 @@ export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
 
 
 /**
- * Reference to a field of type 'FolderStatus'
- */
-export type EnumFolderStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FolderStatus'>
-    
-
-
-/**
- * Reference to a field of type 'FolderStatus[]'
- */
-export type ListEnumFolderStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FolderStatus[]'>
-    
-
-
-/**
  * Reference to a field of type 'BigInt'
  */
 export type BigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt'>
@@ -1300,6 +1286,20 @@ export type BigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 
  * Reference to a field of type 'BigInt[]'
  */
 export type ListBigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt[]'>
+    
+
+
+/**
+ * Reference to a field of type 'FolderStatus'
+ */
+export type EnumFolderStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FolderStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'FolderStatus[]'
+ */
+export type ListEnumFolderStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FolderStatus[]'>
     
 
 
@@ -1567,8 +1567,8 @@ export type PrismaClientOptions = PrismaClientOptionsWithAccelerateUrl | PrismaC
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
   refreshToken?: Prisma.RefreshTokenOmit
-  folder?: Prisma.FolderOmit
   userStorage?: Prisma.UserStorageOmit
+  folder?: Prisma.FolderOmit
   file?: Prisma.FileOmit
   fileUpload?: Prisma.FileUploadOmit
   blobs?: Prisma.BlobsOmit

@@ -54,8 +54,8 @@ router.patch(
 );
 router.delete(
   "/:id",
-  authenticate,
-  validateParams(deleteFolderParamsSchema),
+  // authenticate,
+  // validateParams(deleteFolderParamsSchema),
   asyncWrapper(folderController.deleteFolder),
 );
 

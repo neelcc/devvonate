@@ -470,20 +470,6 @@ export type UserUpdateOneRequiredWithoutRefreshTokensNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutRefreshTokensInput, Prisma.UserUpdateWithoutRefreshTokensInput>, Prisma.UserUncheckedUpdateWithoutRefreshTokensInput>
 }
 
-export type UserCreateNestedOneWithoutFoldersInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutFoldersInput, Prisma.UserUncheckedCreateWithoutFoldersInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutFoldersInput
-  connect?: Prisma.UserWhereUniqueInput
-}
-
-export type UserUpdateOneRequiredWithoutFoldersNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutFoldersInput, Prisma.UserUncheckedCreateWithoutFoldersInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutFoldersInput
-  upsert?: Prisma.UserUpsertWithoutFoldersInput
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutFoldersInput, Prisma.UserUpdateWithoutFoldersInput>, Prisma.UserUncheckedUpdateWithoutFoldersInput>
-}
-
 export type UserCreateNestedOneWithoutStorageInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutStorageInput, Prisma.UserUncheckedCreateWithoutStorageInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutStorageInput
@@ -496,6 +482,20 @@ export type UserUpdateOneRequiredWithoutStorageNestedInput = {
   upsert?: Prisma.UserUpsertWithoutStorageInput
   connect?: Prisma.UserWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutStorageInput, Prisma.UserUpdateWithoutStorageInput>, Prisma.UserUncheckedUpdateWithoutStorageInput>
+}
+
+export type UserCreateNestedOneWithoutFoldersInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutFoldersInput, Prisma.UserUncheckedCreateWithoutFoldersInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutFoldersInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutFoldersNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutFoldersInput, Prisma.UserUncheckedCreateWithoutFoldersInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutFoldersInput
+  upsert?: Prisma.UserUpsertWithoutFoldersInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutFoldersInput, Prisma.UserUpdateWithoutFoldersInput>, Prisma.UserUncheckedUpdateWithoutFoldersInput>
 }
 
 export type UserCreateNestedOneWithoutFilesInput = {
@@ -624,90 +624,6 @@ export type UserUncheckedUpdateWithoutRefreshTokensInput = {
   fileUploads?: Prisma.FileUploadUncheckedUpdateManyWithoutUserNestedInput
 }
 
-export type UserCreateWithoutFoldersInput = {
-  id?: string
-  firstName: string
-  lastName: string
-  email: string
-  password: string
-  role?: $Enums.Role
-  rootFolderId?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  files?: Prisma.FileCreateNestedManyWithoutUserInput
-  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
-  storage?: Prisma.UserStorageCreateNestedOneWithoutUserInput
-  blobs?: Prisma.BlobsCreateNestedManyWithoutUserInput
-  fileUploads?: Prisma.FileUploadCreateNestedManyWithoutUserInput
-}
-
-export type UserUncheckedCreateWithoutFoldersInput = {
-  id?: string
-  firstName: string
-  lastName: string
-  email: string
-  password: string
-  role?: $Enums.Role
-  rootFolderId?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  files?: Prisma.FileUncheckedCreateNestedManyWithoutUserInput
-  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
-  storage?: Prisma.UserStorageUncheckedCreateNestedOneWithoutUserInput
-  blobs?: Prisma.BlobsUncheckedCreateNestedManyWithoutUserInput
-  fileUploads?: Prisma.FileUploadUncheckedCreateNestedManyWithoutUserInput
-}
-
-export type UserCreateOrConnectWithoutFoldersInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutFoldersInput, Prisma.UserUncheckedCreateWithoutFoldersInput>
-}
-
-export type UserUpsertWithoutFoldersInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutFoldersInput, Prisma.UserUncheckedUpdateWithoutFoldersInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutFoldersInput, Prisma.UserUncheckedCreateWithoutFoldersInput>
-  where?: Prisma.UserWhereInput
-}
-
-export type UserUpdateToOneWithWhereWithoutFoldersInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutFoldersInput, Prisma.UserUncheckedUpdateWithoutFoldersInput>
-}
-
-export type UserUpdateWithoutFoldersInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  firstName?: Prisma.StringFieldUpdateOperationsInput | string
-  lastName?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
-  rootFolderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  files?: Prisma.FileUpdateManyWithoutUserNestedInput
-  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
-  storage?: Prisma.UserStorageUpdateOneWithoutUserNestedInput
-  blobs?: Prisma.BlobsUpdateManyWithoutUserNestedInput
-  fileUploads?: Prisma.FileUploadUpdateManyWithoutUserNestedInput
-}
-
-export type UserUncheckedUpdateWithoutFoldersInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  firstName?: Prisma.StringFieldUpdateOperationsInput | string
-  lastName?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
-  rootFolderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  files?: Prisma.FileUncheckedUpdateManyWithoutUserNestedInput
-  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
-  storage?: Prisma.UserStorageUncheckedUpdateOneWithoutUserNestedInput
-  blobs?: Prisma.BlobsUncheckedUpdateManyWithoutUserNestedInput
-  fileUploads?: Prisma.FileUploadUncheckedUpdateManyWithoutUserNestedInput
-}
-
 export type UserCreateWithoutStorageInput = {
   id?: string
   firstName: string
@@ -788,6 +704,90 @@ export type UserUncheckedUpdateWithoutStorageInput = {
   files?: Prisma.FileUncheckedUpdateManyWithoutUserNestedInput
   folders?: Prisma.FolderUncheckedUpdateManyWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  blobs?: Prisma.BlobsUncheckedUpdateManyWithoutUserNestedInput
+  fileUploads?: Prisma.FileUploadUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutFoldersInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  password: string
+  role?: $Enums.Role
+  rootFolderId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  files?: Prisma.FileCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  storage?: Prisma.UserStorageCreateNestedOneWithoutUserInput
+  blobs?: Prisma.BlobsCreateNestedManyWithoutUserInput
+  fileUploads?: Prisma.FileUploadCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutFoldersInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  password: string
+  role?: $Enums.Role
+  rootFolderId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  files?: Prisma.FileUncheckedCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  storage?: Prisma.UserStorageUncheckedCreateNestedOneWithoutUserInput
+  blobs?: Prisma.BlobsUncheckedCreateNestedManyWithoutUserInput
+  fileUploads?: Prisma.FileUploadUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutFoldersInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutFoldersInput, Prisma.UserUncheckedCreateWithoutFoldersInput>
+}
+
+export type UserUpsertWithoutFoldersInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutFoldersInput, Prisma.UserUncheckedUpdateWithoutFoldersInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutFoldersInput, Prisma.UserUncheckedCreateWithoutFoldersInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutFoldersInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutFoldersInput, Prisma.UserUncheckedUpdateWithoutFoldersInput>
+}
+
+export type UserUpdateWithoutFoldersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  rootFolderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  files?: Prisma.FileUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  storage?: Prisma.UserStorageUpdateOneWithoutUserNestedInput
+  blobs?: Prisma.BlobsUpdateManyWithoutUserNestedInput
+  fileUploads?: Prisma.FileUploadUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutFoldersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  rootFolderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  files?: Prisma.FileUncheckedUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  storage?: Prisma.UserStorageUncheckedUpdateOneWithoutUserNestedInput
   blobs?: Prisma.BlobsUncheckedUpdateManyWithoutUserNestedInput
   fileUploads?: Prisma.FileUploadUncheckedUpdateManyWithoutUserNestedInput
 }

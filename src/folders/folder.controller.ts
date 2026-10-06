@@ -7,6 +7,7 @@ import {
   FolderParams,
   GetAllFoldersQuery,
 } from "./folder.types";
+import { Config } from "../config";
 
 export class FolderController {
   constructor(
@@ -142,26 +143,24 @@ export class FolderController {
 
   deleteFolder = async (req: Request<FolderParams>, res: Response, next: NextFunction) => {
     const folderId = req.params.id;
-    const userId = (req as AuthRequest).auth.sub;
-
+    // const userId = (req as AuthRequest).auth.sub;
+    const userId = Config.TEST_USER_ID; // Use the test user ID from the environment variable
+    
     if (!folderId) {
       const error = createHttpError(400, "Folder ID is required");
       next(error);
       return;
     }
 
-    const { result, folders } = await this.folderServices.deleteFolder(
+    const response = await this.folderServices.deleteFolder(
       folderId,
       userId,
     );
 
     res.status(200).json({
-      message: "Folder deleted successfully",
-      folders: folders,
-      result: result,
+      data: response,
     });
-  };
-
+  }
   
 
   dummyRoute = async (req: Request, res: Response, next: NextFunction) => {
