@@ -69,8 +69,6 @@ export function isPartsValidated(
   parts: { ETag: string; PartNumber: number }[],
   s3Parts: Part[],
 ): boolean {
-  console.log("Both parts lengths:", parts.length, s3Parts.length);
-
   if (parts.length !== s3Parts.length) {
     return false;
   }
@@ -78,19 +76,25 @@ export function isPartsValidated(
   for (let i = 0; i < parts.length; i++) {
     const part = parts[i];
     const s3Part = s3Parts[i];
+
     if (!part || !s3Part) {
       return false;
     }
-    const s3ETag = s3Part.ETag?.replace(/^"|"$/g, "");
 
-    if (part.ETag !== s3ETag || part.PartNumber !== s3Part.PartNumber) {
+    const normalizeETag = (etag: string) =>
+      etag.replace(/^"|"$/g, "");
+
+    if (
+      normalizeETag(part.ETag) !==
+        normalizeETag(s3Part.ETag ?? "") ||
+      part.PartNumber !== s3Part.PartNumber
+    ) {
       return false;
     }
   }
 
   return true;
 }
-
 export function getAvailableBytes(availableStorage: {
   totalBytes: bigint;
   usedBytes: bigint;

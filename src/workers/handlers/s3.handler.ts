@@ -7,6 +7,7 @@ export async function deleteTrashFile(payload: DeleteFilePayload) {
 }
 
 export async function deleteAllTrashFile(payload: DeleteFilePayload[]) {
+  console.log("DeleteAllTrashFile payload:", payload);
   const keys = payload.map((p) => p.objectKey);
   const response = await s3Repository.deleteMultipleObjects(keys);
   console.log("DeleteAllTrashFile response:", response);

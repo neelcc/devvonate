@@ -25,6 +25,7 @@ export class UploadServices {
     sha256: string,
   ) {
 
+
     const folder = await prisma.folder.findFirst({
       where: {
         id: folderId,
@@ -38,6 +39,7 @@ export class UploadServices {
         createdAt: true,
       },
     });
+
 
     if (!folder) {
       const error = createHttpError(
@@ -54,37 +56,74 @@ export class UploadServices {
       throw error;
     }
 
-    const existingBlob = await prisma.blobs.findFirst({
+    const existingBlob = await prisma.blob.findFirst({
       where: {
         sha256: sha256,
         contentType: fileData.contentType,
         size: fileData.size,
+        AND : {
+          files: {
+            some: {
+              status: "ACTIVE",
+            }
+          }
+        }
       },
       select: {
         id: true,
-        fileId: true,
         refCount: true,
         s3KeyName: true,
-        file: {
+        files: {
           select: {
             folderId: true,
+            id: true,
+            name: true,
           }
         }
       },
     })
 
+     const availableStorage = await prisma.userStorage.findFirst({
+      where: {
+        userId: userId,
+      },
+      select: {
+        usedBytes: true,
+        totalBytes: true,
+        trashBytes: true,
+        reservedBytes: true,
+      },
+    });
+
+    
+    if (!availableStorage) {
+      const error = createHttpError(404, "User storage not found");
+      throw error;
+    }
+
     if (existingBlob) {
+
+      const availableBytes = getAvailableBytes(availableStorage);
+
+      if (availableBytes < fileData.size) {
+      const error = createHttpError(400, "Insufficient storage space");
+      throw error;
+    }
+      
+      const updatedFileName = existingBlob.files[0]?.folderId === folderId ? existingBlob.files[0]?.name + "(" + existingBlob.refCount + ")" : fileData.fileName;
+
+
+
       return await prisma.$transaction(async (tx) => {
         const file = await tx.file.create({
           data: {
-            name: existingBlob.file.folderId === folderId ? `${fileData.fileName} + (${existingBlob.refCount})` : fileData.fileName,
+            name: updatedFileName,
             size: fileData.size,
             contentType: fileData.contentType,
             userId: userId,
             folderId: folderId,
             category: category,
             status: "ACTIVE",
-            s3KeyName: existingBlob.s3KeyName,
           },
           select: {
             id: true,
@@ -97,9 +136,10 @@ export class UploadServices {
           },
         });
 
-        await tx.blobs.update({
+        await tx.blob.update({
           where: {
             id: existingBlob.id,
+            status: "ACTIVE"
           },
           data: {
             refCount: {
@@ -132,23 +172,6 @@ export class UploadServices {
     }
 
 
-    const availableStorage = await prisma.userStorage.findFirst({
-      where: {
-        userId: userId,
-      },
-      select: {
-        usedBytes: true,
-        totalBytes: true,
-        trashBytes: true,
-        reservedBytes: true,
-      },
-    });
-
-    if (!availableStorage) {
-      const error = createHttpError(404, "User storage not found");
-      throw error;
-    }
-
     const availableBytes = getAvailableBytes(availableStorage);
 
 
@@ -160,78 +183,94 @@ export class UploadServices {
     const s3KeyName = `users/${userId}/objects/${folderId}/${fileData.fileName}`;
 
 
-    if (fileData.size > Config.aws.maxFileSizeForSingleUpload) {
+    // if (fileData.size > Config.aws.maxFileSizeForSingleUpload) {
 
-      const file = await prisma.$transaction(async (tx) => {
-        const file = await tx.file.create({
-          data: {
-            name: fileData.fileName,
-            size: fileData.size,
-            contentType: fileData.contentType,
-            userId: userId,
-            folderId: folderId,
-            category: category,
-            status: "IN_PROGRESS",
+    //   const file = await prisma.$transaction(async (tx) => {
+    //     const file = await tx.file.create({
+    //       data: {
+    //         name: fileData.fileName,
+    //         size: fileData.size,
+    //         contentType: fileData.contentType,
+    //         userId: userId,
+    //         folderId: folderId,
+    //         category: category,
+    //         status: "IN_PROGRESS",
 
-          },
-          select: {
-            id: true,
-            name: true,
-            size: true,
-            category: true,
-            status: true,
-            createdAt: true,
-            updatedAt: true,
-          },
-        });
+    //       },
+    //       select: {
+    //         id: true,
+    //         name: true,
+    //         size: true,
+    //         category: true,
+    //         status: true,
+    //         createdAt: true,
+    //         updatedAt: true,
+    //       },
+    //     });
 
-        const blob = await tx.blobs.create({
-          data: {
-            fileId: file.id,
-            contentType: fileData.contentType,
-            size: fileData.size,
-            s3KeyName: s3KeyName,
-            userId: userId,
-            refCount: 1,
-            sha256: sha256,
-          },
-          select: {
-            s3KeyName: true,
-          }
-        })
+    //     const blob = await tx.blob.create({
+    //       data: {
+    //         fileId: file.id,
+    //         contentType: fileData.contentType,
+    //         size: fileData.size,
+    //         s3KeyName: s3KeyName,
+    //         userId: userId,
+    //         refCount: 1,
+    //         sha256: sha256,
+            
+    //       },
+    //       select: {
+    //         s3KeyName: true,
+    //       }
+    //     })
 
-        await tx.userStorage.update({
-          where: {
-            userId: userId,
-          },
-          data: {
-            reservedBytes: {
-              increment: fileData.size,
-            },
-          },
-        });
-        return file
-      })
+    //     await tx.userStorage.update({
+    //       where: {
+    //         userId: userId,
+    //       },
+    //       data: {
+    //         reservedBytes: {
+    //           increment: fileData.size,
+    //         },
+    //       },
+    //     });
+    //     return file
+    //   })
 
-      const response = await s3Repository.SinglePutUpload(
-        fileData,
-        s3KeyName,
-      );
+    //   const response = await s3Repository.SinglePutUpload(
+    //     fileData,
+    //     s3KeyName,
+    //   );
 
-      return {
-        ...file,
-        size: file.size.toString(),
-        uploadId: null,
-        ACTION: "SINGLE_PUT",
-        presignedUrl: response,
-      };
-    }
+    //   return {
+    //     ...file,
+    //     size: file.size.toString(),
+    //     uploadId: null,
+    //     ACTION: "SINGLE_PUT",
+    //     presignedUrl: response,
+    //   };
+    // }
 
     const { partSize, totalParts } = getPartsInfo(fileData.size, userId, folderId, fileData.fileName);
 
     const file = await prisma.$transaction(async (tx) => {
 
-      const file = await tx.file.create({
+      const blob = await tx.blob.create({
+        data: {
+          contentType: fileData.contentType,
+          size: fileData.size,
+          s3KeyName: s3KeyName,
+          userId: userId,
+          refCount: 1,
+          sha256: sha256,
+        },
+        select: {
+          id: true,
+          s3KeyName: true,
+        }
+      })
+
+       const file = await tx.file.create({
         data: {
           name: fileData.fileName,
           size: fileData.size,
@@ -240,6 +279,7 @@ export class UploadServices {
           folderId: folderId,
           category: category,
           status: "IN_PROGRESS",
+          blobId: blob.id,
 
         },
         select: {
@@ -253,7 +293,8 @@ export class UploadServices {
         },
       });
 
-      const fileUpload = await tx.fileUpload.create({
+
+       const fileUpload = await tx.fileUpload.create({
         data: {
           fileId: file.id,
           userId: userId,
@@ -266,22 +307,6 @@ export class UploadServices {
           id: true,
         }
       });
-
-
-      const blob = await tx.blobs.create({
-        data: {
-          fileId: file.id,
-          contentType: fileData.contentType,
-          size: fileData.size,
-          s3KeyName: s3KeyName,
-          userId: userId,
-          refCount: 1,
-          sha256: sha256,
-        },
-        select: {
-          s3KeyName: true,
-        }
-      })
 
       await tx.userStorage.update({
         where: {
@@ -301,8 +326,6 @@ export class UploadServices {
         s3KeyName: blob.s3KeyName,
       };
     });
-
-
 
     const response = await s3Repository.CreateMultipartUpload(
       fileData,
@@ -329,6 +352,7 @@ export class UploadServices {
       uploadId: response.UploadId,
       ACTION: "MULTIPART",
     };
+
   }
 
   async generatePresignedUrl(
@@ -416,12 +440,12 @@ export class UploadServices {
             blob: {
               select: {
                 s3KeyName: true,
-              }
-            }
+              }    
           },
         },
       },
-    });
+    }
+  });
 
     if (fileUpload && fileUpload.status === "COMPLETED") {
       return {
@@ -453,7 +477,11 @@ export class UploadServices {
     }
     const sortedParts = sortPartsByPartNumber(parts);
 
+    console.log("Sorted parts:", sortedParts);
+    console.log("S3 parts:", s3PartList.Parts);
+
     const isPartsValid = isPartsValidated(sortedParts, s3PartList.Parts);
+
 
     if (!isPartsValid) {
       const error = createHttpError(
@@ -479,6 +507,7 @@ export class UploadServices {
     }
 
 
+
     const isFileValidated = fileValidated(
       contentLength,
       contentType,
@@ -502,20 +531,28 @@ export class UploadServices {
         data: {
           updatedAt: new Date(),
           status: "ACTIVE",
-          FileUpload: {
+          fileUpload: {
             update: {
-              where: {
-                id: fileUpload.id,
-              },
-              data: {
-                status: "COMPLETED",
-                ...(completeMultipartUploadResponse.ETag
+              status: "COMPLETED",
+               ...(completeMultipartUploadResponse.ETag
                   ? {
                     s3ETag: completeMultipartUploadResponse.ETag,
                   }
                   : {}),
-              },
-            },
+            }
+            // update: {
+            //   where: {
+            //     id: fileUpload.id,
+            //   },
+            //   data: {
+            //     status: "COMPLETED",
+            //     ...(completeMultipartUploadResponse.ETag
+            //       ? {
+            //         s3ETag: completeMultipartUploadResponse.ETag,
+            //       }
+            //       : {}),
+            //   },
+            // },
           },
         },
         select: {
@@ -691,7 +728,7 @@ export class UploadServices {
     };
   }
 
-  const url = await s3Repository.generatePresignedUrl(fileUpload.id, s3KeyName, partNumber);
+  const url = await s3Repository.generatePresignedUrl(s3UploadId, s3KeyName, partNumber);
   return {
     action: "RETRY",
     partNumber,

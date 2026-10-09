@@ -58,8 +58,8 @@ export interface PaginatedResultFile {
   folderId: string;
 }
 
-export interface DeleteFolderResult {
-  folderId: string;
+export interface DeleteFolderBatch {
+  folderIds: string[];
   fileIds : string[];
 }
 

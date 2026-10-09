@@ -7,10 +7,10 @@ export interface FileData {
 }
 
 export interface UploadRouteParams extends ParamsDictionary {
-  fileUploadId: string;
+  uploadId: string;
 }
 
 export interface PartStatusRouteParams extends ParamsDictionary {
-  fileUploadId: string;
+  uploadId: string;
   partNumber: string;
 }

@@ -257,6 +257,23 @@ export type EnumFileStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumFileStatusFilter<$PrismaModel>
 }
 
+export type EnumBlobStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.BlobStatus | Prisma.EnumBlobStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.BlobStatus[] | Prisma.ListEnumBlobStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.BlobStatus[] | Prisma.ListEnumBlobStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumBlobStatusFilter<$PrismaModel> | $Enums.BlobStatus
+}
+
+export type EnumBlobStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.BlobStatus | Prisma.EnumBlobStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.BlobStatus[] | Prisma.ListEnumBlobStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.BlobStatus[] | Prisma.ListEnumBlobStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumBlobStatusWithAggregatesFilter<$PrismaModel> | $Enums.BlobStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumBlobStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumBlobStatusFilter<$PrismaModel>
+}
+
 export type EnumUploadStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.UploadStatus | Prisma.EnumUploadStatusFieldRefInput<$PrismaModel>
   in?: $Enums.UploadStatus[] | Prisma.ListEnumUploadStatusFieldRefInput<$PrismaModel>
@@ -630,6 +647,23 @@ export type NestedEnumFileStatusWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumFileStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumFileStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumBlobStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.BlobStatus | Prisma.EnumBlobStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.BlobStatus[] | Prisma.ListEnumBlobStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.BlobStatus[] | Prisma.ListEnumBlobStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumBlobStatusFilter<$PrismaModel> | $Enums.BlobStatus
+}
+
+export type NestedEnumBlobStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.BlobStatus | Prisma.EnumBlobStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.BlobStatus[] | Prisma.ListEnumBlobStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.BlobStatus[] | Prisma.ListEnumBlobStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumBlobStatusWithAggregatesFilter<$PrismaModel> | $Enums.BlobStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumBlobStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumBlobStatusFilter<$PrismaModel>
 }
 
 export type NestedEnumUploadStatusFilter<$PrismaModel = never> = {

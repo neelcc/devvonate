@@ -56,7 +56,7 @@ export class UploadController {
     next: NextFunction,
   ) => {
     const userId = req.auth.sub;
-    const fileUploadId = req.params.fileUploadId;
+    const fileUploadId = req.params.uploadId;
     const {  PartNumber } = req.body;
 
     this.logger.info(
@@ -92,8 +92,9 @@ export class UploadController {
     next: NextFunction,
   ) => {
     const userId = req.auth.sub;
-    const fileUploadId = req.params.fileUploadId;
+    const fileUploadId = req.params.uploadId;
     const { parts } = req.body;
+    console.log("Received parts:", parts);
     this.logger.info(
       `UploadController.completeMultipartUpload: Completing multipart upload for user ${userId}, fileUploadId ${fileUploadId}, parts length ${parts.length}`,
     );
@@ -130,7 +131,7 @@ export class UploadController {
     next: NextFunction,
   ) => {
     const userId = req.auth.sub;
-    const fileUploadId = req.params.fileUploadId;
+    const fileUploadId = req.params.uploadId;
     const { key } = req.body;
 
     if (!fileUploadId || !key) {
@@ -192,7 +193,7 @@ export class UploadController {
 
   checkPartStatus = async (req: Request<PartStatusRouteParams>, res: Response, next: NextFunction) => {
     const userId = req.auth.sub;
-    const fileUploadId = req.params.fileUploadId;
+    const fileUploadId = req.params.uploadId;
     const status = req.query.status as string;
     const partNumber = parseInt(req.params.partNumber, 10);
 

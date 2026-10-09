@@ -1,6 +1,6 @@
 import createHttpError from "http-errors";
 import prisma from "../config/prisma";
-import { CreateFolderData, DeleteFolderResult, Folder, PaginatedResultFile, PaginatedResultFolder } from "./folder.types";
+import { CreateFolderData, Folder, PaginatedResultFile, PaginatedResultFolder } from "./folder.types";
 import { decodeCursor, encodeCursor } from "../utils";
 import { Logger } from "winston";
 import { Config } from "../config";

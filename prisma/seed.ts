@@ -3,6 +3,7 @@ import { createHash, randomUUID } from 'crypto';
 import prisma from '../src/config/prisma';
 
 import {
+  BlobStatus,
   FileCategory,
   FileStatus,
   FolderStatus,
@@ -18,8 +19,16 @@ if (!USER_ID) {
   throw new Error('TEST_USER_ID environment variable is required');
 }
 
-const TOTAL_CHILD_FOLDERS = 2500;
-const TOTAL_FILES = 50000;
+// ============================================================
+// CONFIG
+// ============================================================
+
+const TOTAL_CHILD_FOLDERS = 3;
+const TOTAL_FILES = 15;
+const TOTAL_BLOBS = 5;
+
+const FILE_BATCH_SIZE = 500;
+const BLOB_BATCH_SIZE = 500;
 
 const categories: FileCategory[] = [
   FileCategory.IMAGE,
@@ -37,6 +46,10 @@ const contentTypes = [
   'application/zip',
 ];
 
+// ============================================================
+// MAIN
+// ============================================================
+
 async function main() {
   // ============================================================
   // 1. CLEAN PREVIOUS TEST DATA
@@ -44,280 +57,452 @@ async function main() {
 
   console.log('🧹 Cleaning previous test data...');
 
-  // Blobs reference files, so delete blobs first.
-  const deletedBlobs = await prisma.blobs.deleteMany({
-    where: {
-      userId: USER_ID,
-    },
-  });
-
-  // Files reference folders.
+  // Files reference blobs and folders.
+  // Delete files first.
   const deletedFiles = await prisma.file.deleteMany({
     where: {
       userId: USER_ID,
     },
   });
 
-  // Finally delete folders.
+  // Now blobs can be deleted safely.
+  const deletedBlobs = await prisma.blob.deleteMany({
+    where: {
+      userId: USER_ID,
+    },
+  });
+
+  // Finally folders.
   const deletedFolders = await prisma.folder.deleteMany({
     where: {
       userId: USER_ID,
     },
   });
 
-  console.log(`Deleted ${deletedBlobs.count} blobs`);
   console.log(`Deleted ${deletedFiles.count} files`);
+  console.log(`Deleted ${deletedBlobs.count} blobs`);
   console.log(`Deleted ${deletedFolders.count} folders`);
 
   // ============================================================
-  // 2. CREATE ONE MAIN ROOT FOLDER
+  // 2. CREATE MAIN FOLDER
   // ============================================================
 
   console.log('📁 Creating main folder...');
 
-  // const mainFolderId = randomUUID();
+  const mainFolderId = randomUUID();
 
-  // await prisma.folder.create({
-  //   data: {
-  //     id: mainFolderId,
-  //     userId: USER_ID,
-  //     parentFolderId: null,
-  //     name: 'Test Main Folder',
-  //     status: FolderStatus.ACTIVE,
-  //   },
-  // });
+  await prisma.folder.create({
+    data: {
+      id: mainFolderId,
+      userId: USER_ID,
+      parentFolderId: null,
+      name: 'Test Main Folder',
+      status: FolderStatus.DELETING, // Start as DELETING to simulate a folder that is being processed
+    },
+  });
 
-  // console.log(`Created main folder: ${mainFolderId}`);
+  console.log(`Created main folder: ${mainFolderId}`);
 
-  // // ============================================================
-  // // 3. CREATE 500 CHILD FOLDERS
-  // // ============================================================
+  // ============================================================
+  // 3. CREATE CHILD FOLDERS
+  // ============================================================
 
-  // console.log(`📁 Creating ${TOTAL_CHILD_FOLDERS} child folders...`);
+  console.log(
+    `📁 Creating ${TOTAL_CHILD_FOLDERS} child folders...`,
+  );
 
-  // const childFolders = [];
+  const childFolders = Array.from(
+    { length: TOTAL_CHILD_FOLDERS },
+    (_, i) => ({
+      id: randomUUID(),
+      userId: USER_ID,
+      parentFolderId: mainFolderId,
+      name: `Test Folder ${i + 1}`,
+      status: FolderStatus.ACTIVE,
+    }),
+  );
 
-  // for (let i = 0; i < TOTAL_CHILD_FOLDERS; i++) {
-  //   childFolders.push({
-  //     id: randomUUID(),
-  //     userId: USER_ID,
-  //     parentFolderId: mainFolderId,
-  //     name: `Test Folder ${i + 1}`,
-  //     status: FolderStatus.ACTIVE,
-  //   });
-  // }
+  await prisma.folder.createMany({
+    data: childFolders,
+  });
 
-  // await prisma.folder.createMany({
-  //   data: childFolders,
-  // });
+  console.log(
+    `Created ${TOTAL_CHILD_FOLDERS} child folders`,
+  );
 
-  // console.log(
-  //   `✅ Created ${TOTAL_CHILD_FOLDERS} child folders inside main folder`,
-  // );
+  // ============================================================
+  // 4. DEFINE BLOB REFERENCE DISTRIBUTION
+  //
+  // Blob 1 -> 3 files
+  // Blob 2 -> 3 files
+  // Blob 3 -> 3 files
+  // Blob 4 -> 2 files
+  // Blob 5 -> 4 files
+  //
+  // Total = 15 files
+  // ============================================================
 
-  // // ============================================================
-  // // 4. CREATE 1000 FILES
-  // //
-  // // ALL FILES DIRECTLY BELONG TO THE MAIN FOLDER
-  // // ============================================================
+  const blobReferenceDistribution = [
+    3,
+    3,
+    3,
+    2,
+    4,
+  ];
 
-  // console.log(`📄 Creating ${TOTAL_FILES} files...`);
+  if (
+    blobReferenceDistribution.length !==
+    TOTAL_BLOBS
+  ) {
+    throw new Error(
+      'Blob distribution does not match TOTAL_BLOBS',
+    );
+  }
 
-  // const files = [];
+  const totalReferences =
+    blobReferenceDistribution.reduce(
+      (sum, count) => sum + count,
+      0,
+    );
 
-  // for (let i = 0; i < TOTAL_FILES; i++) {
-  //   const categoryIndex = i % categories.length;
+  if (totalReferences !== TOTAL_FILES) {
+    throw new Error(
+      `Blob distribution has ${totalReferences} references, expected ${TOTAL_FILES}`,
+    );
+  }
 
-  //   files.push({
-  //     id: randomUUID(),
-  //     folderId: mainFolderId,
-  //     userId: USER_ID,
-  //     name: `test-file-${i + 1}`,
-  //     size: BigInt(
-  //       1024 + Math.floor(Math.random() * 10 * 1024 * 1024),
-  //     ),
-  //     contentType: contentTypes[categoryIndex],
-  //     category: categories[categoryIndex],
-  //     status: FileStatus.ACTIVE,
-  //   });
-  // }
+  // ============================================================
+  // 5. CREATE BLOBS
+  // ============================================================
 
-  // // ============================================================
-  // // 5. INSERT FILES IN BATCHES OF 500
-  // // ============================================================
+  console.log(`🗄️ Creating ${TOTAL_BLOBS} blobs...`);
 
-  // const FILE_BATCH_SIZE = 500;
+  const blobs = Array.from(
+    { length: TOTAL_BLOBS },
+    (_, i) => {
+      const blobId = randomUUID();
 
-  // for (let i = 0; i < files.length; i += FILE_BATCH_SIZE) {
-  //   const batch = files.slice(i, i + FILE_BATCH_SIZE);
+      const categoryIndex =
+        i % categories.length;
 
-  //   await prisma.file.createMany({
-  //     data: batch,
-  //   });
+      const size = BigInt(
+        1024 +
+          Math.floor(
+            Math.random() * 10 * 1024 * 1024,
+          ),
+      );
 
-  //   console.log(
-  //     `Created files ${i + 1}-${Math.min(
-  //       i + FILE_BATCH_SIZE,
-  //       files.length,
-  //     )}`,
-  //   );
-  // }
+      const contentType =
+        contentTypes[categoryIndex];
 
-  // // ============================================================
-  // // 6. CREATE BLOBS
-  // //
-  // // 100  -> refCount = 3
-  // // 200  -> refCount = 2
-  // // 700  -> refCount = 1
-  // // ============================================================
+      const sha256 = createHash('sha256')
+        .update(`test-blob-${blobId}`)
+        .digest('hex');
 
-  // console.log(`🗄️ Creating ${TOTAL_FILES} blobs...`);
+      return {
+        id: blobId,
 
-  // const blobs = [];
+        userId: USER_ID,
 
-  // for (let i = 0; i < files.length; i++) {
-  //   const file = files[i];
+        s3KeyName:
+          `test-seed/${USER_ID}/${blobId}`,
 
-  //   let refCount: number;
+        size,
 
-  //   if (i < 10000) {
-  //     // First 100 files
-  //     refCount = 3;
-  //   } else if (i < 30000) {
-  //     // Next 200 files
-  //     refCount = 2;
-  //   } else {
-  //     // Remaining 700 files
-  //     refCount = 1;
-  //   }
+        contentType,
 
-  //   // Generate a deterministic unique SHA-256 for the test blob.
-  //   const sha256 = createHash('sha256')
-  //     .update(`test-blob-${file.id}`)
-  //     .digest('hex');
+        refCount:
+          blobReferenceDistribution[i],
 
-  //   blobs.push({
-  //     id: randomUUID(),
+        sha256,
 
-  //     // One blob belongs to exactly one file.
-  //     fileId: file.id,
+        status: BlobStatus.ACTIVE,
+      };
+    },
+  );
 
-  //     s3KeyName: `test-seed/${USER_ID}/${file.id}`,
+  // ============================================================
+  // 6. INSERT BLOBS
+  // ============================================================
 
-  //     size: file.size,
+  for (
+    let i = 0;
+    i < blobs.length;
+    i += BLOB_BATCH_SIZE
+  ) {
+    const batch = blobs.slice(
+      i,
+      i + BLOB_BATCH_SIZE,
+    );
 
-  //     contentType: file.contentType,
+    await prisma.blob.createMany({
+      data: batch,
+    });
 
-  //     refCount,
+    console.log(
+      `Created blobs ${i + 1}-${Math.min(
+        i + BLOB_BATCH_SIZE,
+        blobs.length,
+      )}`,
+    );
+  }
 
-  //     sha256,
+  // ============================================================
+  // 7. CREATE FILES
+  // ============================================================
 
-  //     userId: USER_ID,
-  //   });
-  // }
+  console.log(`📄 Creating ${TOTAL_FILES} files...`);
 
-  // // Insert blobs in batches as well.
-  // const BLOB_BATCH_SIZE = 500;
+  const files = [];
 
-  // for (let i = 0; i < blobs.length; i += BLOB_BATCH_SIZE) {
-  //   const batch = blobs.slice(i, i + BLOB_BATCH_SIZE);
+  let currentBlobIndex = 0;
+  let filesForCurrentBlob = 0;
 
-  //   await prisma.blobs.createMany({
-  //     data: batch,
-  //   });
+  for (let i = 0; i < TOTAL_FILES; i++) {
+    const blob = blobs[currentBlobIndex];
 
-  //   console.log(
-  //     `Created blobs ${i + 1}-${Math.min(
-  //       i + BLOB_BATCH_SIZE,
-  //       blobs.length,
-  //     )}`,
-  //   );
-  // }
+    const categoryIndex =
+      i % categories.length;
 
-  // // ============================================================
-  // // 7. VERIFY DATA
-  // // ============================================================
+    files.push({
+      id: randomUUID(),
 
-  // console.log('');
-  // console.log('====================================');
-  // console.log('🔍 SEED VERIFICATION');
-  // console.log('====================================');
+      userId: USER_ID,
 
-  // const childFolderCount = await prisma.folder.count({
-  //   where: {
-  //     userId: USER_ID,
-  //     parentFolderId: mainFolderId,
-  //   },
-  // });
+      folderId: mainFolderId,
 
-  // const mainFolderFileCount = await prisma.file.count({
-  //   where: {
-  //     userId: USER_ID,
-  //     folderId: mainFolderId,
-  //   },
-  // });
+      blobId: blob.id,
 
-  // const blobCount = await prisma.blobs.count({
-  //   where: {
-  //     userId: USER_ID,
-  //   },
-  // });
+      name: `test-file-${i + 1}`,
 
-  // const refCount1 = await prisma.blobs.count({
-  //   where: {
-  //     userId: USER_ID,
-  //     refCount: 1,
-  //   },
-  // });
+      size: blob.size,
 
-  // const refCount2 = await prisma.blobs.count({
-  //   where: {
-  //     userId: USER_ID,
-  //     refCount: 2,
-  //   },
-  // });
+      contentType: blob.contentType,
 
-  // const refCount3 = await prisma.blobs.count({
-  //   where: {
-  //     userId: USER_ID,
-  //     refCount: 3,
-  //   },
-  // });
+      category: categories[categoryIndex],
 
-  // console.log({
-  //   mainFolderId,
-  //   childFolderCount,
-  //   mainFolderFileCount,
-  //   blobCount,
-  //   refCount1,
-  //   refCount2,
-  //   refCount3,
-  // });
+      status: FileStatus.ACTIVE,
+    });
 
-  // // ============================================================
-  // // 8. DATABASE CONNECTION CHECK
-  // // ============================================================
+    filesForCurrentBlob++;
 
-  // const result = await prisma.$queryRaw<
-  //   {
-  //     current_database: string;
-  //     current_schema: string;
-  //     inet_server_addr: string;
-  //   }[]
-  // >`
-  //   SELECT
-  //     current_database(),
-  //     current_schema(),
-  //     inet_server_addr()::text;
-  // `;
+    // Move to next blob when its expected
+    // reference count has been reached.
+    if (
+      filesForCurrentBlob >=
+      blobReferenceDistribution[currentBlobIndex]
+    ) {
+      currentBlobIndex++;
+      filesForCurrentBlob = 0;
+    }
+  }
 
-  // console.log('Connected DB:', result);
+  // ============================================================
+  // 8. INSERT FILES
+  // ============================================================
+
+  for (
+    let i = 0;
+    i < files.length;
+    i += FILE_BATCH_SIZE
+  ) {
+    const batch = files.slice(
+      i,
+      i + FILE_BATCH_SIZE,
+    );
+
+    await prisma.file.createMany({
+      data: batch,
+    });
+
+    console.log(
+      `Created files ${i + 1}-${Math.min(
+        i + FILE_BATCH_SIZE,
+        files.length,
+      )}`,
+    );
+  }
+
+  // ============================================================
+  // 9. VERIFY BASIC COUNTS
+  // ============================================================
+
+  console.log('');
+  console.log('====================================');
+  console.log('🔍 SEED VERIFICATION');
+  console.log('====================================');
+
+  const childFolderCount =
+    await prisma.folder.count({
+      where: {
+        userId: USER_ID,
+        parentFolderId: mainFolderId,
+      },
+    });
+
+  const mainFolderFileCount =
+    await prisma.file.count({
+      where: {
+        userId: USER_ID,
+        folderId: mainFolderId,
+      },
+    });
+
+  const blobCount =
+    await prisma.blob.count({
+      where: {
+        userId: USER_ID,
+      },
+    });
+
+  console.log({
+    mainFolderId,
+    childFolderCount,
+    mainFolderFileCount,
+    blobCount,
+  });
+
+  // ============================================================
+  // 10. VERIFY refCount
+  // ============================================================
+
+  console.log('');
+  console.log('🔗 Verifying blob refCounts...');
+
+  const blobVerification =
+    await prisma.blob.findMany({
+      where: {
+        userId: USER_ID,
+      },
+      select: {
+        id: true,
+        s3KeyName: true,
+        refCount: true,
+        _count: {
+          select: {
+            files: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'asc',
+      },
+    });
+
+  for (const blob of blobVerification) {
+    console.log({
+      blobId: blob.id,
+      s3KeyName: blob.s3KeyName,
+      storedRefCount: blob.refCount,
+      actualRefCount: blob._count.files,
+    });
+
+    if (
+      blob.refCount !==
+      blob._count.files
+    ) {
+      throw new Error(
+        `refCount mismatch for blob ${blob.id}: ` +
+          `stored=${blob.refCount}, ` +
+          `actual=${blob._count.files}`,
+      );
+    }
+  }
+
+  console.log(
+    '✅ All blob refCounts are correct',
+  );
+
+  // ============================================================
+  // 11. VERIFY EXPECTED COUNTS
+  // ============================================================
+
+  if (
+    childFolderCount !==
+    TOTAL_CHILD_FOLDERS
+  ) {
+    throw new Error(
+      `Expected ${TOTAL_CHILD_FOLDERS} child folders, got ${childFolderCount}`,
+    );
+  }
+
+  if (
+    mainFolderFileCount !==
+    TOTAL_FILES
+  ) {
+    throw new Error(
+      `Expected ${TOTAL_FILES} files, got ${mainFolderFileCount}`,
+    );
+  }
+
+  if (
+    blobCount !==
+    TOTAL_BLOBS
+  ) {
+    throw new Error(
+      `Expected ${TOTAL_BLOBS} blobs, got ${blobCount}`,
+    );
+  }
+
+  // ============================================================
+  // 12. DATABASE CONNECTION CHECK
+  // ============================================================
+
+  const result =
+    await prisma.$queryRaw<
+      {
+        current_database: string;
+        current_schema: string;
+        inet_server_addr: string;
+      }[]
+    >`
+      SELECT
+        current_database(),
+        current_schema(),
+        inet_server_addr()::text;
+    `;
+
+  console.log('Connected DB:', result);
+
+  // ============================================================
+  // 13. FINAL SUMMARY
+  // ============================================================
+
+  console.log('');
+  console.log('====================================');
+  console.log('📊 FINAL SEED SUMMARY');
+  console.log('====================================');
+
+  console.log({
+    mainFolderId,
+
+    folders: {
+      main: 1,
+      children: childFolderCount,
+      total: childFolderCount + 1,
+    },
+
+    files: mainFolderFileCount,
+
+    blobs: blobCount,
+
+    refCounts: blobVerification.map(
+      (blob) => ({
+        blobId: blob.id,
+        refCount: blob.refCount,
+      }),
+    ),
+  });
 
   console.log('');
   console.log('====================================');
   console.log('✅ SEED COMPLETED SUCCESSFULLY');
   console.log('====================================');
 }
+
+// ============================================================
+// RUN
+// ============================================================
 
 main()
   .catch((error) => {

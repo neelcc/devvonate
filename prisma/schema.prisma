@@ -63,9 +63,9 @@ enum OUTBOX_EVENT_STATUS {
 enum OUTBOX_EVENT_TYPE {
   FILE_DELETION
   FILE_BATCH_DELETION
-  FOLDER_DELETION
-  FOLDER_BATCH_DELETION
   USER_ONBOARDING
+  FOLDER_DELETION
+  FOLDER_FILES_DELETION
   USER_DELETION
   ABORT_STUCK_UPLOADS
 }
@@ -74,6 +74,12 @@ enum AGGREGATE_TYPE {
   FILE
   FOLDER
   USER
+}
+
+enum BlobStatus {
+  ACTIVE
+  DELETING
+  DELETED
 }
 
 model User {
@@ -88,7 +94,7 @@ model User {
   folders       Folder[]
   refreshTokens RefreshToken[]
   storage       UserStorage?
-  blobs         Blobs[]
+  blobs         Blob[]
   fileUploads   FileUpload[]
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
@@ -134,7 +140,7 @@ model UserStorage {
     updatedAt      DateTime  @updatedAt
     status         FolderStatus @default(ACTIVE)
     user     User     @relation(fields: [userId], references: [id])
-    parent   Folder?  @relation("FolderToFolder", fields: [parentFolderId], references: [id])
+    parent   Folder?  @relation("FolderToFolder", fields: [parentFolderId], references: [id], onDelete: Cascade)
     children Folder[] @relation("FolderToFolder")
     files    File[]
 
@@ -147,17 +153,18 @@ model UserStorage {
       id          String       @id @default(uuid())
       folderId    String
       userId      String
+      blobId      String?
       name        String
       size        BigInt // in bytes
       contentType String
       category    FileCategory
       deletedAt   DateTime?
       status      FileStatus   @default(ACTIVE)
-      user        User         @relation(fields: [userId], references: [id])
+      user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
       folder      Folder       @relation(fields: [folderId], references: [id])
 
       fileUpload  FileUpload?
-      blob        Blobs?
+      blob   Blob?  @relation(fields: [blobId], references: [id], onDelete: SetNull)  
 
       createdAt DateTime @default(now())
       updatedAt DateTime @updatedAt
@@ -166,6 +173,26 @@ model UserStorage {
       @@index([folderId, deletedAt])
       @@map("files")
     }
+
+
+ 
+  model Blob {
+    id        String   @id @default(uuid())
+    s3KeyName String   @unique
+    size      BigInt   // in bytes
+    contentType String
+    refCount  Int      @default(0)
+    sha256    String   @unique
+    userId    String
+    status    BlobStatus @default(ACTIVE)
+    files     File[]
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@map("blob")
+    @@index([sha256, refCount, size])
+  }
 
 
   model FileUpload {
@@ -186,23 +213,7 @@ model UserStorage {
     @@map("fileUploads")
   }
 
-  model Blobs {
-    id        String   @id @default(uuid())
-    fileId    String   @unique
-    s3KeyName String   @unique
-    size      BigInt   // in bytes
-    contentType String
-    refCount  Int      @default(0)
-    sha256    String   @unique
-    userId    String
-    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-    file      File     @relation(fields: [fileId], references: [id], onDelete: Cascade)
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
 
-    @@map("blobs")
-    @@index([sha256, refCount, size])
-  }
 
 model OutboxEvents {
   id            String              @id @default(uuid())

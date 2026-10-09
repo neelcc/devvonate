@@ -218,7 +218,7 @@ export type UserWhereInput = {
   folders?: Prisma.FolderListRelationFilter
   refreshTokens?: Prisma.RefreshTokenListRelationFilter
   storage?: Prisma.XOR<Prisma.UserStorageNullableScalarRelationFilter, Prisma.UserStorageWhereInput> | null
-  blobs?: Prisma.BlobsListRelationFilter
+  blobs?: Prisma.BlobListRelationFilter
   fileUploads?: Prisma.FileUploadListRelationFilter
 }
 
@@ -236,7 +236,7 @@ export type UserOrderByWithRelationInput = {
   folders?: Prisma.FolderOrderByRelationAggregateInput
   refreshTokens?: Prisma.RefreshTokenOrderByRelationAggregateInput
   storage?: Prisma.UserStorageOrderByWithRelationInput
-  blobs?: Prisma.BlobsOrderByRelationAggregateInput
+  blobs?: Prisma.BlobOrderByRelationAggregateInput
   fileUploads?: Prisma.FileUploadOrderByRelationAggregateInput
 }
 
@@ -257,7 +257,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   folders?: Prisma.FolderListRelationFilter
   refreshTokens?: Prisma.RefreshTokenListRelationFilter
   storage?: Prisma.XOR<Prisma.UserStorageNullableScalarRelationFilter, Prisma.UserStorageWhereInput> | null
-  blobs?: Prisma.BlobsListRelationFilter
+  blobs?: Prisma.BlobListRelationFilter
   fileUploads?: Prisma.FileUploadListRelationFilter
 }, "id" | "email" | "rootFolderId">
 
@@ -305,7 +305,7 @@ export type UserCreateInput = {
   folders?: Prisma.FolderCreateNestedManyWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   storage?: Prisma.UserStorageCreateNestedOneWithoutUserInput
-  blobs?: Prisma.BlobsCreateNestedManyWithoutUserInput
+  blobs?: Prisma.BlobCreateNestedManyWithoutUserInput
   fileUploads?: Prisma.FileUploadCreateNestedManyWithoutUserInput
 }
 
@@ -323,7 +323,7 @@ export type UserUncheckedCreateInput = {
   folders?: Prisma.FolderUncheckedCreateNestedManyWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   storage?: Prisma.UserStorageUncheckedCreateNestedOneWithoutUserInput
-  blobs?: Prisma.BlobsUncheckedCreateNestedManyWithoutUserInput
+  blobs?: Prisma.BlobUncheckedCreateNestedManyWithoutUserInput
   fileUploads?: Prisma.FileUploadUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -341,7 +341,7 @@ export type UserUpdateInput = {
   folders?: Prisma.FolderUpdateManyWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   storage?: Prisma.UserStorageUpdateOneWithoutUserNestedInput
-  blobs?: Prisma.BlobsUpdateManyWithoutUserNestedInput
+  blobs?: Prisma.BlobUpdateManyWithoutUserNestedInput
   fileUploads?: Prisma.FileUploadUpdateManyWithoutUserNestedInput
 }
 
@@ -359,7 +359,7 @@ export type UserUncheckedUpdateInput = {
   folders?: Prisma.FolderUncheckedUpdateManyWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   storage?: Prisma.UserStorageUncheckedUpdateOneWithoutUserNestedInput
-  blobs?: Prisma.BlobsUncheckedUpdateManyWithoutUserNestedInput
+  blobs?: Prisma.BlobUncheckedUpdateManyWithoutUserNestedInput
   fileUploads?: Prisma.FileUploadUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -512,20 +512,6 @@ export type UserUpdateOneRequiredWithoutFilesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutFilesInput, Prisma.UserUpdateWithoutFilesInput>, Prisma.UserUncheckedUpdateWithoutFilesInput>
 }
 
-export type UserCreateNestedOneWithoutFileUploadsInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutFileUploadsInput, Prisma.UserUncheckedCreateWithoutFileUploadsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutFileUploadsInput
-  connect?: Prisma.UserWhereUniqueInput
-}
-
-export type UserUpdateOneRequiredWithoutFileUploadsNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutFileUploadsInput, Prisma.UserUncheckedCreateWithoutFileUploadsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutFileUploadsInput
-  upsert?: Prisma.UserUpsertWithoutFileUploadsInput
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutFileUploadsInput, Prisma.UserUpdateWithoutFileUploadsInput>, Prisma.UserUncheckedUpdateWithoutFileUploadsInput>
-}
-
 export type UserCreateNestedOneWithoutBlobsInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutBlobsInput, Prisma.UserUncheckedCreateWithoutBlobsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutBlobsInput
@@ -538,6 +524,20 @@ export type UserUpdateOneRequiredWithoutBlobsNestedInput = {
   upsert?: Prisma.UserUpsertWithoutBlobsInput
   connect?: Prisma.UserWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutBlobsInput, Prisma.UserUpdateWithoutBlobsInput>, Prisma.UserUncheckedUpdateWithoutBlobsInput>
+}
+
+export type UserCreateNestedOneWithoutFileUploadsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutFileUploadsInput, Prisma.UserUncheckedCreateWithoutFileUploadsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutFileUploadsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutFileUploadsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutFileUploadsInput, Prisma.UserUncheckedCreateWithoutFileUploadsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutFileUploadsInput
+  upsert?: Prisma.UserUpsertWithoutFileUploadsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutFileUploadsInput, Prisma.UserUpdateWithoutFileUploadsInput>, Prisma.UserUncheckedUpdateWithoutFileUploadsInput>
 }
 
 export type UserCreateWithoutRefreshTokensInput = {
@@ -553,7 +553,7 @@ export type UserCreateWithoutRefreshTokensInput = {
   files?: Prisma.FileCreateNestedManyWithoutUserInput
   folders?: Prisma.FolderCreateNestedManyWithoutUserInput
   storage?: Prisma.UserStorageCreateNestedOneWithoutUserInput
-  blobs?: Prisma.BlobsCreateNestedManyWithoutUserInput
+  blobs?: Prisma.BlobCreateNestedManyWithoutUserInput
   fileUploads?: Prisma.FileUploadCreateNestedManyWithoutUserInput
 }
 
@@ -570,7 +570,7 @@ export type UserUncheckedCreateWithoutRefreshTokensInput = {
   files?: Prisma.FileUncheckedCreateNestedManyWithoutUserInput
   folders?: Prisma.FolderUncheckedCreateNestedManyWithoutUserInput
   storage?: Prisma.UserStorageUncheckedCreateNestedOneWithoutUserInput
-  blobs?: Prisma.BlobsUncheckedCreateNestedManyWithoutUserInput
+  blobs?: Prisma.BlobUncheckedCreateNestedManyWithoutUserInput
   fileUploads?: Prisma.FileUploadUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -603,7 +603,7 @@ export type UserUpdateWithoutRefreshTokensInput = {
   files?: Prisma.FileUpdateManyWithoutUserNestedInput
   folders?: Prisma.FolderUpdateManyWithoutUserNestedInput
   storage?: Prisma.UserStorageUpdateOneWithoutUserNestedInput
-  blobs?: Prisma.BlobsUpdateManyWithoutUserNestedInput
+  blobs?: Prisma.BlobUpdateManyWithoutUserNestedInput
   fileUploads?: Prisma.FileUploadUpdateManyWithoutUserNestedInput
 }
 
@@ -620,7 +620,7 @@ export type UserUncheckedUpdateWithoutRefreshTokensInput = {
   files?: Prisma.FileUncheckedUpdateManyWithoutUserNestedInput
   folders?: Prisma.FolderUncheckedUpdateManyWithoutUserNestedInput
   storage?: Prisma.UserStorageUncheckedUpdateOneWithoutUserNestedInput
-  blobs?: Prisma.BlobsUncheckedUpdateManyWithoutUserNestedInput
+  blobs?: Prisma.BlobUncheckedUpdateManyWithoutUserNestedInput
   fileUploads?: Prisma.FileUploadUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -637,7 +637,7 @@ export type UserCreateWithoutStorageInput = {
   files?: Prisma.FileCreateNestedManyWithoutUserInput
   folders?: Prisma.FolderCreateNestedManyWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
-  blobs?: Prisma.BlobsCreateNestedManyWithoutUserInput
+  blobs?: Prisma.BlobCreateNestedManyWithoutUserInput
   fileUploads?: Prisma.FileUploadCreateNestedManyWithoutUserInput
 }
 
@@ -654,7 +654,7 @@ export type UserUncheckedCreateWithoutStorageInput = {
   files?: Prisma.FileUncheckedCreateNestedManyWithoutUserInput
   folders?: Prisma.FolderUncheckedCreateNestedManyWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
-  blobs?: Prisma.BlobsUncheckedCreateNestedManyWithoutUserInput
+  blobs?: Prisma.BlobUncheckedCreateNestedManyWithoutUserInput
   fileUploads?: Prisma.FileUploadUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -687,7 +687,7 @@ export type UserUpdateWithoutStorageInput = {
   files?: Prisma.FileUpdateManyWithoutUserNestedInput
   folders?: Prisma.FolderUpdateManyWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
-  blobs?: Prisma.BlobsUpdateManyWithoutUserNestedInput
+  blobs?: Prisma.BlobUpdateManyWithoutUserNestedInput
   fileUploads?: Prisma.FileUploadUpdateManyWithoutUserNestedInput
 }
 
@@ -704,7 +704,7 @@ export type UserUncheckedUpdateWithoutStorageInput = {
   files?: Prisma.FileUncheckedUpdateManyWithoutUserNestedInput
   folders?: Prisma.FolderUncheckedUpdateManyWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
-  blobs?: Prisma.BlobsUncheckedUpdateManyWithoutUserNestedInput
+  blobs?: Prisma.BlobUncheckedUpdateManyWithoutUserNestedInput
   fileUploads?: Prisma.FileUploadUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -721,7 +721,7 @@ export type UserCreateWithoutFoldersInput = {
   files?: Prisma.FileCreateNestedManyWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   storage?: Prisma.UserStorageCreateNestedOneWithoutUserInput
-  blobs?: Prisma.BlobsCreateNestedManyWithoutUserInput
+  blobs?: Prisma.BlobCreateNestedManyWithoutUserInput
   fileUploads?: Prisma.FileUploadCreateNestedManyWithoutUserInput
 }
 
@@ -738,7 +738,7 @@ export type UserUncheckedCreateWithoutFoldersInput = {
   files?: Prisma.FileUncheckedCreateNestedManyWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   storage?: Prisma.UserStorageUncheckedCreateNestedOneWithoutUserInput
-  blobs?: Prisma.BlobsUncheckedCreateNestedManyWithoutUserInput
+  blobs?: Prisma.BlobUncheckedCreateNestedManyWithoutUserInput
   fileUploads?: Prisma.FileUploadUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -771,7 +771,7 @@ export type UserUpdateWithoutFoldersInput = {
   files?: Prisma.FileUpdateManyWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   storage?: Prisma.UserStorageUpdateOneWithoutUserNestedInput
-  blobs?: Prisma.BlobsUpdateManyWithoutUserNestedInput
+  blobs?: Prisma.BlobUpdateManyWithoutUserNestedInput
   fileUploads?: Prisma.FileUploadUpdateManyWithoutUserNestedInput
 }
 
@@ -788,7 +788,7 @@ export type UserUncheckedUpdateWithoutFoldersInput = {
   files?: Prisma.FileUncheckedUpdateManyWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   storage?: Prisma.UserStorageUncheckedUpdateOneWithoutUserNestedInput
-  blobs?: Prisma.BlobsUncheckedUpdateManyWithoutUserNestedInput
+  blobs?: Prisma.BlobUncheckedUpdateManyWithoutUserNestedInput
   fileUploads?: Prisma.FileUploadUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -805,7 +805,7 @@ export type UserCreateWithoutFilesInput = {
   folders?: Prisma.FolderCreateNestedManyWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   storage?: Prisma.UserStorageCreateNestedOneWithoutUserInput
-  blobs?: Prisma.BlobsCreateNestedManyWithoutUserInput
+  blobs?: Prisma.BlobCreateNestedManyWithoutUserInput
   fileUploads?: Prisma.FileUploadCreateNestedManyWithoutUserInput
 }
 
@@ -822,7 +822,7 @@ export type UserUncheckedCreateWithoutFilesInput = {
   folders?: Prisma.FolderUncheckedCreateNestedManyWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   storage?: Prisma.UserStorageUncheckedCreateNestedOneWithoutUserInput
-  blobs?: Prisma.BlobsUncheckedCreateNestedManyWithoutUserInput
+  blobs?: Prisma.BlobUncheckedCreateNestedManyWithoutUserInput
   fileUploads?: Prisma.FileUploadUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -855,7 +855,7 @@ export type UserUpdateWithoutFilesInput = {
   folders?: Prisma.FolderUpdateManyWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   storage?: Prisma.UserStorageUpdateOneWithoutUserNestedInput
-  blobs?: Prisma.BlobsUpdateManyWithoutUserNestedInput
+  blobs?: Prisma.BlobUpdateManyWithoutUserNestedInput
   fileUploads?: Prisma.FileUploadUpdateManyWithoutUserNestedInput
 }
 
@@ -872,92 +872,8 @@ export type UserUncheckedUpdateWithoutFilesInput = {
   folders?: Prisma.FolderUncheckedUpdateManyWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   storage?: Prisma.UserStorageUncheckedUpdateOneWithoutUserNestedInput
-  blobs?: Prisma.BlobsUncheckedUpdateManyWithoutUserNestedInput
+  blobs?: Prisma.BlobUncheckedUpdateManyWithoutUserNestedInput
   fileUploads?: Prisma.FileUploadUncheckedUpdateManyWithoutUserNestedInput
-}
-
-export type UserCreateWithoutFileUploadsInput = {
-  id?: string
-  firstName: string
-  lastName: string
-  email: string
-  password: string
-  role?: $Enums.Role
-  rootFolderId?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  files?: Prisma.FileCreateNestedManyWithoutUserInput
-  folders?: Prisma.FolderCreateNestedManyWithoutUserInput
-  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
-  storage?: Prisma.UserStorageCreateNestedOneWithoutUserInput
-  blobs?: Prisma.BlobsCreateNestedManyWithoutUserInput
-}
-
-export type UserUncheckedCreateWithoutFileUploadsInput = {
-  id?: string
-  firstName: string
-  lastName: string
-  email: string
-  password: string
-  role?: $Enums.Role
-  rootFolderId?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  files?: Prisma.FileUncheckedCreateNestedManyWithoutUserInput
-  folders?: Prisma.FolderUncheckedCreateNestedManyWithoutUserInput
-  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
-  storage?: Prisma.UserStorageUncheckedCreateNestedOneWithoutUserInput
-  blobs?: Prisma.BlobsUncheckedCreateNestedManyWithoutUserInput
-}
-
-export type UserCreateOrConnectWithoutFileUploadsInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutFileUploadsInput, Prisma.UserUncheckedCreateWithoutFileUploadsInput>
-}
-
-export type UserUpsertWithoutFileUploadsInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutFileUploadsInput, Prisma.UserUncheckedUpdateWithoutFileUploadsInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutFileUploadsInput, Prisma.UserUncheckedCreateWithoutFileUploadsInput>
-  where?: Prisma.UserWhereInput
-}
-
-export type UserUpdateToOneWithWhereWithoutFileUploadsInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutFileUploadsInput, Prisma.UserUncheckedUpdateWithoutFileUploadsInput>
-}
-
-export type UserUpdateWithoutFileUploadsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  firstName?: Prisma.StringFieldUpdateOperationsInput | string
-  lastName?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
-  rootFolderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  files?: Prisma.FileUpdateManyWithoutUserNestedInput
-  folders?: Prisma.FolderUpdateManyWithoutUserNestedInput
-  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
-  storage?: Prisma.UserStorageUpdateOneWithoutUserNestedInput
-  blobs?: Prisma.BlobsUpdateManyWithoutUserNestedInput
-}
-
-export type UserUncheckedUpdateWithoutFileUploadsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  firstName?: Prisma.StringFieldUpdateOperationsInput | string
-  lastName?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
-  rootFolderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  files?: Prisma.FileUncheckedUpdateManyWithoutUserNestedInput
-  folders?: Prisma.FolderUncheckedUpdateManyWithoutUserNestedInput
-  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
-  storage?: Prisma.UserStorageUncheckedUpdateOneWithoutUserNestedInput
-  blobs?: Prisma.BlobsUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutBlobsInput = {
@@ -1044,6 +960,90 @@ export type UserUncheckedUpdateWithoutBlobsInput = {
   fileUploads?: Prisma.FileUploadUncheckedUpdateManyWithoutUserNestedInput
 }
 
+export type UserCreateWithoutFileUploadsInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  password: string
+  role?: $Enums.Role
+  rootFolderId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  files?: Prisma.FileCreateNestedManyWithoutUserInput
+  folders?: Prisma.FolderCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  storage?: Prisma.UserStorageCreateNestedOneWithoutUserInput
+  blobs?: Prisma.BlobCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutFileUploadsInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  password: string
+  role?: $Enums.Role
+  rootFolderId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  files?: Prisma.FileUncheckedCreateNestedManyWithoutUserInput
+  folders?: Prisma.FolderUncheckedCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  storage?: Prisma.UserStorageUncheckedCreateNestedOneWithoutUserInput
+  blobs?: Prisma.BlobUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutFileUploadsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutFileUploadsInput, Prisma.UserUncheckedCreateWithoutFileUploadsInput>
+}
+
+export type UserUpsertWithoutFileUploadsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutFileUploadsInput, Prisma.UserUncheckedUpdateWithoutFileUploadsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutFileUploadsInput, Prisma.UserUncheckedCreateWithoutFileUploadsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutFileUploadsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutFileUploadsInput, Prisma.UserUncheckedUpdateWithoutFileUploadsInput>
+}
+
+export type UserUpdateWithoutFileUploadsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  rootFolderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  files?: Prisma.FileUpdateManyWithoutUserNestedInput
+  folders?: Prisma.FolderUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  storage?: Prisma.UserStorageUpdateOneWithoutUserNestedInput
+  blobs?: Prisma.BlobUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutFileUploadsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  rootFolderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  files?: Prisma.FileUncheckedUpdateManyWithoutUserNestedInput
+  folders?: Prisma.FolderUncheckedUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  storage?: Prisma.UserStorageUncheckedUpdateOneWithoutUserNestedInput
+  blobs?: Prisma.BlobUncheckedUpdateManyWithoutUserNestedInput
+}
+
 
 /**
  * Count Type UserCountOutputType
@@ -1100,7 +1100,7 @@ export type UserCountOutputTypeCountRefreshTokensArgs<ExtArgs extends runtime.Ty
  * UserCountOutputType without action
  */
 export type UserCountOutputTypeCountBlobsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.BlobsWhereInput
+  where?: Prisma.BlobWhereInput
 }
 
 /**
@@ -1186,7 +1186,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     folders: Prisma.$FolderPayload<ExtArgs>[]
     refreshTokens: Prisma.$RefreshTokenPayload<ExtArgs>[]
     storage: Prisma.$UserStoragePayload<ExtArgs> | null
-    blobs: Prisma.$BlobsPayload<ExtArgs>[]
+    blobs: Prisma.$BlobPayload<ExtArgs>[]
     fileUploads: Prisma.$FileUploadPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1597,7 +1597,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   folders<T extends Prisma.User$foldersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$foldersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FolderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   refreshTokens<T extends Prisma.User$refreshTokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$refreshTokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RefreshTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   storage<T extends Prisma.User$storageArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$storageArgs<ExtArgs>>): Prisma.Prisma__UserStorageClient<runtime.Types.Result.GetResult<Prisma.$UserStoragePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-  blobs<T extends Prisma.User$blobsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$blobsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BlobsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  blobs<T extends Prisma.User$blobsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$blobsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BlobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   fileUploads<T extends Prisma.User$fileUploadsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$fileUploadsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FileUploadPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -2125,23 +2125,23 @@ export type User$storageArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
  */
 export type User$blobsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Blobs
+   * Select specific fields to fetch from the Blob
    */
-  select?: Prisma.BlobsSelect<ExtArgs> | null
+  select?: Prisma.BlobSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Blobs
+   * Omit specific fields from the Blob
    */
-  omit?: Prisma.BlobsOmit<ExtArgs> | null
+  omit?: Prisma.BlobOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.BlobsInclude<ExtArgs> | null
-  where?: Prisma.BlobsWhereInput
-  orderBy?: Prisma.BlobsOrderByWithRelationInput | Prisma.BlobsOrderByWithRelationInput[]
-  cursor?: Prisma.BlobsWhereUniqueInput
+  include?: Prisma.BlobInclude<ExtArgs> | null
+  where?: Prisma.BlobWhereInput
+  orderBy?: Prisma.BlobOrderByWithRelationInput | Prisma.BlobOrderByWithRelationInput[]
+  cursor?: Prisma.BlobWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.BlobsScalarFieldEnum | Prisma.BlobsScalarFieldEnum[]
+  distinct?: Prisma.BlobScalarFieldEnum | Prisma.BlobScalarFieldEnum[]
 }
 
 /**

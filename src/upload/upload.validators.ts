@@ -9,7 +9,7 @@ export const uploadFileSchema = z.object({
 });
 
 export const uploadRouteParamsSchema = z.object({
-  fileUploadId: z.string("Upload ID is required"),
+  uploadId: z.string("Upload ID is required"),
 });
 
 

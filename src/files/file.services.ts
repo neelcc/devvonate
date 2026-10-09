@@ -269,9 +269,13 @@ export class FileService {
       throw error;
     }
 
-    const blob = await prisma.blobs.findFirst({
+    const blob = await prisma.blob.findFirst({
       where: {
-        fileId: file.id,
+        files: {
+          some: {
+            id: file.id,
+          }
+        }
       },
       select: {
         id: true,
@@ -288,7 +292,7 @@ export class FileService {
     }
 
     if(blob.refCount > 1) {
-      await prisma.blobs.update({
+      await prisma.blob.update({
         where: {
           id: blob.id,
         },

@@ -402,8 +402,8 @@ export const ModelName = {
   UserStorage: 'UserStorage',
   Folder: 'Folder',
   File: 'File',
+  Blob: 'Blob',
   FileUpload: 'FileUpload',
-  Blobs: 'Blobs',
   OutboxEvents: 'OutboxEvents'
 } as const
 
@@ -420,7 +420,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "refreshToken" | "userStorage" | "folder" | "file" | "fileUpload" | "blobs" | "outboxEvents"
+    modelProps: "user" | "refreshToken" | "userStorage" | "folder" | "file" | "blob" | "fileUpload" | "outboxEvents"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -794,6 +794,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Blob: {
+      payload: Prisma.$BlobPayload<ExtArgs>
+      fields: Prisma.BlobFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BlobFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlobPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BlobFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlobPayload>
+        }
+        findFirst: {
+          args: Prisma.BlobFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlobPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BlobFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlobPayload>
+        }
+        findMany: {
+          args: Prisma.BlobFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlobPayload>[]
+        }
+        create: {
+          args: Prisma.BlobCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlobPayload>
+        }
+        createMany: {
+          args: Prisma.BlobCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BlobCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlobPayload>[]
+        }
+        delete: {
+          args: Prisma.BlobDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlobPayload>
+        }
+        update: {
+          args: Prisma.BlobUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlobPayload>
+        }
+        deleteMany: {
+          args: Prisma.BlobDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BlobUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BlobUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlobPayload>[]
+        }
+        upsert: {
+          args: Prisma.BlobUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlobPayload>
+        }
+        aggregate: {
+          args: Prisma.BlobAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBlob>
+        }
+        groupBy: {
+          args: Prisma.BlobGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BlobGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BlobCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BlobCountAggregateOutputType> | number
+        }
+      }
+    }
     FileUpload: {
       payload: Prisma.$FileUploadPayload<ExtArgs>
       fields: Prisma.FileUploadFieldRefs
@@ -865,80 +939,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.FileUploadCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.FileUploadCountAggregateOutputType> | number
-        }
-      }
-    }
-    Blobs: {
-      payload: Prisma.$BlobsPayload<ExtArgs>
-      fields: Prisma.BlobsFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.BlobsFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlobsPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.BlobsFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlobsPayload>
-        }
-        findFirst: {
-          args: Prisma.BlobsFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlobsPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.BlobsFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlobsPayload>
-        }
-        findMany: {
-          args: Prisma.BlobsFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlobsPayload>[]
-        }
-        create: {
-          args: Prisma.BlobsCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlobsPayload>
-        }
-        createMany: {
-          args: Prisma.BlobsCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.BlobsCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlobsPayload>[]
-        }
-        delete: {
-          args: Prisma.BlobsDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlobsPayload>
-        }
-        update: {
-          args: Prisma.BlobsUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlobsPayload>
-        }
-        deleteMany: {
-          args: Prisma.BlobsDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.BlobsUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.BlobsUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlobsPayload>[]
-        }
-        upsert: {
-          args: Prisma.BlobsUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlobsPayload>
-        }
-        aggregate: {
-          args: Prisma.BlobsAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateBlobs>
-        }
-        groupBy: {
-          args: Prisma.BlobsGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.BlobsGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.BlobsCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.BlobsCountAggregateOutputType> | number
         }
       }
     }
@@ -1113,6 +1113,7 @@ export const FileScalarFieldEnum = {
   id: 'id',
   folderId: 'folderId',
   userId: 'userId',
+  blobId: 'blobId',
   name: 'name',
   size: 'size',
   contentType: 'contentType',
@@ -1124,6 +1125,22 @@ export const FileScalarFieldEnum = {
 } as const
 
 export type FileScalarFieldEnum = (typeof FileScalarFieldEnum)[keyof typeof FileScalarFieldEnum]
+
+
+export const BlobScalarFieldEnum = {
+  id: 'id',
+  s3KeyName: 's3KeyName',
+  size: 'size',
+  contentType: 'contentType',
+  refCount: 'refCount',
+  sha256: 'sha256',
+  userId: 'userId',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BlobScalarFieldEnum = (typeof BlobScalarFieldEnum)[keyof typeof BlobScalarFieldEnum]
 
 
 export const FileUploadScalarFieldEnum = {
@@ -1141,22 +1158,6 @@ export const FileUploadScalarFieldEnum = {
 } as const
 
 export type FileUploadScalarFieldEnum = (typeof FileUploadScalarFieldEnum)[keyof typeof FileUploadScalarFieldEnum]
-
-
-export const BlobsScalarFieldEnum = {
-  id: 'id',
-  fileId: 'fileId',
-  s3KeyName: 's3KeyName',
-  size: 'size',
-  contentType: 'contentType',
-  refCount: 'refCount',
-  sha256: 'sha256',
-  userId: 'userId',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type BlobsScalarFieldEnum = (typeof BlobsScalarFieldEnum)[keyof typeof BlobsScalarFieldEnum]
 
 
 export const OutboxEventsScalarFieldEnum = {
@@ -1328,6 +1329,20 @@ export type EnumFileStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$Prism
  * Reference to a field of type 'FileStatus[]'
  */
 export type ListEnumFileStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FileStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'BlobStatus'
+ */
+export type EnumBlobStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BlobStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'BlobStatus[]'
+ */
+export type ListEnumBlobStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BlobStatus[]'>
     
 
 
@@ -1570,8 +1585,8 @@ export type GlobalOmitConfig = {
   userStorage?: Prisma.UserStorageOmit
   folder?: Prisma.FolderOmit
   file?: Prisma.FileOmit
+  blob?: Prisma.BlobOmit
   fileUpload?: Prisma.FileUploadOmit
-  blobs?: Prisma.BlobsOmit
   outboxEvents?: Prisma.OutboxEventsOmit
 }
 

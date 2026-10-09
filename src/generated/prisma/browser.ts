@@ -43,15 +43,15 @@ export type Folder = Prisma.FolderModel
  */
 export type File = Prisma.FileModel
 /**
+ * Model Blob
+ * 
+ */
+export type Blob = Prisma.BlobModel
+/**
  * Model FileUpload
  * 
  */
 export type FileUpload = Prisma.FileUploadModel
-/**
- * Model Blobs
- * 
- */
-export type Blobs = Prisma.BlobsModel
 /**
  * Model OutboxEvents
  * 
