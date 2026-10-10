@@ -6,6 +6,7 @@ import { FolderDeletionPayload } from "../../infrastructure/sqs/sqs.types";
 
 
 export async function folderDeletionHandler(payload: FolderDeletionPayload) {
+  
   const { userId, folderId } = payload;
 
   const now = new Date();
@@ -200,9 +201,3 @@ export async function folderDeletionHandler(payload: FolderDeletionPayload) {
   })
 
 }
-
-const folderId = "56a823fc-5528-483a-bf75-2fa597daad45"
-const userId = Config.TEST_USER_ID;
-
-
-// folderDeletionHandler({ userId, folderId })

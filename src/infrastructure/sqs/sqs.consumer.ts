@@ -17,8 +17,8 @@ class SQSConsumer {
       new ReceiveMessageCommand({
         QueueUrl: this.queueUrl,
         MaxNumberOfMessages: 5,
-        WaitTimeSeconds: 20, // long polling
-        VisibilityTimeout: 600,
+        WaitTimeSeconds: 5, // long polling
+        VisibilityTimeout: 10,
       }),
     );
 
@@ -43,7 +43,7 @@ class SQSConsumer {
 
       for (const message of messages) {
         try {
-          console.log("Received message:", message);
+          console.log("Received message:", message.Attributes);
           await dispatch(message);
           if (!message.ReceiptHandle) {
             throw new Error("Message has no ReceiptHandle");

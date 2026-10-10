@@ -261,8 +261,8 @@ export class UploadServices {
           size: fileData.size,
           s3KeyName: s3KeyName,
           userId: userId,
-          refCount: 1,
           sha256: sha256,
+
         },
         select: {
           id: true,
@@ -450,7 +450,6 @@ export class UploadServices {
     if (fileUpload && fileUpload.status === "COMPLETED") {
       return {
         message: "Multipart upload already completed",
-
       }
     }
 
@@ -477,8 +476,6 @@ export class UploadServices {
     }
     const sortedParts = sortPartsByPartNumber(parts);
 
-    console.log("Sorted parts:", sortedParts);
-    console.log("S3 parts:", s3PartList.Parts);
 
     const isPartsValid = isPartsValidated(sortedParts, s3PartList.Parts);
 
@@ -507,7 +504,6 @@ export class UploadServices {
     }
 
 
-
     const isFileValidated = fileValidated(
       contentLength,
       contentType,
@@ -530,7 +526,7 @@ export class UploadServices {
         },
         data: {
           updatedAt: new Date(),
-          status: "ACTIVE",
+          status: "VALIDATING",
           fileUpload: {
             update: {
               status: "COMPLETED",
@@ -540,26 +536,26 @@ export class UploadServices {
                   }
                   : {}),
             }
-            // update: {
-            //   where: {
-            //     id: fileUpload.id,
-            //   },
-            //   data: {
-            //     status: "COMPLETED",
-            //     ...(completeMultipartUploadResponse.ETag
-            //       ? {
-            //         s3ETag: completeMultipartUploadResponse.ETag,
-            //       }
-            //       : {}),
-            //   },
-            // },
           },
+          blob: {
+            update: {
+              status: "VALIDATING",
+              refCount: {
+                increment: 1,
+              }
+            }
+          }
         },
         select: {
           id: true,
           name: true,
           status: true,
           createdAt: true,
+          blob: {
+            select : {
+              id: true,
+            }
+          }
         },
       });
 
@@ -577,6 +573,17 @@ export class UploadServices {
         },
       });
 
+      await tx.outboxEvents.create({
+        data: {
+          aggregateType: "FILE",
+          aggregateId: file.id,
+          eventType: "FILE_VALIDATION",
+          payload: {
+            userId: userId,
+          },
+          status: "PENDING",
+        }
+      })
       return file;
     });
 

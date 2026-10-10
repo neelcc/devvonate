@@ -25,7 +25,8 @@ async function publishPendingEvents() {
         payload: event.payload,
         metadata: {
           messageId: event.id,
-          associatedId: event.aggregateId,
+          aggregateId: event.aggregateId,
+          eventId: event.id,
           triggeredAt: new Date().toISOString(),
         },
       });

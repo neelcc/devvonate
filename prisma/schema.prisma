@@ -29,6 +29,8 @@ enum FolderStatus {
 enum FileStatus {
   ACTIVE
   IN_PROGRESS
+  VALIDATING
+  INVALID
   TRASHED
   DELETING
   DELETED
@@ -68,6 +70,7 @@ enum OUTBOX_EVENT_TYPE {
   FOLDER_FILES_DELETION
   USER_DELETION
   ABORT_STUCK_UPLOADS
+  FILE_VALIDATION
 }
 
 enum AGGREGATE_TYPE {
@@ -78,6 +81,9 @@ enum AGGREGATE_TYPE {
 
 enum BlobStatus {
   ACTIVE
+  IN_PROGRESS
+  VALIDATING
+  INVALID
   DELETING
   DELETED
 }
@@ -184,7 +190,7 @@ model UserStorage {
     refCount  Int      @default(0)
     sha256    String   @unique
     userId    String
-    status    BlobStatus @default(ACTIVE)
+    status    BlobStatus @default(IN_PROGRESS)
     files     File[]
     user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
     createdAt DateTime @default(now())

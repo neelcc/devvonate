@@ -82,6 +82,8 @@ export class FileService {
         },
       });
 
+      
+
       return updatedFile;
     });
 
@@ -311,10 +313,12 @@ export class FileService {
     }
 
     const deletedFile = await prisma.$transaction(async (tx) => {
+      
       const deletedFile = await tx.file.delete({
         where: {
           id: file.id,
           userId: userId,
+      
         },
         select: {
           id: true,
@@ -322,6 +326,12 @@ export class FileService {
           size: true,
         },
       });
+
+      await tx.blob.delete({
+        where: {
+          id: blob.id,
+        }
+      })
 
       await tx.userStorage.update({
         where: {
@@ -345,6 +355,7 @@ export class FileService {
         },
       });
 
+      
       return {
         ...deletedFile,
         size: deletedFile.size.toString(),

@@ -222,12 +222,8 @@ export class AuthController {
 
   async getStorage(req: AuthRequest, res: Response, next: NextFunction) {
     try {
-      console.log("Request auth : ", req.auth);
-      console.log("STorage request for user : ", req.auth.sub);
       const user = await this.authServices.findById(req.auth.sub);
       const storage = await this.authServices.getUserStorage(req.auth.sub);
-      console.log("Storage fetched for user : ", storage);
-      console.log("User fetched for storage : ", user);
       if (!user) {
         const error = createHttpError(
           400,

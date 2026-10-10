@@ -106,7 +106,6 @@ export class FolderController {
     res: Response,
     next: NextFunction,
   ) => {
-    console.log("req.body i called", req.body);
     const folderId = req.params.id;
     const newParentId = req.body.newParentId;
     const userId = (req as AuthRequest).auth.sub;
@@ -164,10 +163,6 @@ export class FolderController {
   
 
   dummyRoute = async (req: Request, res: Response, next: NextFunction) => {
-    console.log(req.hostname);
-    console.log(req.host);
-    console.log(req.acceptsEncodings());
-    console.log(req.xhr);
     res.send("This is a dummy route for testing purposes");
   };
 }

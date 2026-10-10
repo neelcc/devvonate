@@ -136,7 +136,6 @@ export class FolderServices {
       });
       const hasNextPage = folders.length > pageSize;
       remaining = remaining - folders.length;
-      console.log("remainingItems", remaining);
       resultFolders = hasNextPage ? folders.slice(0, pageSize) : folders;
 
       if (hasNextPage) {
@@ -146,16 +145,13 @@ export class FolderServices {
           resultFolders[resultFolders.length - 1]?.createdAt,
         )
       } else if (remaining === 0) {
-        console.log("Fetching ifelse:", remaining);
         nextCursor = encodeCursor("file", undefined, undefined);
-        console.log("nextCursor ifelse:", nextCursor);
       }
     }
 
 
     if (!nextCursor && remaining > 0) {
       const fileCursor = decodedCursor?.cursorType === "file" && decodedCursor.id ? decodedCursor : null;
-      console.log("Fetching files with remaining items:", remaining);
       const files = await prisma.file.findMany({
         take: remaining + 1,
         orderBy: [
@@ -282,8 +278,6 @@ export class FolderServices {
       const error = createHttpError(400, "Cannot move folder to itself");
       throw error;
     }
-
-    console.log("New Parent Folder:", newParentFolder);
 
 
     return await prisma.folder.update({

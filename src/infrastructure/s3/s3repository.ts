@@ -21,10 +21,14 @@ class S3Repository {
   constructor() {}
 
   async CreateMultipartUpload(fileData: FileData, key: string) {
+
+    console.log(`Creating multipart upload for key ${key} with content type ${fileData.contentType}`);
+
     const command = new CreateMultipartUploadCommand({
       Bucket: this.bucketName,
       Key: key,
       ContentType: fileData.contentType,
+
     });
     const response = await s3Client.send(command);
 

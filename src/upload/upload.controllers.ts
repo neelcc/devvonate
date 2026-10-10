@@ -94,7 +94,6 @@ export class UploadController {
     const userId = req.auth.sub;
     const fileUploadId = req.params.uploadId;
     const { parts } = req.body;
-    console.log("Received parts:", parts);
     this.logger.info(
       `UploadController.completeMultipartUpload: Completing multipart upload for user ${userId}, fileUploadId ${fileUploadId}, parts length ${parts.length}`,
     );
