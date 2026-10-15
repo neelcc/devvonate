@@ -53,4 +53,6 @@ router.delete(
   authenticate,
   asyncWrapper(fileController.deleteAllTrashFiles),
 );
+router.get("/preview/:id", authenticate, asyncWrapper(fileController.previewFile));
+
 export default router;

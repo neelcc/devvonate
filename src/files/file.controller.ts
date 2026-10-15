@@ -204,4 +204,33 @@ export class FileController {
       count: deletedFiles.count,
     });
   };
+
+  previewFile = async (
+    req: Request<FileParams>,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    const userId = req.auth.id;
+    const fileId = req.params.id;
+
+    if (!fileId) {
+      const error = createHttpError(400, "File ID is required");
+      return next(error);
+    }
+
+    if (!userId) {
+      const error = createHttpError(400, "User ID is required");
+      return next(error);
+    }
+
+    const response = await this.fileService.previewFile(userId, fileId);
+
+    res.status(200).json({
+      message: "File preview URL generated successfully",
+      url: response.url,
+    });
+
+
+  }
+
 }

@@ -56,4 +56,4 @@ import { s3Client } from "../../config/s3";
     }
   }
 
-  previewFile("users/028ca4cf-b6e0-4999-a87e-5bce8e5cfbc1/objects/758c7533-47de-4f6f-9751-45e1ea1b481b/System Design Interview by Alex Xux")
+  previewFile("users/6564ce13-a730-48e2-bb1b-8788e3c41128/objects/6be64685-240a-4125-afe2-51d761179968/ui.jpg")

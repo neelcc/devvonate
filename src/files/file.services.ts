@@ -423,4 +423,10 @@ export class FileService {
 
     return deletedFiles;
   };
+
+  previewFile = async (userId: string, fileId: string) => {
+    return {
+      url: ""
+    }
+  }
 }
